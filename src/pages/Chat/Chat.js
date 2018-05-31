@@ -6,11 +6,12 @@ import immutable from 'immutable';
 import PropTypes from 'prop-types';
 
 import MessageList from './MessageList';
+import Input from './Input';
 
 
 class Chat extends Component {
     static propTypes = {
-        name: PropTypes.string.isRequired,
+        name: PropTypes.string,
     }
     render() {
         const { name } = this.props;
@@ -25,6 +26,7 @@ class Chat extends Component {
                 </Header>
                 <Container style={styles.container}>
                     <MessageList />
+                    <Input />
                 </Container>
             </Container>
         );

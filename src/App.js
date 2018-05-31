@@ -10,6 +10,7 @@ import store from './state/store';
 
 import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
+import Test from './pages/test';
 
 
 socket.on('connect', async () => {

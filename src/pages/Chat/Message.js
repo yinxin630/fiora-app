@@ -3,8 +3,10 @@ import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Time from '../../../utils/time';
+import expressions from '../../../utils/expressions';
 
 import Avatar from '../../components/Avatar';
+import Expression from '../../components/Expression';
 
 export default class Message extends Component {
     static propTypes = {
@@ -27,8 +29,27 @@ export default class Message extends Component {
     }
     renderText() {
         const { content } = this.props;
+        const children = [];
+        let offset = 0;
+        content.replace(
+            /#\(([\u4e00-\u9fa5a-z]+)\)/g,
+            (r, e, i) => {
+                const index = expressions.default.indexOf(e);
+                if (index !== -1) {
+                    if (offset < i) {
+                        children.push(content.substring(offset, i));
+                    }
+                    children.push(<Expression key={Math.random()} style={styles.expression} size={32} index={index} />);
+                    offset = i + r.length;
+                }
+                return r;
+            },
+        );
+        if (offset < content.length) {
+            children.push(content.substring(offset, content.length));
+        }
         return (
-            <Text style={styles.text}>{content}</Text>
+            <Text style={{ flexWrap: 'wrap', flexDirection: 'row', width: '100%', overflow: 'hidden' }}>{children}</Text>
         );
     }
     renderContent() {
@@ -45,7 +66,7 @@ export default class Message extends Component {
     }
     render() {
         const { avatar, nickname } = this.props;
-        console.log('Message:', avatar);
+        // console.log('Message:', avatar);
         return (
             <View style={styles.container}>
                 <Avatar src={avatar} size={44} />
@@ -55,7 +76,7 @@ export default class Message extends Component {
                         <Text style={styles.time}>{this.formatTime()}</Text>
                     </View>
                     <View style={styles.content}>
-                        <View style={styles.test}>
+                        <View style={styles.contentInline}>
                             {this.renderContent()}
                         </View>
                     </View>
@@ -89,13 +110,18 @@ const styles = StyleSheet.create({
     content: {
         flexDirection: 'row',
     },
-    test: {
+    contentInline: {
+        maxWidth: '100%',
         backgroundColor: 'rgb(74, 144, 226)',
         borderRadius: 6,
         padding: 5,
     },
     text: {
         color: 'white',
+    },
+    expression: {
+        marginLeft: 2,
+        marginRight: 2,
     },
     notSupport: {
         color: 'red',
