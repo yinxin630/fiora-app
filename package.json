@@ -16,8 +16,15 @@
   },
   "dependencies": {
     "expo": "^27.0.1",
+    "immutable": "^3.8.2",
+    "native-base": "^2.4.5",
+    "prop-types": "^15.6.1",
     "react": "16.3.1",
+    "react-immutable-proptypes": "^2.1.0",
     "react-native": "~0.55.2",
+    "react-redux": "^5.0.7",
+    "react-router-native": "^4.2.0",
+    "redux": "^4.0.0",
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
