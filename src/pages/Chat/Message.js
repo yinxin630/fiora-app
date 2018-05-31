@@ -28,9 +28,7 @@ export default class Message extends Component {
     renderText() {
         const { content } = this.props;
         return (
-            <View>
-                <Text>{content}</Text>
-            </View>
+            <Text style={styles.text}>{content}</Text>
         );
     }
     renderContent() {
@@ -41,23 +39,25 @@ export default class Message extends Component {
         }
         default:
             return (
-                <Text>不支持的消息类型</Text>
+                <Text style={styles.notSupport}>不支持的消息类型</Text>
             );
         }
     }
     render() {
         const { avatar, nickname } = this.props;
-        console.log('Message:', this.props.content);
+        console.log('Message:', avatar);
         return (
             <View style={styles.container}>
-                <Avatar src={avatar} size={36} />
+                <Avatar src={avatar} size={44} />
                 <View style={styles.info}>
                     <View style={styles.nickTime}>
                         <Text style={styles.nick}>{nickname}</Text>
                         <Text style={styles.time}>{this.formatTime()}</Text>
                     </View>
-                    <View>
-                        {this.renderContent()}
+                    <View style={styles.content}>
+                        <View style={styles.test}>
+                            {this.renderContent()}
+                        </View>
                     </View>
                 </View>
             </View>
@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     info: {
-
+        flex: 1,
+        marginLeft: 8,
     },
     nickTime: {
         flexDirection: 'row',
@@ -84,5 +85,19 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#666',
         marginLeft: 8,
+    },
+    content: {
+        flexDirection: 'row',
+    },
+    test: {
+        backgroundColor: 'rgb(74, 144, 226)',
+        borderRadius: 6,
+        padding: 5,
+    },
+    text: {
+        color: 'white',
+    },
+    notSupport: {
+        color: 'red',
     },
 });

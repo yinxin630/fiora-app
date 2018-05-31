@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { StyleSheet } from 'react-native';
 import { Container, Header, Left, Body, Right, Title } from 'native-base';
 import { connect } from 'react-redux';
 import immutable from 'immutable';
@@ -22,13 +23,19 @@ class Chat extends Component {
                     </Body>
                     <Right />
                 </Header>
-                <Container>
+                <Container style={styles.container}>
                     <MessageList />
                 </Container>
             </Container>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: 'rgba(255, 255, 255, 1)',
+    },
+});
 
 export default connect((state) => {
     const isLogin = !!state.getIn(['user', '_id']);

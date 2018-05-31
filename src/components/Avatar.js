@@ -12,7 +12,7 @@ export default class Avatar extends Component {
         let source = src;
         if (typeof src === 'string') {
             let prefix = '';
-            if (/\/[^/]/.test(src)) {
+            if (/^\/[^/]/.test(src)) {
                 prefix = 'http://localhost:8080';
             }
             source = { uri: prefix + src };
