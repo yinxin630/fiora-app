@@ -9,6 +9,7 @@ import action from './state/action';
 import store from './state/store';
 
 import ChatList from './pages/ChatList/ChatList';
+import Chat from './pages/Chat/Chat';
 
 
 socket.on('connect', async () => {
@@ -30,7 +31,7 @@ export default class App extends React.Component {
             <Provider store={store}>
                 <NativeRouter>
                     <View style={styles.container}>
-                        <Route path="/" component={ChatList} />
+                        <Route path="/" component={Chat} />
                     </View>
                 </NativeRouter>
             </Provider>
