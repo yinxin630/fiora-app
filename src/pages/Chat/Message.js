@@ -39,7 +39,7 @@ export default class Message extends Component {
                     if (offset < i) {
                         children.push(content.substring(offset, i));
                     }
-                    children.push(<Expression key={Math.random()} style={styles.expression} size={32} index={index} />);
+                    children.push(<Expression key={Math.random()} style={styles.expression} size={30} index={index} />);
                     offset = i + r.length;
                 }
                 return r;
@@ -49,7 +49,7 @@ export default class Message extends Component {
             children.push(content.substring(offset, content.length));
         }
         return (
-            <Text style={{ flexWrap: 'wrap', flexDirection: 'row', width: '100%', overflow: 'hidden' }}>{children}</Text>
+            <Text style={{ width: '100%' }}>{children}</Text>
         );
     }
     renderContent() {
@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     expression: {
-        marginLeft: 2,
-        marginRight: 2,
+        marginLeft: 1,
+        marginRight: 1,
     },
     notSupport: {
         color: 'red',

@@ -12,8 +12,12 @@ export default class Avatar extends Component {
         let source = src;
         if (typeof src === 'string') {
             let prefix = '';
-            if (/^\/[^/]/.test(src)) {
-                prefix = 'http://192.168.1.105:8080';
+            if (src[0] === '/') {
+                if (src[1] === '/') {
+                    prefix = 'https:';
+                } else {
+                    prefix = 'http://192.168.1.105:8080';
+                }
             }
             source = { uri: prefix + src };
         }

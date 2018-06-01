@@ -16,7 +16,13 @@ import Test from './pages/test';
 socket.on('connect', async () => {
     console.log('connect');
 
-    const [err, res] = await fetch('login', { username: 'a', password: 'a' });
+    const [err, res] = await fetch('login', {
+        username: 'a',
+        password: 'a',
+        os: 'iOS',
+        browser: 'APP',
+        environment: 'iOS APP 开发版',
+    });
     if (!err) {
         console.log(res);
         action.setUser(res);

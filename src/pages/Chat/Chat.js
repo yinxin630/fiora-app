@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView } from 'react-native';
 import { Container, Header, Left, Body, Right, Title } from 'native-base';
 import { connect } from 'react-redux';
 import immutable from 'immutable';
@@ -16,7 +16,7 @@ class Chat extends Component {
     render() {
         const { name } = this.props;
         return (
-            <Container>
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
                 <Header>
                     <Left />
                     <Body>
@@ -28,14 +28,15 @@ class Chat extends Component {
                     <MessageList />
                     <Input />
                 </Container>
-            </Container>
+            </KeyboardAvoidingView>
         );
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'rgba(255, 255, 255, 1)',
+        flex: 1,
+        backgroundColor: '#e9e9e9',
     },
 });
 
