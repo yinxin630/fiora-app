@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Input as BaseInput, Item } from 'native-base';
+import { StyleSheet, View, TextInput, Platform } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -66,36 +65,40 @@ class Input extends Component {
 
         const id = this.addSelfMessage('text', message);
         this.sendMessage(id, 'text', message);
-        this.setState({
-            value: '',
+
+        /**
+         * clear() not work.
+         * find solution at https://github.com/facebook/react-native/issues/18272
+         */
+        // this.input.clear();
+        if (Platform.OS === 'ios') {
+            this.input.setNativeProps({ text: ' ' });
+        }
+        setTimeout(() => {
+            this.input.setNativeProps({ text: '' });
         });
     }
     @autobind
     handleChangeText(value) {
-        console.log(value);
         this.setState({
             value,
         });
     }
     render() {
-        const { value } = this.state;
         return (
             <View style={styles.container}>
-                <Item regular>
-                    <BaseInput
-                        ref={i => this.input = i}
-                        style={styles.input}
-                        value={value}
-                        placeholder="输入消息内容"
-                        onChangeText={this.handleChangeText}
-                        onSubmitEditing={this.handleSubmit}
-                        autoCapitalize="none"
-                        blurOnSubmit={false}
-                        maxLength={2048}
-                        returnKeyType="send"
-                        enablesReturnKeyAutomatically
-                    />
-                </Item>
+                <TextInput
+                    ref={i => this.input = i}
+                    style={styles.input}
+                    placeholder="输入消息内容"
+                    onChangeText={this.handleChangeText}
+                    onSubmitEditing={this.handleSubmit}
+                    autoCapitalize="none"
+                    blurOnSubmit={false}
+                    maxLength={2048}
+                    returnKeyType="send"
+                    enablesReturnKeyAutomatically
+                />
             </View>
         );
     }
@@ -115,6 +118,8 @@ const styles = StyleSheet.create({
     },
     input: {
         height: 36,
+        paddingLeft: 8,
+        paddingRight: 8,
         backgroundColor: 'white',
     },
 });
