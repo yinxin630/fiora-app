@@ -15,6 +15,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "autobind-decorator": "^2.1.0",
     "expo": "^27.0.1",
     "immutable": "^3.8.2",
     "native-base": "^2.4.5",

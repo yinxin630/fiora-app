@@ -1026,6 +1026,10 @@ auth0@2.9.1:
     rest-facade "^1.10.0"
     retry "^0.10.1"
 
+autobind-decorator@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/autobind-decorator/-/autobind-decorator-2.1.0.tgz#4451240dbfeff46361c506575a63ed40f0e5bc68"
+
 aws-sign2@~0.7.0:
   version "0.7.0"
   resolved "https://registry.npmjs.org/aws-sign2/-/aws-sign2-0.7.0.tgz#b46e890934a9591f2d2f6f86d7e6a9f1b3fe76a8"
