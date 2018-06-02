@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, TextInput } from 'react-native';
-import { Container, Form, Item, Input, Label, Button } from 'native-base';
+import { Container, Form, Label, Button } from 'native-base';
 import autobind from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
