@@ -9,6 +9,8 @@ import fetch from '../utils/fetch';
 import action from './state/action';
 import store from './state/store';
 import platform from '../utils/platform';
+import convertRobot10Message from '../utils/convertRobot10Message';
+import getFriendId from '../utils/getFriendId';
 
 import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
@@ -29,6 +31,50 @@ socket.on('connect', async () => {
 });
 socket.on('disconnect', () => {
     console.log('disconnect');
+});
+socket.on('message', (message) => {
+    // robot10
+    convertRobot10Message(message);
+
+    const state = store.getState();
+    const linkman = state.getIn(['user', 'linkmans']).find(l => l.get('_id') === message.to);
+    let title = '';
+    if (linkman) {
+        action.addLinkmanMessage(message.to, message);
+        if (linkman.get('type') === 'group') {
+            title = `${message.from.username} 在 ${linkman.get('name')} 对大家说:`;
+        } else {
+            title = `${message.from.username} 对你说:`;
+        }
+    } else {
+        const newLinkman = {
+            _id: getFriendId(
+                state.getIn(['user', '_id']),
+                message.from._id,
+            ),
+            type: 'temporary',
+            createTime: Date.now(),
+            avatar: message.from.avatar,
+            name: message.from.username,
+            messages: [],
+            unread: 1,
+        };
+        action.addLinkman(newLinkman);
+        title = `${message.from.username} 对你说:`;
+
+        fetch('getLinkmanHistoryMessages', { linkmanId: newLinkman._id }).then(([err, res]) => {
+            if (!err) {
+                action.addLinkmanMessages(newLinkman._id, res);
+            }
+        });
+    }
+
+    console.log('消息通知', {
+        title,
+        image: message.from.avatar,
+        content: message.type === 'text' ? message.content : `[${message.type}]`,
+        id: Math.random(),
+    });
 });
 
 export default class App extends React.Component {
