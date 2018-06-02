@@ -1,18 +1,27 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Keyboard } from 'react-native';
+import { ScrollView, StyleSheet, Keyboard, RefreshControl } from 'react-native';
 import { connect } from 'react-redux';
 import immutable from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import autobind from 'autobind-decorator';
 
-import Message from './Message';
+import action from '../../state/action';
+import fetch from '../../../utils/fetch';
 
+import Message from './Message';
 
 class Chat extends Component {
     static propTypes = {
         messages: ImmutablePropTypes.list,
         self: PropTypes.string.isRequired,
+    }
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            refreshing: false,
+        };
+        this.prevContentHeight = 0;
     }
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.handleKeyboardShow);
@@ -31,7 +40,34 @@ class Chat extends Component {
             this.scrollView.scrollToEnd();
         }, 0);
     }
-    renderMessage(message) {
+    @autobind
+    async handleRefresh() {
+        this.setState({ refreshing: true });
+        const { self: isLogin, focus, messages } = this.props;
+        let err = null;
+        let result = null;
+        if (isLogin) {
+            [err, result] = await fetch('getLinkmanHistoryMessages', { linkmanId: focus, existCount: messages.size });
+        } else {
+            [err, result] = await fetch('getDefalutGroupHistoryMessages', { existCount: messages.size });
+        }
+        if (!err) {
+            action.addLinkmanMessages(focus, result);
+        }
+        this.setState({ refreshing: false });
+    }
+    @autobind
+    handleContentSizeChange(contentWidth, contentHeight) {
+        if (this.prevContentHeight !== 0 && contentHeight !== this.prevContentHeight) {
+            this.scrollView.scrollTo({
+                x: 0,
+                y: contentHeight - this.prevContentHeight - 50,
+                animated: false,
+            });
+        }
+        this.prevContentHeight = contentHeight;
+    }
+    renderMessage(message, shouldScroll) {
         const { self } = this.props;
         const props = {
             key: message.get('_id'),
@@ -42,6 +78,7 @@ class Chat extends Component {
             content: message.get('content'),
             isSelf: self === message.getIn(['from', '_id']),
             tag: message.getIn(['from', 'tag']),
+            shouldScroll,
             scrollToEnd: this.scrollToEnd,
         };
         if (props.type === 'image') {
@@ -55,10 +92,22 @@ class Chat extends Component {
     render() {
         const { messages } = this.props;
         return (
-            <ScrollView style={styles.container} ref={i => this.scrollView = i}>
+            <ScrollView
+                style={styles.container}
+                ref={i => this.scrollView = i}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.handleRefresh}
+                        title="获取历史消息"
+                        titleColor="#444"
+                    />
+                }
+                onContentSizeChange={this.handleContentSizeChange}
+            >
                 {
-                    messages.map(message => (
-                        this.renderMessage(message)
+                    messages.map((message, index) => (
+                        this.renderMessage(message, index === messages.size - 1)
                     ))
                 }
             </ScrollView>

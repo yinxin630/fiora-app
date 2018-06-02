@@ -27,7 +27,6 @@ export default class Image extends Component {
             }
             source = { uri: prefix + src };
         }
-        console.log(111, source, src);
         return (
             <BaseImage source={source} style={[style, { width, height }]} />
         );

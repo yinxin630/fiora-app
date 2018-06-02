@@ -18,10 +18,11 @@ export default class Message extends Component {
         type: PropTypes.oneOf(['text', 'image', 'url', 'code']),
         time: PropTypes.object,
         content: PropTypes.string.isRequired,
+        shouldScroll: PropTypes.bool.isRequired,
         scrollToEnd: PropTypes.func.isRequired,
     }
     componentDidMount() {
-        if (this.props.scrollToEnd) {
+        if (this.props.shouldScroll && this.props.scrollToEnd) {
             this.props.scrollToEnd();
         }
     }
