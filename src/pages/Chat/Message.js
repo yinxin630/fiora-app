@@ -15,6 +15,12 @@ export default class Message extends Component {
         type: PropTypes.oneOf(['text', 'image', 'url', 'code']),
         time: PropTypes.object,
         content: PropTypes.string.isRequired,
+        scrollToEnd: PropTypes.func.isRequired,
+    }
+    componentDidMount() {
+        if (this.props.scrollToEnd) {
+            this.props.scrollToEnd();
+        }
     }
     formatTime() {
         const { time } = this.props;

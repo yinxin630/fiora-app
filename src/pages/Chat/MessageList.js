@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import immutable from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
+import autobind from 'autobind-decorator';
 
 import Message from './Message';
 
@@ -12,6 +13,13 @@ class Chat extends Component {
     static propTypes = {
         messages: ImmutablePropTypes.list,
         self: PropTypes.string.isRequired,
+    }
+    @autobind
+    scrollToEnd() {
+        // Don't ask me why I use settimeout. Is that the only way it works.
+        setTimeout(() => {
+            this.scrollView.scrollToEnd();
+        }, 0);
     }
     renderMessage(message) {
         const { self } = this.props;
@@ -24,6 +32,7 @@ class Chat extends Component {
             content: message.get('content'),
             isSelf: self === message.getIn(['from', '_id']),
             tag: message.getIn(['from', 'tag']),
+            scrollToEnd: this.scrollToEnd,
         };
         if (props.type === 'image') {
             props.loading = message.get('loading');
@@ -36,7 +45,7 @@ class Chat extends Component {
     render() {
         const { messages } = this.props;
         return (
-            <ScrollView style={styles.container}>
+            <ScrollView style={styles.container} ref={i => this.scrollView = i}>
                 {
                     messages.map(message => (
                         this.renderMessage(message)
