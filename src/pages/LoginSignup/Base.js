@@ -33,7 +33,7 @@ export default class Login extends Component {
     handleJump() {
         const { jumpPage } = this.props;
         if (Actions[jumpPage]) {
-            Actions[jumpPage]();
+            Actions.replace(jumpPage);
         } else {
             console.error(`页面${jumpPage}不存在`);
         }

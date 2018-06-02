@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, Platform } from 'react-native';
+import { StyleSheet, View, TextInput, Platform, Text } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { Button } from 'native-base';
+import { Actions } from 'react-native-router-flux';
 
 import action from '../../state/action';
 import fetch from '../../../utils/fetch';
@@ -12,6 +14,7 @@ class Input extends Component {
     static propTypes = {
         user: ImmutablePropTypes.map,
         focus: PropTypes.string.isRequired,
+        isLogin: PropTypes.bool.isRequired,
     }
     constructor(...args) {
         super(...args);
@@ -57,7 +60,6 @@ class Input extends Component {
     }
     @autobind
     handleSubmit() {
-        console.log('发送:', this.state.value);
         const message = this.state.value;
         if (message === '') {
             return;
@@ -85,26 +87,35 @@ class Input extends Component {
         });
     }
     render() {
+        const { isLogin } = this.props;
         return (
             <View style={styles.container}>
-                <TextInput
-                    ref={i => this.input = i}
-                    style={styles.input}
-                    placeholder="输入消息内容"
-                    onChangeText={this.handleChangeText}
-                    onSubmitEditing={this.handleSubmit}
-                    autoCapitalize="none"
-                    blurOnSubmit={false}
-                    maxLength={2048}
-                    returnKeyType="send"
-                    enablesReturnKeyAutomatically
-                />
+                {
+                    isLogin ?
+                        <TextInput
+                            ref={i => this.input = i}
+                            style={styles.input}
+                            placeholder="输入消息内容"
+                            onChangeText={this.handleChangeText}
+                            onSubmitEditing={this.handleSubmit}
+                            autoCapitalize="none"
+                            blurOnSubmit={false}
+                            maxLength={2048}
+                            returnKeyType="send"
+                            enablesReturnKeyAutomatically
+                        />
+                        :
+                        <Button block style={styles.button} onPress={Actions.login}>
+                            <Text style={styles.buttonText}>游客朋友你好, 请登录后参与聊天</Text>
+                        </Button>
+                }
             </View>
         );
     }
 }
 
 export default connect(state => ({
+    isLogin: !!state.getIn(['user', '_id']),
     focus: state.get('focus'),
     user: state.get('user'),
 }))(Input);
@@ -121,6 +132,12 @@ const styles = StyleSheet.create({
         paddingLeft: 8,
         paddingRight: 8,
         backgroundColor: 'white',
+    },
+    button: {
+        height: 36,
+    },
+    buttonText: {
+        color: 'white',
     },
 });
 

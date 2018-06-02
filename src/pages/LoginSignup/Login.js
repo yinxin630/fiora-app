@@ -17,7 +17,7 @@ export default class Login extends Component {
         }, platform));
         if (!err) {
             action.setUser(res);
-            Actions.chatlist();
+            Actions.pop();
             await AsyncStorage.setItem('token', res.token);
         }
     }

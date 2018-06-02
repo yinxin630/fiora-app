@@ -55,7 +55,7 @@ export default class Message extends Component {
             children.push(content.substring(offset, content.length));
         }
         return (
-            <Text style={{ width: '100%' }}>{children}</Text>
+            <Text style={styles.text}>{children}</Text>
         );
     }
     renderContent() {
@@ -118,12 +118,15 @@ const styles = StyleSheet.create({
     },
     contentInline: {
         maxWidth: '100%',
-        backgroundColor: 'rgb(74, 144, 226)',
+        backgroundColor: '#2a7bf6',
         borderRadius: 6,
         padding: 5,
+        paddingLeft: 8,
+        paddingRight: 8,
     },
     text: {
         color: 'white',
+        width: '100%',
     },
     expression: {
         marginLeft: 1,
