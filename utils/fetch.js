@@ -1,3 +1,4 @@
+import { Toast } from 'native-base';
 import socket from '../src/socket';
 
 export default function fetch(event, data = {}, {
@@ -7,7 +8,10 @@ export default function fetch(event, data = {}, {
         socket.emit(event, data, (res) => {
             if (typeof res === 'string') {
                 if (toast) {
-                    console.error(res);
+                    Toast.show({
+                        text: res,
+                        type: 'danger',
+                    });
                 }
                 resolve([res, null]);
             } else {

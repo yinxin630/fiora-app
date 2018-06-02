@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, AsyncStorage } from 'react-native';
 import { Provider } from 'react-redux';
 import { Scene, Router } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
+import { Root } from 'native-base';
 
 import socket from './socket';
 import fetch from '../utils/fetch';
@@ -14,20 +15,24 @@ import getFriendId from '../utils/getFriendId';
 
 import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
+import Login from './pages/LoginSignup/Login';
+import Signup from './pages/LoginSignup/Signup';
 import Test from './pages/test';
 
 
 socket.on('connect', async () => {
     console.log('connect');
 
-    const [err, res] = await fetch('login', Object.assign({
-        username: 'a',
-        password: 'a',
-    }, platform));
-    if (!err) {
-        console.log(res);
-        action.setUser(res);
-    }
+    const token = await AsyncStorage.getItem('token');
+    console.log('token =', token);
+    // const [err, res] = await fetch('login', Object.assign({
+    //     username: 'a',
+    //     password: 'a',
+    // }, platform));
+    // if (!err) {
+    //     console.log(res);
+    //     action.setUser(res);
+    // }
 });
 socket.on('disconnect', () => {
     console.log('disconnect');
@@ -84,13 +89,17 @@ export default class App extends React.Component {
     render() {
         return (
             <Provider store={store}>
-                <Router>
-                    <View style={styles.container}>
-                        <Scene key="test" component={Test} title="测试页面" />
-                        <Scene key="chatlist" component={ChatList} title="消息" initial />
-                        <Scene key="chat" component={Chat} getTitle={this.props.title} />
-                    </View>
-                </Router>
+                <Root>
+                    <Router>
+                        <View style={styles.container}>
+                            <Scene key="test" component={Test} title="测试页面" />
+                            <Scene key="chatlist" component={ChatList} title="消息" />
+                            <Scene key="chat" component={Chat} getTitle={this.props.title} />
+                            <Scene key="login" component={Login} title="登录" initial />
+                            <Scene key="signup" component={Signup} title="注册" />
+                        </View>
+                    </Router>
+                </Root>
             </Provider>
         );
     }
