@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, TextInput } from 'react-native';
 import { Container, Form, Item, Input, Label, Button } from 'native-base';
 import autobind from 'autobind-decorator';
 import PropTypes from 'prop-types';
@@ -27,6 +27,8 @@ export default class Login extends Component {
     @autobind
     handlePress() {
         const { username, password } = this.state;
+        this.username.blur();
+        this.password.blur();
         this.props.onSubmit(username, password);
     }
     @autobind
@@ -43,23 +45,23 @@ export default class Login extends Component {
         return (
             <Container style={styles.container}>
                 <Form>
-                    <Item floatingLabel>
-                        <Label>用户名</Label>
-                        <Input
-                            clearButtonMode="while-editing"
-                            onChangeText={this.handleTextChange.bind(this, 'username')}
-                            autoCapitalize="none"
-                        />
-                    </Item>
-                    <Item floatingLabel last>
-                        <Label>密码</Label>
-                        <Input
-                            secureTextEntry
-                            clearButtonMode="while-editing"
-                            onChangeText={this.handleTextChange.bind(this, 'password')}
-                            autoCapitalize="none"
-                        />
-                    </Item>
+                    <Label style={styles.label}>用户名</Label>
+                    <TextInput
+                        style={styles.input}
+                        ref={i => this.username = i}
+                        clearButtonMode="while-editing"
+                        onChangeText={this.handleTextChange.bind(this, 'username')}
+                        autoCapitalize="none"
+                    />
+                    <Label style={styles.label}>密码</Label>
+                    <TextInput
+                        style={styles.input}
+                        ref={i => this.password = i}
+                        secureTextEntry
+                        clearButtonMode="while-editing"
+                        onChangeText={this.handleTextChange.bind(this, 'password')}
+                        autoCapitalize="none"
+                    />
                 </Form>
                 <Button primary block style={styles.button} onPress={this.handlePress}>
                     <Text style={styles.buttonText}>{buttonText}</Text>
@@ -76,9 +78,10 @@ const styles = StyleSheet.create({
     container: {
         paddingLeft: 12,
         paddingRight: 12,
+        paddingTop: 20,
     },
     button: {
-        marginTop: 28,
+        marginTop: 18,
     },
     buttonText: {
         fontSize: 18,
@@ -90,5 +93,17 @@ const styles = StyleSheet.create({
     signupText: {
         color: '#2a7bf6',
         fontSize: 14,
+    },
+    label: {
+        marginBottom: 8,
+    },
+    input: {
+        height: 42,
+        fontSize: 16,
+        borderWidth: 1,
+        borderColor: '#999',
+        borderRadius: 6,
+        marginBottom: 12,
+        paddingLeft: 6,
     },
 });

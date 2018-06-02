@@ -46,7 +46,7 @@ export default class Linkman extends Component {
                             <Text style={styles.time}>{this.formatTime()}</Text>
                         </View>
                         <View style={styles.previewUnread}>
-                            <Text style={styles.preview}>{preview}</Text>
+                            <Text style={styles.preview} numberOfLines={1}>{preview}</Text>
                         </View>
                     </View>
                 </View>
