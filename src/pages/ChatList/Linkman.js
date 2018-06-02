@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
+import autobind from 'autobind-decorator';
+import { Actions } from 'react-native-router-flux';
 
 import Time from '../../../utils/time';
+import action from '../../state/action';
 
 import Avatar from '../../components/Avatar';
 
 export default class Linkman extends Component {
     static propTypes = {
+        id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         avatar: PropTypes.string.isRequired,
         preview: PropTypes.string,
@@ -24,22 +28,29 @@ export default class Linkman extends Component {
         }
         return Time.getMonthDate(messageTime);
     }
+    @autobind
+    handlePress() {
+        const { name, id } = this.props;
+        action.setFocus(id);
+        Actions.chat({ title: name });
+    }
     render() {
         const { name, avatar, preview } = this.props;
         return (
-            <View style={styles.container}>
-                <Avatar src={avatar} size={50} />
-                <View style={styles.content}>
-                    <View style={styles.nickTime}>
-                        <Text style={styles.nick}>{name}</Text>
-                        <Text style={styles.time}>{this.formatTime()}</Text>
-                    </View>
-                    <View style={styles.previewUnread}>
-                        <Text style={styles.preview}>{preview}</Text>
+            <TouchableOpacity onPress={this.handlePress}>
+                <View style={styles.container}>
+                    <Avatar src={avatar} size={50} />
+                    <View style={styles.content}>
+                        <View style={styles.nickTime}>
+                            <Text style={styles.nick}>{name}</Text>
+                            <Text style={styles.time}>{this.formatTime()}</Text>
+                        </View>
+                        <View style={styles.previewUnread}>
+                            <Text style={styles.preview}>{preview}</Text>
+                        </View>
                     </View>
                 </View>
-            </View>
-
+            </TouchableOpacity>
         );
     }
 }

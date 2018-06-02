@@ -50,6 +50,7 @@ class Chat extends Component {
 const styles = StyleSheet.create({
     container: {
         padding: 8,
+        marginBottom: 6,
     },
 });
 

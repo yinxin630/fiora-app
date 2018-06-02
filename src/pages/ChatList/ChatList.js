@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ScrollView } from 'react-native';
-import { Container, Header, Left, Body, Right, Title } from 'native-base';
+import { Container } from 'native-base';
 import { connect } from 'react-redux';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
@@ -27,6 +27,7 @@ class ChatList extends Component {
         return (
             <Linkman
                 key={linkmanId}
+                id={linkmanId}
                 name={linkman.get('name')}
                 avatar={linkman.get('avatar')}
                 preview={preview}
@@ -39,13 +40,6 @@ class ChatList extends Component {
         const { linkmans } = this.props;
         return (
             <Container>
-                <Header>
-                    <Left />
-                    <Body>
-                        <Title>消息</Title>
-                    </Body>
-                    <Right />
-                </Header>
                 <ScrollView>
                     {
                         linkmans && linkmans.map(linkman => (

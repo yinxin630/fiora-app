@@ -1,29 +1,17 @@
 import React, { Component } from 'react';
 import { StyleSheet, KeyboardAvoidingView } from 'react-native';
-import { Container, Header, Left, Body, Right, Title } from 'native-base';
+import { Container } from 'native-base';
 import { connect } from 'react-redux';
 import immutable from 'immutable';
-import PropTypes from 'prop-types';
 
 import MessageList from './MessageList';
 import Input from './Input';
 
 
 class Chat extends Component {
-    static propTypes = {
-        name: PropTypes.string,
-    }
     render() {
-        const { name } = this.props;
         return (
             <KeyboardAvoidingView style={styles.container} behavior="padding">
-                <Header>
-                    <Left />
-                    <Body>
-                        <Title>{name}</Title>
-                    </Body>
-                    <Right />
-                </Header>
                 <Container style={styles.container}>
                     <MessageList />
                     <Input />
@@ -61,7 +49,6 @@ export default connect((state) => {
         type: linkman.get('type'),
         creator: linkman.get('creator'),
         to: linkman.get('to'),
-        name: linkman.get('name'),
         avatar: linkman.get('avatar'),
         members: linkman.get('members') || immutable.List(),
     };

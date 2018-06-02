@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { NativeRouter, Route } from 'react-router-native';
 import { Provider } from 'react-redux';
+import { Scene, Router } from 'react-native-router-flux';
+import PropTypes from 'prop-types';
 
 import socket from './socket';
 import fetch from '../utils/fetch';
@@ -33,14 +34,19 @@ socket.on('disconnect', () => {
 });
 
 export default class App extends React.Component {
+    static propTypes = {
+        title: PropTypes.string,
+    }
     render() {
         return (
             <Provider store={store}>
-                <NativeRouter>
+                <Router>
                     <View style={styles.container}>
-                        <Route path="/" component={Chat} />
+                        <Scene key="test" component={Test} title="测试页面" />
+                        <Scene key="chatlist" component={ChatList} title="消息" initial />
+                        <Scene key="chat" component={Chat} getTitle={this.props.title} />
                     </View>
-                </NativeRouter>
+                </Router>
             </Provider>
         );
     }
