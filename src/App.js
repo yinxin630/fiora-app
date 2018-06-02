@@ -8,6 +8,7 @@ import socket from './socket';
 import fetch from '../utils/fetch';
 import action from './state/action';
 import store from './state/store';
+import platform from '../utils/platform';
 
 import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
@@ -17,13 +18,10 @@ import Test from './pages/test';
 socket.on('connect', async () => {
     console.log('connect');
 
-    const [err, res] = await fetch('login', {
+    const [err, res] = await fetch('login', Object.assign({
         username: 'a',
         password: 'a',
-        os: 'iOS',
-        browser: 'APP',
-        environment: 'iOS APP 开发版',
-    });
+    }, platform));
     if (!err) {
         console.log(res);
         action.setUser(res);

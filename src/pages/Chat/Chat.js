@@ -24,7 +24,6 @@ class Chat extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#e9e9e9',
     },
 });
 
