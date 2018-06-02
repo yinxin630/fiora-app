@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, Keyboard } from 'react-native';
 import { connect } from 'react-redux';
 import immutable from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -13,6 +13,16 @@ class Chat extends Component {
     static propTypes = {
         messages: ImmutablePropTypes.list,
         self: PropTypes.string.isRequired,
+    }
+    componentDidMount() {
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.handleKeyboardShow);
+    }
+    componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+    }
+    @autobind
+    handleKeyboardShow() {
+        this.scrollToEnd();
     }
     @autobind
     scrollToEnd() {

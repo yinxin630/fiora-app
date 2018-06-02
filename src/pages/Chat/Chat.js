@@ -11,7 +11,7 @@ import Input from './Input';
 class Chat extends Component {
     render() {
         return (
-            <KeyboardAvoidingView style={styles.container} behavior="padding">
+            <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={60}>
                 <Container style={styles.container}>
                     <MessageList />
                     <Input />
