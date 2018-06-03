@@ -5,6 +5,7 @@ import immutable from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import autobind from 'autobind-decorator';
+import { Toast } from 'native-base';
 
 import action from '../../state/action';
 import fetch from '../../../utils/fetch';
@@ -22,6 +23,7 @@ class Chat extends Component {
             refreshing: false,
         };
         this.prevContentHeight = 0;
+        this.prevMessageCount = 0;
     }
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.handleKeyboardShow);
@@ -52,13 +54,25 @@ class Chat extends Component {
             [err, result] = await fetch('getDefalutGroupHistoryMessages', { existCount: messages.size });
         }
         if (!err) {
-            action.addLinkmanMessages(focus, result);
+            if (result.length > 0) {
+                action.addLinkmanMessages(focus, result);
+            } else {
+                Toast.show({
+                    text: '没有更多消息了',
+                    type: 'warning',
+                });
+            }
         }
         this.setState({ refreshing: false });
     }
     @autobind
     handleContentSizeChange(contentWidth, contentHeight) {
-        if (this.prevContentHeight !== 0 && contentHeight !== this.prevContentHeight) {
+        if (
+            this.prevContentHeight !== 0 &&
+            this.prevMessageCount !== 0 &&
+            contentHeight !== this.prevContentHeight &&
+            this.props.messages.size - this.prevMessageCount > 1
+        ) {
             this.scrollView.scrollTo({
                 x: 0,
                 y: contentHeight - this.prevContentHeight - 50,
@@ -66,6 +80,7 @@ class Chat extends Component {
             });
         }
         this.prevContentHeight = contentHeight;
+        this.prevMessageCount = this.props.messages.size;
     }
     renderMessage(message, shouldScroll) {
         const { self } = this.props;
