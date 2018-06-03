@@ -1,7 +1,16 @@
 {
-  "name": "Fiora",
-  "icon": "https://cdn.suisuijiang.com/Avatar/5adad39555703565e7903f78_1524538082321",
   "expo": {
-    "sdkVersion": "27.0.0"
+    "sdkVersion": "27.0.0",
+    "name": "fiora",
+    "icon": "./icon.png",
+    "version": "0.0.1",
+    "description": "App for fiora. A online chatroom",
+    "slug": "fiora",
+    "ios": {
+      "bundleIdentifier": "com.suisuijiang.fiora"
+    },
+    "android": {
+      "package": "com.suisuijiang.fiora"
+    }
   }
 }
