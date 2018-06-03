@@ -16,6 +16,7 @@ export default class Linkman extends Component {
         avatar: PropTypes.string.isRequired,
         preview: PropTypes.string,
         time: PropTypes.object,
+        unread: PropTypes.number,
     }
     formatTime() {
         const { time: messageTime } = this.props;
@@ -35,7 +36,7 @@ export default class Linkman extends Component {
         Actions.chat({ title: name });
     }
     render() {
-        const { name, avatar, preview } = this.props;
+        const { name, avatar, preview, unread } = this.props;
         return (
             <TouchableOpacity onPress={this.handlePress}>
                 <View style={styles.container}>
@@ -47,6 +48,14 @@ export default class Linkman extends Component {
                         </View>
                         <View style={styles.previewUnread}>
                             <Text style={styles.preview} numberOfLines={1}>{preview}</Text>
+                            {
+                                unread > 0 ?
+                                    <View style={styles.unread}>
+                                        <Text style={styles.unreadText}>{unread}</Text>
+                                    </View>
+                                    :
+                                    null
+                            }
                         </View>
                     </View>
                 </View>
@@ -81,10 +90,26 @@ const styles = StyleSheet.create({
     },
     previewUnread: {
         marginTop: 8,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     preview: {
+        flex: 1,
         fontSize: 14,
         color: '#666',
+    },
+    unread: {
+        backgroundColor: '#2a7bf6',
+        width: 18,
+        height: 18,
+        borderRadius: 9,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: 5,
+    },
+    unreadText: {
+        fontSize: 10,
+        color: 'white',
     },
 });
 
