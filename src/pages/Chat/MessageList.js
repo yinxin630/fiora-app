@@ -138,7 +138,8 @@ class Chat extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 8,
+        paddingTop: 8,
+        paddingRight: 8,
         marginBottom: 6,
         backgroundColor: '#ebebeb',
     },

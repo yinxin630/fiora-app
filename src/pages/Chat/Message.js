@@ -81,7 +81,7 @@ export default class Message extends Component {
     }
     renderImage() {
         const { content } = this.props;
-        const maxWidth = ScreenWidth - 100;
+        const maxWidth = ScreenWidth - 130;
         const maxHeight = 300;
         let scale = 1;
         let width = 0;
@@ -143,6 +143,8 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         marginBottom: 10,
+        paddingLeft: 8,
+        paddingRight: 8,
     },
     containerSelf: {
         flexDirection: 'row-reverse',
