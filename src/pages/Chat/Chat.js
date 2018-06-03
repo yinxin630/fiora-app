@@ -4,6 +4,8 @@ import { Container } from 'native-base';
 import { connect } from 'react-redux';
 import immutable from 'immutable';
 
+import { isiOS } from '../../../utils/platform';
+
 import MessageList from './MessageList';
 import Input from './Input';
 
@@ -11,7 +13,7 @@ import Input from './Input';
 class Chat extends Component {
     render() {
         return (
-            <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={60}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={isiOS ? 60 : 80}>
                 <Container style={styles.container}>
                     <MessageList />
                     <Input />

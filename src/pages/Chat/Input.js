@@ -103,6 +103,7 @@ class Input extends Component {
                             maxLength={2048}
                             returnKeyType="send"
                             enablesReturnKeyAutomatically
+                            underlineColorAndroid="transparent"
                         />
                         :
                         <Button block style={styles.button} onPress={Actions.login}>

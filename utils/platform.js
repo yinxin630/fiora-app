@@ -9,3 +9,6 @@ export default {
     environment: `App ${process.env.NODE_ENV === 'development' ? '开发版' : packageInfo.version} on ${os} ${Platform.Version}`,
 };
 
+export const isiOS = Platform.OS === 'ios';
+export const isAndroid = Platform.OS === 'android';
+

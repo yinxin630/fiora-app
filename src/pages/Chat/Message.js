@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import Time from '../../../utils/time';
 import expressions from '../../../utils/expressions';
+import { isiOS } from '../../../utils/platform';
 
 import Avatar from '../../components/Avatar';
 import Expression from '../../components/Expression';
@@ -48,7 +49,11 @@ export default class Message extends Component {
                 const index = expressions.default.indexOf(e);
                 if (index !== -1) {
                     if (offset < i) {
-                        children.push(content.substring(offset, i));
+                        if (isiOS) {
+                            children.push(content.substring(offset, i));
+                        } else {
+                            children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{content.substring(offset, i)}</Text>);
+                        }
                     }
                     children.push(<Expression key={Math.random()} style={styles.expression} size={30} index={index} />);
                     offset = i + r.length;
@@ -57,11 +62,20 @@ export default class Message extends Component {
             },
         );
         if (offset < content.length) {
-            children.push(content.substring(offset, content.length));
+            if (isiOS) {
+                children.push(content.substring(offset, content.length));
+            } else {
+                children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{content.substring(offset, content.length)}</Text>);
+            }
         }
         return (
             <View style={[styles.textContent, isSelf ? styles.textContentSelf : styles.empty]}>
-                <Text style={[styles.text, isSelf ? styles.textSelf : styles.empty]}>{children}</Text>
+                {
+                    isiOS ?
+                        <Text style={[styles.text, isSelf ? styles.textSelf : styles.empty]}>{children}</Text>
+                        :
+                        <View style={[styles.textView]}>{children}</View>
+                }
             </View>
         );
     }
@@ -171,6 +185,9 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#333',
+        width: '100%',
+    },
+    textView: {
         width: '100%',
     },
     textSelf: {

@@ -39,8 +39,10 @@ class Chat extends Component {
     scrollToEnd() {
         // Don't ask me why I use settimeout. Is that the only way it works.
         setTimeout(() => {
-            this.scrollView.scrollToEnd();
-        }, 0);
+            if (this.scrollView && this.scrollView.scrollToEnd) {
+                this.scrollView.scrollToEnd();
+            }
+        }, 100);
     }
     @autobind
     async handleRefresh() {
@@ -67,9 +69,13 @@ class Chat extends Component {
     }
     @autobind
     handleContentSizeChange(contentWidth, contentHeight) {
-        if (
-            this.prevContentHeight !== 0 &&
-            this.prevMessageCount !== 0 &&
+        if (this.prevContentHeight === 0) {
+            this.scrollView.scrollTo({
+                x: 0,
+                y: contentHeight - 50,
+                animated: true,
+            });
+        } else if (
             contentHeight !== this.prevContentHeight &&
             this.props.messages.size - this.prevMessageCount > 1
         ) {

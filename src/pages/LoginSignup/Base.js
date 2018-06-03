@@ -5,6 +5,8 @@ import autobind from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
 
+import { isiOS } from '../../../utils/platform';
+
 export default class Login extends Component {
     static propTypes = {
         buttonText: PropTypes.string.isRequired,
@@ -47,7 +49,7 @@ export default class Login extends Component {
                 <Form>
                     <Label style={styles.label}>用户名</Label>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, isiOS ? styles.inputiOS : {}]}
                         ref={i => this.username = i}
                         clearButtonMode="while-editing"
                         onChangeText={this.handleTextChange.bind(this, 'username')}
@@ -55,7 +57,7 @@ export default class Login extends Component {
                     />
                     <Label style={styles.label}>密码</Label>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, isiOS ? styles.inputiOS : {}]}
                         ref={i => this.password = i}
                         secureTextEntry
                         clearButtonMode="while-editing"
@@ -100,10 +102,13 @@ const styles = StyleSheet.create({
     input: {
         height: 42,
         fontSize: 16,
-        borderWidth: 1,
-        borderColor: '#999',
         borderRadius: 6,
         marginBottom: 12,
         paddingLeft: 6,
+    },
+    inputiOS: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        backgroundColor: 'white',
     },
 });
