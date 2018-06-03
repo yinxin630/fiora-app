@@ -20,6 +20,7 @@ export default class Message extends Component {
         content: PropTypes.string.isRequired,
         shouldScroll: PropTypes.bool.isRequired,
         scrollToEnd: PropTypes.func.isRequired,
+        isSelf: PropTypes.bool.isRequired,
     }
     componentDidMount() {
         if (this.props.shouldScroll && this.props.scrollToEnd) {
@@ -38,7 +39,7 @@ export default class Message extends Component {
         return `${Time.getMonthDate(time)} ${Time.getHourMinute(time)}`;
     }
     renderText() {
-        const { content } = this.props;
+        const { content, isSelf } = this.props;
         const children = [];
         let offset = 0;
         content.replace(
@@ -59,8 +60,8 @@ export default class Message extends Component {
             children.push(content.substring(offset, content.length));
         }
         return (
-            <View style={styles.textContent}>
-                <Text style={styles.text}>{children}</Text>
+            <View style={[styles.textContent, isSelf ? styles.textContentSelf : styles.empty]}>
+                <Text style={[styles.text, isSelf ? styles.textSelf : styles.empty]}>{children}</Text>
             </View>
         );
     }
@@ -106,11 +107,11 @@ export default class Message extends Component {
         }
     }
     render() {
-        const { avatar, nickname } = this.props;
+        const { avatar, nickname, isSelf } = this.props;
         return (
-            <View style={styles.container}>
+            <View style={[styles.container, isSelf ? styles.containerSelf : styles.empty]}>
                 <Avatar src={avatar} size={44} />
-                <View style={styles.info}>
+                <View style={[styles.info, isSelf ? styles.infoSelf : styles.empty]}>
                     <View style={styles.nickTime}>
                         <Text style={styles.nick}>{nickname}</Text>
                         <Text style={styles.time}>{this.formatTime()}</Text>
@@ -129,9 +130,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 10,
     },
+    containerSelf: {
+        flexDirection: 'row-reverse',
+    },
+    empty: {},
     info: {
-        flex: 1,
         marginLeft: 8,
+        marginRight: 8,
+        maxWidth: ScreenWidth - 120,
+    },
+    infoSelf: {
+        alignItems: 'flex-end',
     },
     nickTime: {
         flexDirection: 'row',
@@ -147,19 +156,25 @@ const styles = StyleSheet.create({
     },
     content: {
         flexDirection: 'row',
-        marginTop: 4,
+        marginTop: 2,
     },
     textContent: {
         maxWidth: '100%',
-        backgroundColor: '#2a7bf6',
+        backgroundColor: 'white',
         borderRadius: 6,
         padding: 5,
         paddingLeft: 8,
         paddingRight: 8,
     },
+    textContentSelf: {
+        backgroundColor: '#2a7bf6',
+    },
     text: {
-        color: 'white',
+        color: '#333',
         width: '100%',
+    },
+    textSelf: {
+        color: 'white',
     },
     expression: {
         marginLeft: 1,
