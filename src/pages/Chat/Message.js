@@ -179,6 +179,9 @@ const styles = StyleSheet.create({
     expression: {
         marginLeft: 1,
         marginRight: 1,
+        transform: [{
+            translate: [0, 3],
+        }],
     },
     notSupport: {
         color: '#73b668',
