@@ -1790,6 +1790,10 @@ balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
 
+base-64@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
+
 base64-arraybuffer@0.1.5:
   version "0.1.5"
   resolved "https://registry.npmjs.org/base64-arraybuffer/-/base64-arraybuffer-0.1.5.tgz#73926771923b5a19747ad666aa5cd4bf9c6e9ce8"
@@ -2394,6 +2398,10 @@ cross-spawn@^5.0.1, cross-spawn@^5.1.0:
 crypt@~0.0.1:
   version "0.0.2"
   resolved "https://registry.npmjs.org/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
+
+crypto-js@^3.1.6:
+  version "3.1.8"
+  resolved "https://registry.npmjs.org/crypto-js/-/crypto-js-3.1.8.tgz#715f070bf6014f2ae992a98b3929258b713f08d5"
 
 crypto-js@^3.1.9-1:
   version "3.1.9-1"
@@ -6095,6 +6103,10 @@ querystring@0.2.0, querystring@^0.2.0:
   version "0.2.0"
   resolved "https://registry.npmjs.org/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
 
+querystringify@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/querystringify/-/querystringify-2.0.0.tgz#fa3ed6e68eb15159457c89b37bc6472833195755"
+
 raf@^3.1.0:
   version "3.4.0"
   resolved "https://registry.npmjs.org/raf/-/raf-3.4.0.tgz#a28876881b4bc2ca9117d4138163ddb80f781575"
@@ -6260,6 +6272,14 @@ react-native-maps@0.21.0:
   dependencies:
     babel-plugin-module-resolver "^2.3.0"
     babel-preset-react-native "1.9.0"
+
+react-native-qiniu@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.npmjs.org/react-native-qiniu/-/react-native-qiniu-0.3.0.tgz#9d5b5b79689f3e6e58972daf2a74d51663568c56"
+  dependencies:
+    base-64 "^0.1.0"
+    crypto-js "^3.1.6"
+    url-parse "^1.1.1"
 
 react-native-router-flux@^4.0.0-beta.31:
   version "4.0.0-beta.31"
@@ -6747,6 +6767,10 @@ require-uncached@^1.0.3:
   dependencies:
     caller-path "^0.1.0"
     resolve-from "^1.0.0"
+
+requires-port@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
 
 resolve-cwd@^2.0.0:
   version "2.0.0"
@@ -7683,6 +7707,13 @@ url-parse-lax@^1.0.0:
   resolved "https://registry.npmjs.org/url-parse-lax/-/url-parse-lax-1.0.0.tgz#7af8f303645e9bd79a272e7a14ac68bc0609da73"
   dependencies:
     prepend-http "^1.0.1"
+
+url-parse@^1.1.1:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/url-parse/-/url-parse-1.4.0.tgz#6bfdaad60098c7fe06f623e42b22de62de0d3d75"
+  dependencies:
+    querystringify "^2.0.0"
+    requires-port "^1.0.0"
 
 url@^0.11.0:
   version "0.11.0"

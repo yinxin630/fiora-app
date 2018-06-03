@@ -7,9 +7,12 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Button } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { Ionicons } from '@expo/vector-icons';
+import { ImagePicker, Permissions } from 'expo';
+import { Rpc } from 'react-native-qiniu';
 
 import action from '../../state/action';
 import fetch from '../../../utils/fetch';
+import { isiOS } from '../../../utils/platform';
 
 class Input extends Component {
     static propTypes = {
@@ -84,6 +87,7 @@ class Input extends Component {
     }
     @autobind
     openFunctionList() {
+        this.input.blur();
         this.setState({
             showFunctionList: true,
         });
@@ -93,6 +97,37 @@ class Input extends Component {
         this.setState({
             showFunctionList: false,
         });
+    }
+    @autobind
+    async handleClickImage() {
+        const { user } = this.props;
+
+        const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+        if (status !== 'granted') {
+            const { status: returnStatus } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (returnStatus !== 'granted') {
+                alert('提示', '该功能需要授权才能使用');
+                return;
+            }
+        }
+
+        this.closeFunctionList();
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: 'Images',
+            quality: isiOS ? 0.1 : 0.8,
+        });
+
+        if (!result.cancelled) {
+            const id = this.addSelfMessage('image', `${result.uri}?width=${result.width}&height=${result.height}`);
+            const [err, tokenResult] = await fetch('uploadToken');
+            if (!err) {
+                const key = `ImageMessage/${user.get('_id')}_${Date.now()}`;
+                await Rpc.uploadFile(result.uri, tokenResult.token, {
+                    key,
+                });
+                this.sendMessage(id, 'image', `${tokenResult.urlPrefix}${key}?width=${result.width}&height=${result.height}`);
+            }
+        }
     }
     @autobind
     handleChangeText(value) {
@@ -133,7 +168,7 @@ class Input extends Component {
                     this.state.showFunctionList ?
                         <View>
                             <View style={styles.iconButtonContainer}>
-                                <Button transparent style={styles.iconButton}>
+                                <Button transparent style={styles.iconButton} onPress={this.handleClickImage}>
                                     <View style={styles.buttonIconContainer}>
                                         <Ionicons name="ios-image" size={28} color="#666" />
                                     </View>
