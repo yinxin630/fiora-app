@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 8,
         marginBottom: 6,
+        backgroundColor: '#ebebeb',
     },
 });
 

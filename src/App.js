@@ -106,8 +106,8 @@ export default class App extends React.Component {
                     <Router>
                         <View style={styles.container}>
                             <Scene key="test" component={Test} title="测试页面" />
-                            <Scene key="chatlist" component={ChatList} title="消息" initial />
-                            <Scene key="chat" component={Chat} title="聊天" getTitle={this.props.title} />
+                            <Scene key="chatlist" component={ChatList} title="消息" />
+                            <Scene key="chat" component={Chat} title="聊天" getTitle={this.props.title} initial />
                             <Scene key="login" component={Login} title="登录" backTitle="返回聊天" />
                             <Scene key="signup" component={Signup} title="注册" backTitle="返回聊天" />
                         </View>
