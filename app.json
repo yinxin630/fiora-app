@@ -1,6 +1,7 @@
 {
   "expo": {
     "sdkVersion": "27.0.0",
+    "privacy": "public",
     "name": "fiora",
     "icon": "./icon.png",
     "version": "0.0.1",

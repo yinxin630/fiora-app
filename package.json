@@ -1,6 +1,6 @@
 {
   "name": "fiora-app",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {

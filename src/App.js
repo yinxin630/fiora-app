@@ -3,7 +3,7 @@ import { StyleSheet, View, AsyncStorage } from 'react-native';
 import { Provider } from 'react-redux';
 import { Scene, Router } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
-import { Root, Toast } from 'native-base';
+import { Root } from 'native-base';
 
 import socket from './socket';
 import fetch from '../utils/fetch';
