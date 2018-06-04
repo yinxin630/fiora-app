@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
+import { WebBrowser } from 'expo';
 
 import Time from '../../../utils/time';
 import expressions from '../../../utils/expressions';
@@ -42,13 +43,32 @@ export default class Message extends Component {
     renderText() {
         const { content, isSelf } = this.props;
         const children = [];
+
+        // Handle expression and link
         let offset = 0;
         let hasExpression = false;
         content.replace(
-            /#\(([\u4e00-\u9fa5a-z]+)\)/g,
-            (r, e, i) => {
-                const index = expressions.default.indexOf(e);
-                if (index !== -1) {
+            /#\(([\u4e00-\u9fa5a-z]+)\)|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
+            (r, e) => {
+                const i = content.indexOf(r);
+                console.log(r, e, i);
+                if (r.startsWith('#')) {
+                    const index = expressions.default.indexOf(e);
+                    if (index !== -1) {
+                        console.log(offset, i);
+                        if (offset < i) {
+                            console.log(content.substring(offset, i));
+                            if (isiOS) {
+                                children.push(content.substring(offset, i));
+                            } else {
+                                children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{content.substring(offset, i)}</Text>);
+                            }
+                        }
+                        children.push(<Expression key={Math.random()} style={styles.expression} size={30} index={index} />);
+                        hasExpression = true;
+                        offset = i + r.length;
+                    }
+                } else {
                     if (offset < i) {
                         if (isiOS) {
                             children.push(content.substring(offset, i));
@@ -56,20 +76,29 @@ export default class Message extends Component {
                             children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{content.substring(offset, i)}</Text>);
                         }
                     }
-                    children.push(<Expression key={Math.random()} style={styles.expression} size={30} index={index} />);
-                    hasExpression = true;
+                    children.push((
+                        <TouchableWithoutFeedback key={Math.random()} onPress={WebBrowser.openBrowserAsync.bind(WebBrowser, r)} >
+                            <View>
+                                <Text style={{ color: '#1a0dab' }}>{r}</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    ));
                     offset = i + r.length;
                 }
                 return r;
             },
         );
+
+        // The remaining content
         if (offset < content.length) {
+            console.log(content.substring(offset, content.length));
             if (isiOS) {
                 children.push(content.substring(offset, content.length));
             } else {
                 children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{content.substring(offset, content.length)}</Text>);
             }
         }
+
         return (
             <View style={[styles.textContent, isSelf ? styles.textContentSelf : styles.empty]}>
                 {
