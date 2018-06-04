@@ -43,6 +43,7 @@ export default class Message extends Component {
         const { content, isSelf } = this.props;
         const children = [];
         let offset = 0;
+        let hasExpression = false;
         content.replace(
             /#\(([\u4e00-\u9fa5a-z]+)\)/g,
             (r, e, i) => {
@@ -56,6 +57,7 @@ export default class Message extends Component {
                         }
                     }
                     children.push(<Expression key={Math.random()} style={styles.expression} size={30} index={index} />);
+                    hasExpression = true;
                     offset = i + r.length;
                 }
                 return r;
@@ -72,7 +74,7 @@ export default class Message extends Component {
             <View style={[styles.textContent, isSelf ? styles.textContentSelf : styles.empty]}>
                 {
                     isiOS ?
-                        <Text style={[styles.text, isSelf ? styles.textSelf : styles.empty]}>{children}</Text>
+                        <Text style={[styles.text, isSelf ? styles.textSelf : styles.empty, hasExpression ? styles.empty : styles.lineHeight20]}>{children}</Text>
                         :
                         <View style={[styles.textView]}>{children}</View>
                 }
@@ -188,6 +190,9 @@ const styles = StyleSheet.create({
     text: {
         color: '#333',
         width: '100%',
+    },
+    lineHeight20: {
+        lineHeight: 20,
     },
     textView: {
         width: '100%',
