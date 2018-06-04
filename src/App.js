@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, AsyncStorage } from 'react-native';
+import { StyleSheet, View, AsyncStorage, Text } from 'react-native';
 import { Provider } from 'react-redux';
 import { Scene, Router } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
@@ -12,6 +12,7 @@ import store from './state/store';
 import convertRobot10Message from '../utils/convertRobot10Message';
 import getFriendId from '../utils/getFriendId';
 import platform from '../utils/platform';
+import packageInfo from '../package';
 
 import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
@@ -106,7 +107,7 @@ export default class App extends React.Component {
                     <Router>
                         <View style={styles.container}>
                             <Scene key="test" component={Test} title="测试页面" />
-                            <Scene key="chatlist" component={ChatList} title="消息" initial />
+                            <Scene key="chatlist" component={ChatList} title="消息" onRight={() => {}} rightTitle={`v${packageInfo.version}`} initial />
                             <Scene key="chat" component={Chat} title="聊天" getTitle={this.props.title} />
                             <Scene key="login" component={Login} title="登录" backTitle="返回聊天" />
                             <Scene key="signup" component={Signup} title="注册" backTitle="返回聊天" />

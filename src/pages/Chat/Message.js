@@ -51,13 +51,10 @@ export default class Message extends Component {
             /#\(([\u4e00-\u9fa5a-z]+)\)|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
             (r, e) => {
                 const i = content.indexOf(r);
-                console.log(r, e, i);
-                if (r.startsWith('#')) {
+                if (r[0] === '#') {
                     const index = expressions.default.indexOf(e);
                     if (index !== -1) {
-                        console.log(offset, i);
                         if (offset < i) {
-                            console.log(content.substring(offset, i));
                             if (isiOS) {
                                 children.push(content.substring(offset, i));
                             } else {
@@ -79,7 +76,7 @@ export default class Message extends Component {
                     children.push((
                         <TouchableWithoutFeedback key={Math.random()} onPress={WebBrowser.openBrowserAsync.bind(WebBrowser, r)} >
                             <View>
-                                <Text style={{ color: '#1a0dab' }}>{r}</Text>
+                                <Text style={{ color: 'red' }}>{r}</Text>
                             </View>
                         </TouchableWithoutFeedback>
                     ));
