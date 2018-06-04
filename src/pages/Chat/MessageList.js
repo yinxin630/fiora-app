@@ -26,7 +26,7 @@ class Chat extends Component {
         this.prevMessageCount = 0;
     }
     componentDidMount() {
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.handleKeyboardShow);
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.handleKeyboardShow);
     }
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();

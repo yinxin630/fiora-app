@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, Platform, Text } from 'react-native';
+import { StyleSheet, View, TextInput, Platform, Text, Keyboard } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -26,6 +26,16 @@ class Input extends Component {
             value: '',
             showFunctionList: false,
         };
+    }
+    componentDidMount() {
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.handleKeyboardShow);
+    }
+    componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+    }
+    @autobind
+    handleKeyboardShow() {
+        this.closeFunctionList();
     }
     addSelfMessage(type, content) {
         const { user, focus } = this.props;
@@ -106,7 +116,6 @@ class Input extends Component {
         if (status !== 'granted') {
             const { status: returnStatus } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (returnStatus !== 'granted') {
-                alert('提示', '该功能需要授权才能使用');
                 return;
             }
         }
