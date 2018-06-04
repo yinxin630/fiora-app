@@ -106,9 +106,16 @@ function reducer(state = initialState, action) {
                 linkmans
                     .delete(linkmanIndex)
                     .unshift(linkman
-                        .update('messages', messages => (
-                            messages.push(immutable.fromJS(action.message))
-                        ))
+                        .update('messages', (messages) => {
+                            const newMessages = messages.push(immutable.fromJS(action.message));
+                            if (
+                                action.message.from === state.getIn(['user', '_id']) &&
+                                 newMessages.size > 300
+                            ) {
+                                return newMessages.splice(0, 200);
+                            }
+                            return newMessages;
+                        })
                         .set('unread', unread))
             ));
     }
