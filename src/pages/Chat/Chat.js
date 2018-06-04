@@ -13,7 +13,7 @@ import Input from './Input';
 class Chat extends Component {
     render() {
         return (
-            <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={isiOS ? 60 : 80}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={isiOS ? 64 : 80}>
                 <Container style={styles.container}>
                     <MessageList />
                     <Input />
@@ -26,6 +26,7 @@ class Chat extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#ebebeb',
     },
 });
 

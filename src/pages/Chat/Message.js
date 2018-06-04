@@ -142,7 +142,7 @@ export default class Message extends Component {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        marginBottom: 10,
+        marginBottom: 8,
         paddingLeft: 8,
         paddingRight: 8,
     },

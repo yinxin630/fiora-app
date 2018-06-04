@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: 4,
         backgroundColor: '#f6f6f6',
+        marginTop: isiOS ? 6 : 0,
     },
     inputContainer: {
         flexDirection: 'row',
