@@ -88,7 +88,6 @@ export default class Message extends Component {
 
         // The remaining content
         if (offset < content.length) {
-            console.log(content.substring(offset, content.length));
             if (isiOS) {
                 children.push(content.substring(offset, content.length));
             } else {
