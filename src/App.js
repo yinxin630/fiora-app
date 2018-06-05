@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, AsyncStorage } from 'react-native';
+import { StyleSheet, View, AsyncStorage, Alert } from 'react-native';
 import { Provider } from 'react-redux';
 import { Scene, Router } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
@@ -102,9 +102,15 @@ export default class App extends React.Component {
         title: PropTypes.string,
     }
     static async updateVersion() {
+        if (process.env.NODE_ENV === 'development') {
+            return;
+        }
+
         const result = await Updates.fetchUpdateAsync();
         if (result.isNew) {
             Updates.reload();
+        } else {
+            Alert.alert('提示', '当前版本已经是最新了');
         }
     }
     render() {
