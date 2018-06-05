@@ -4,7 +4,7 @@
     "privacy": "public",
     "name": "fiora",
     "icon": "./icon.png",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "App for fiora. A online chatroom",
     "slug": "fiora",
     "ios": {
@@ -12,6 +12,9 @@
     },
     "android": {
       "package": "com.suisuijiang.fiora"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
     }
   }
 }
