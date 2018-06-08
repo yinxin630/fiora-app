@@ -72,7 +72,7 @@ class Chat extends Component {
         if (this.prevContentHeight === 0) {
             this.scrollView.scrollTo({
                 x: 0,
-                y: contentHeight - 50,
+                y: contentHeight - 100,
                 animated: true,
             });
         } else if (
@@ -81,7 +81,7 @@ class Chat extends Component {
         ) {
             this.scrollView.scrollTo({
                 x: 0,
-                y: contentHeight - this.prevContentHeight - 50,
+                y: contentHeight - this.prevContentHeight - 100,
                 animated: false,
             });
         }
