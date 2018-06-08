@@ -25,7 +25,10 @@ export default class Image extends Component {
                     prefix = 'http://192.168.1.105:8080';
                 }
             }
-            source = { uri: prefix + src };
+            source = {
+                uri: prefix + src,
+                cache: 'force-cache',
+            };
         }
         return (
             <BaseImage source={source} style={[style, { width, height }]} />

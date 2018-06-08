@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
+import { View } from 'react-native';
 import PropTypes from 'prop-types';
+
+import Image from './Image';
+
+const baiduImage = require('../assets/images/baidu.png');
 
 export default class Expression extends Component {
     static propTypes = {
@@ -12,7 +16,7 @@ export default class Expression extends Component {
         const { size, index, style } = this.props;
         return (
             <View style={[{ width: size, height: size, overflow: 'hidden' }, style]}>
-                <Image source={require('../assets/images/baidu.png')} style={{ width: size, height: size * 3200 / 64, marginTop: -size * index }} />
+                <Image src={baiduImage} width={size} height={size * 3200 / 64} style={{ marginTop: -size * index }} />
             </View>
         );
     }
