@@ -139,6 +139,43 @@ class Input extends Component {
         }
     }
     @autobind
+    async handleClickCamera() {
+        const { user } = this.props;
+
+        const { status: cameraStatus } = await Permissions.getAsync(Permissions.CAMERA);
+        if (cameraStatus !== 'granted') {
+            const { status: returnStatus } = await Permissions.askAsync(Permissions.CAMERA);
+            if (returnStatus !== 'granted') {
+                return;
+            }
+        }
+
+        const { status: cameraRollStatus } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+        if (cameraRollStatus !== 'granted') {
+            const { status: returnStatus } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (returnStatus !== 'granted') {
+                return;
+            }
+        }
+
+        this.closeFunctionList();
+        const result = await ImagePicker.launchCameraAsync({
+            quality: isiOS ? 0.1 : 0.8,
+        });
+
+        if (!result.cancelled) {
+            const id = this.addSelfMessage('image', `${result.uri}?width=${result.width}&height=${result.height}`);
+            const [err, tokenResult] = await fetch('uploadToken');
+            if (!err) {
+                const key = `ImageMessage/${user.get('_id')}_${Date.now()}`;
+                await Rpc.uploadFile(result.uri, tokenResult.token, {
+                    key,
+                });
+                this.sendMessage(id, 'image', `${tokenResult.urlPrefix}${key}?width=${result.width}&height=${result.height}`);
+            }
+        }
+    }
+    @autobind
     handleChangeText(value) {
         this.setState({
             value,
@@ -182,6 +219,12 @@ class Input extends Component {
                                         <Ionicons name="ios-image" size={28} color="#666" />
                                     </View>
                                     <Text style={styles.buttonIconText}>图片</Text>
+                                </Button>
+                                <Button transparent style={styles.iconButton} onPress={this.handleClickCamera}>
+                                    <View style={styles.buttonIconContainer}>
+                                        <Ionicons name="ios-camera" size={28} color="#666" />
+                                    </View>
+                                    <Text style={styles.buttonIconText}>拍照</Text>
                                 </Button>
                             </View>
                             <Button full transparent style={styles.cancelButton} onPress={this.closeFunctionList}>
@@ -243,6 +286,8 @@ const styles = StyleSheet.create({
 
     iconButtonContainer: {
         flexDirection: 'row',
+        paddingLeft: 26,
+        paddingRight: 26,
     },
     iconButton: {
         width: '25%',
