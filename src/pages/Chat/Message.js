@@ -75,9 +75,16 @@ export default class Message extends Component {
                     }
                     children.push((
                         <TouchableWithoutFeedback key={Math.random()} onPress={WebBrowser.openBrowserAsync.bind(WebBrowser, r)} >
-                            <View>
-                                <Text style={{ color: 'red' }}>{r}</Text>
-                            </View>
+                            {
+                                // Do not nest in view error in dev environment
+                                process.env.NODE_ENV === 'development' ?
+                                    <View>
+                                        <Text style={{ color: '#001be5' }}>{r}</Text>
+                                    </View>
+                                    :
+                                    <Text style={{ color: '#001be5' }}>{r}</Text>
+
+                            }
                         </TouchableWithoutFeedback>
                     ));
                     offset = i + r.length;
