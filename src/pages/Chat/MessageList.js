@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Keyboard, RefreshControl } from 'react-native';
+import { ScrollView, StyleSheet, Keyboard, RefreshControl, Modal } from 'react-native';
 import { connect } from 'react-redux';
 import immutable from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import autobind from 'autobind-decorator';
 import { Toast } from 'native-base';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 import action from '../../state/action';
 import fetch from '../../../utils/fetch';
+import openClose from '../../../utils/openClose';
 
 import Message from './Message';
 
@@ -21,6 +23,8 @@ class Chat extends Component {
         super(...args);
         this.state = {
             refreshing: false,
+            imageViewerDialog: false,
+            imageViewerIndex: 0,
         };
         this.prevContentHeight = 0;
         this.prevMessageCount = 0;
@@ -30,6 +34,18 @@ class Chat extends Component {
     }
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
+    }
+    getImages() {
+        const { messages } = this.props;
+        const imageMessages = messages.filter(message => message.get('type') === 'image');
+        const images = imageMessages.map((message) => {
+            let url = message.get('content');
+            if (url.startsWith('//')) {
+                url = `https:${url}`;
+            }
+            return { url };
+        });
+        return images.toJS();
     }
     @autobind
     handleKeyboardShow() {
@@ -88,6 +104,15 @@ class Chat extends Component {
         this.prevContentHeight = contentHeight;
         this.prevMessageCount = this.props.messages.size;
     }
+    @autobind
+    openImageViewer(url) {
+        const images = this.getImages();
+        const index = images.findIndex(image => image.url.indexOf(url) !== -1);
+        this.setState({
+            imageViewerDialog: true,
+            imageViewerIndex: index,
+        });
+    }
     renderMessage(message, shouldScroll) {
         const { self } = this.props;
         const props = {
@@ -105,6 +130,7 @@ class Chat extends Component {
         if (props.type === 'image') {
             props.loading = message.get('loading');
             props.percent = message.get('percent');
+            props.openImageViewer = this.openImageViewer;
         }
         return (
             <Message {...props} />
@@ -112,6 +138,8 @@ class Chat extends Component {
     }
     render() {
         const { messages } = this.props;
+        const { imageViewerDialog, imageViewerIndex } = this.state;
+        const closeImageViewer = openClose.close.bind(this, 'imageViewerDialog');
         return (
             <ScrollView
                 style={styles.container}
@@ -131,6 +159,18 @@ class Chat extends Component {
                         this.renderMessage(message, index === messages.size - 1)
                     ))
                 }
+                <Modal
+                    visible={imageViewerDialog}
+                    transparent
+                    onRequestClose={closeImageViewer}
+                >
+                    <ImageViewer
+                        imageUrls={this.getImages()}
+                        index={imageViewerIndex}
+                        onClick={closeImageViewer}
+                        onSwipeDown={closeImageViewer}
+                    />
+                </Modal>
             </ScrollView>
         );
     }

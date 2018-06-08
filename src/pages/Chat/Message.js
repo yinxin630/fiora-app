@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { WebBrowser } from 'expo';
+import autobind from 'autobind-decorator';
 
 import Time from '../../../utils/time';
 import expressions from '../../../utils/expressions';
@@ -23,6 +24,7 @@ export default class Message extends Component {
         shouldScroll: PropTypes.bool.isRequired,
         scrollToEnd: PropTypes.func.isRequired,
         isSelf: PropTypes.bool.isRequired,
+        openImageViewer: PropTypes.func,
     }
     componentDidMount() {
         if (this.props.shouldScroll && this.props.scrollToEnd) {
@@ -39,6 +41,11 @@ export default class Message extends Component {
             return `昨天 ${Time.getHourMinute(time)}`;
         }
         return `${Time.getMonthDate(time)} ${Time.getHourMinute(time)}`;
+    }
+    @autobind
+    handleImageClick() {
+        const { content, openImageViewer } = this.props;
+        openImageViewer(content);
     }
     renderText() {
         const { content, isSelf } = this.props;
@@ -74,7 +81,7 @@ export default class Message extends Component {
                         }
                     }
                     children.push((
-                        <TouchableWithoutFeedback key={Math.random()} onPress={WebBrowser.openBrowserAsync.bind(WebBrowser, r)} >
+                        <TouchableOpacity key={Math.random()} onPress={WebBrowser.openBrowserAsync.bind(WebBrowser, r)} >
                             {
                                 // Do not nest in view error in dev environment
                                 process.env.NODE_ENV === 'development' ?
@@ -85,7 +92,7 @@ export default class Message extends Component {
                                     <Text style={{ color: '#001be5' }}>{r}</Text>
 
                             }
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                     ));
                     offset = i + r.length;
                 }
@@ -133,9 +140,11 @@ export default class Message extends Component {
 
         return (
             <View style={[styles.imageContent, { width: width * scale, height: height * scale }]}>
-                <Image
-                    src={content}
-                />
+                <TouchableOpacity onPress={this.handleImageClick}>
+                    <Image
+                        src={content}
+                    />
+                </TouchableOpacity>
             </View>
         );
     }
