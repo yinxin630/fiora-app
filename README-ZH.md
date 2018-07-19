@@ -1,10 +1,10 @@
 # Fiora-App
 
-This is Fiora(https://fiora.suisuijiang.com/) app version. Base on react-native and expo. Support Android and iOS platform
+这是 Fiora(https://fiora.suisuijiang.com/) 的APP版, 基于 react-native 和 expo, 支持安卓和iOS
 
 ## Android
 
-Click link or scan qrcode to download APK
+点击链接或者扫码下载APK
 
 [http://cdn.suisuijiang.com/fiora-v0.2.3.apk](http://cdn.suisuijiang.com/fiora-v0.2.3.apk)
 
@@ -12,8 +12,8 @@ Click link or scan qrcode to download APK
 
 ## iOS
 
-1. Search and download expo in Apple Store
-2. Open expo app. Login with 碎碎酱's account(Private chat to get account)
-3. After login success. Click fiora to start app
+1. Apple Store 搜索 expo 并下载
+2. 打开 expo, 并使用碎碎酱的账号登录(私聊要账号)
+3. 登录成功后点击 fiora 启动应用
 
 ![](https://cdn.suisuijiang.com/ImageMessage/5adad39555703565e7903f78_1528384800528.png?width=850&height=644)
