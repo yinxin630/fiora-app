@@ -1,5 +1,7 @@
 # Fiora-App
 
+语言: [English](https://github.com/yinxin630/fiora-app/blob/master/README.md) | [简体中文](https://github.com/yinxin630/fiora-app/blob/master/README-ZH.md)
+
 这是 Fiora(https://fiora.suisuijiang.com/) 的APP版, 基于 react-native 和 expo, 支持安卓和iOS
 
 ## Android
