@@ -14,13 +14,15 @@ import Input from './Input';
 @autobind
 class Chat extends Component {
     handleInputHeightChange() {
-        this.messageList.scrollToEnd();
+        if (this.messageList && this.messageList.getWrappedInstance) {
+            this.messageList.getWrappedInstance().scrollToEnd();
+        }
     }
     render() {
         return (
             <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={isiOS ? 64 : 80}>
                 <Container style={styles.container}>
-                    <MessageList ref={i => this.messageList = i.getWrappedInstance()} />
+                    <MessageList ref={i => this.messageList = i} />
                     <Input onHeightChange={this.handleInputHeightChange} />
                 </Container>
             </KeyboardAvoidingView>
