@@ -14,6 +14,7 @@ import openClose from '../../../utils/openClose';
 
 import Message from './Message';
 
+@autobind
 class Chat extends Component {
     static propTypes = {
         messages: ImmutablePropTypes.list,
@@ -28,6 +29,7 @@ class Chat extends Component {
         };
         this.prevContentHeight = 0;
         this.prevMessageCount = 0;
+        this.shouldScroll = true;
     }
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.handleKeyboardShow);
@@ -47,11 +49,9 @@ class Chat extends Component {
         });
         return images.toJS();
     }
-    @autobind
     handleKeyboardShow() {
         this.scrollToEnd();
     }
-    @autobind
     scrollToEnd() {
         // Don't ask me why I use settimeout. Is that the only way it works.
         setTimeout(() => {
@@ -60,7 +60,6 @@ class Chat extends Component {
             }
         }, 100);
     }
-    @autobind
     async handleRefresh() {
         this.setState({ refreshing: true });
         const { self: isLogin, focus, messages } = this.props;
@@ -83,7 +82,9 @@ class Chat extends Component {
         }
         this.setState({ refreshing: false });
     }
-    @autobind
+    /**
+     * 加载历史消息后, 自动滚动到合适位置
+     */
     handleContentSizeChange(contentWidth, contentHeight) {
         if (this.prevContentHeight === 0) {
             this.scrollView.scrollTo({
@@ -104,7 +105,10 @@ class Chat extends Component {
         this.prevContentHeight = contentHeight;
         this.prevMessageCount = this.props.messages.size;
     }
-    @autobind
+    handleScroll(event) {
+        const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
+        this.shouldScroll = contentOffset.y > contentSize.height - layoutMeasurement.height * 2;
+    }
     openImageViewer(url) {
         const images = this.getImages();
         const index = images.findIndex(image => image.url.indexOf(url) !== -1);
@@ -113,7 +117,7 @@ class Chat extends Component {
             imageViewerIndex: index,
         });
     }
-    renderMessage(message, shouldScroll) {
+    renderMessage(message) {
         const { self } = this.props;
         const props = {
             key: message.get('_id'),
@@ -124,7 +128,7 @@ class Chat extends Component {
             content: message.get('content'),
             isSelf: self === message.getIn(['from', '_id']),
             tag: message.getIn(['from', 'tag']),
-            shouldScroll,
+            shouldScroll: this.shouldScroll,
             scrollToEnd: this.scrollToEnd,
         };
         if (props.type === 'image') {
@@ -153,6 +157,8 @@ class Chat extends Component {
                     />
                 }
                 onContentSizeChange={this.handleContentSizeChange}
+                scrollEventThrottle={200}
+                onScroll={this.handleScroll}
             >
                 {
                     messages.map((message, index) => (
