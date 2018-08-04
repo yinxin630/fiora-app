@@ -167,6 +167,15 @@ function setFriend(linkmanId, from, to) {
     });
 }
 
+/* ====== UI ====== */
+function loading(text) {
+    dispatch({
+        type: 'SetDeepValue',
+        keys: ['ui', 'loading'],
+        value: text,
+    });
+}
+
 
 export default {
     setUser,
@@ -186,4 +195,6 @@ export default {
     addLinkmanMessage,
     addLinkmanMessages,
     updateSelfMessage,
+
+    loading,
 };

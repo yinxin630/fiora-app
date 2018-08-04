@@ -4,6 +4,9 @@ const initialState = immutable.fromJS({
     user: null,
     focus: '',
     connect: true,
+    ui: {
+        loading: '', // 全局loading文本内容, 为空则不展示
+    },
 });
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, AsyncStorage, Alert, Image } from 'react-native';
+import { StyleSheet, View, AsyncStorage, Alert } from 'react-native';
 import { Provider } from 'react-redux';
 import { Scene, Router } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
@@ -21,6 +21,9 @@ import Login from './pages/LoginSignup/Login';
 import Signup from './pages/LoginSignup/Signup';
 import Test from './pages/test';
 
+import Loading from './components/Loading';
+
+
 async function guest() {
     const [err, res] = await fetch('guest', {
         os: platform.os.family,
@@ -30,9 +33,12 @@ async function guest() {
     if (!err) {
         action.setGuest(res);
     }
+    action.loading('');
 }
 
 socket.on('connect', async () => {
+    action.loading('登录中...');
+
     // await AsyncStorage.setItem('token', '');
     const token = await AsyncStorage.getItem('token');
 
@@ -44,6 +50,7 @@ socket.on('connect', async () => {
             guest();
         } else {
             action.setUser(res);
+            action.loading('');
         }
     } else {
         guest();
@@ -101,9 +108,11 @@ export default class App extends React.Component {
     }
     render() {
         return (
-            <View style={styles.container}>
-                {/* <Image style={styles.background} source={require('../src/assets/images/background.jpg')} blurRadius={15} /> */}
-                <Provider store={store}>
+            <Provider store={store}>
+                <View style={styles.container}>
+                    {/* react-native-router-flux不支持透明背景色, 暂时不能实现背景图 */}
+                    {/* <Image style={styles.background} source={require('../src/assets/images/background.jpg')} blurRadius={15} /> */}
+
                     <Root>
                         <Router style={{ backgroundColor: 'red' }}>
                             <View style={{ backgroundColor: 'green' }}>
@@ -115,8 +124,10 @@ export default class App extends React.Component {
                             </View>
                         </Router>
                     </Root>
-                </Provider>
-            </View>
+
+                    <Loading />
+                </View>
+            </Provider>
         );
     }
 }
