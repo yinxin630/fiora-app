@@ -204,6 +204,9 @@ class Input extends Component {
                                 enablesReturnKeyAutomatically
                                 underlineColorAndroid="transparent"
                             />
+                            <Button primary style={styles.sendButton} onPress={this.handleSubmit}>
+                                <Text style={styles.buttonText}>发送</Text>
+                            </Button>
                         </View>
                         :
                         <Button block style={styles.button} onPress={Actions.login}>
@@ -265,6 +268,12 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         borderWidth: 1,
         borderColor: '#e5e5e5',
+    },
+    sendButton: {
+        width: 50,
+        height: 36,
+        marginLeft: 8,
+        paddingLeft: 10,
     },
     button: {
         height: 36,
