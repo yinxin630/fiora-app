@@ -48,17 +48,18 @@ export default class Message extends Component {
         openImageViewer(content);
     }
     renderText() {
-        const { content, isSelf } = this.props;
+        let { content } = this.props;
+        const { isSelf } = this.props;
         const children = [];
 
         // Handle expression and link
         let offset = 0;
         let hasExpression = false;
-        content.replace(
-            /#\(([\u4e00-\u9fa5a-z]+)\)|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
-            (r, e) => {
-                const i = content.indexOf(r);
-                if (r[0] === '#') {
+        content = content
+            .replace(
+                /#\(([\u4e00-\u9fa5a-z]+)\)/,
+                (r, e) => {
+                    const i = content.indexOf(r);
                     const index = expressions.default.indexOf(e);
                     if (index !== -1) {
                         if (offset < i) {
@@ -72,7 +73,13 @@ export default class Message extends Component {
                         hasExpression = true;
                         offset = i + r.length;
                     }
-                } else {
+                    return r;
+                },
+            )
+            .replace(
+                /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
+                (r) => {
+                    const i = content.indexOf(r);
                     if (offset < i) {
                         if (isiOS) {
                             children.push(content.substring(offset, i));
@@ -83,22 +90,18 @@ export default class Message extends Component {
                     children.push((
                         <TouchableOpacity key={Math.random()} onPress={WebBrowser.openBrowserAsync.bind(WebBrowser, r)} >
                             {
-                                // Do not nest in view error in dev environment
-                                process.env.NODE_ENV === 'development' ?
-                                    <View>
-                                        <Text style={{ color: '#001be5' }}>{r}</Text>
-                                    </View>
-                                    :
+                                <View>
                                     <Text style={{ color: '#001be5' }}>{r}</Text>
-
+                                </View>
                             }
                         </TouchableOpacity>
                     ));
                     offset = i + r.length;
-                }
-                return r;
-            },
-        );
+                    return r;
+                },
+            )
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>');
 
         // The remaining content
         if (offset < content.length) {
