@@ -91,7 +91,7 @@ export default class Message extends Component {
                         <TouchableOpacity key={Math.random()} onPress={WebBrowser.openBrowserAsync.bind(WebBrowser, r)} >
                             {
                                 <View>
-                                    <Text style={{ color: '#001be5' }}>{r}</Text>
+                                    <Text style={{ color: '#001be5', fontSize: 12 }}>{r}</Text>
                                 </View>
                             }
                         </TouchableOpacity>
