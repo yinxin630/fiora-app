@@ -3,7 +3,7 @@ import { StyleSheet, View, AsyncStorage, Alert } from 'react-native';
 import { Provider } from 'react-redux';
 import { Scene, Router } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
-import { Root } from 'native-base';
+import { Root, Toast } from 'native-base';
 import { Updates } from 'expo';
 
 import socket from './socket';
@@ -102,6 +102,9 @@ export default class App extends React.Component {
         const result = await Updates.fetchUpdateAsync();
         if (result.isNew) {
             Updates.reload();
+            Toast.show({
+                text: '有新版本可用, 后台更新中...',
+            });
         } else {
             Alert.alert('提示', '当前版本已经是最新了');
         }
