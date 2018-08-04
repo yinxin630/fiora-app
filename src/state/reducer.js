@@ -5,7 +5,7 @@ const initialState = immutable.fromJS({
     focus: '',
     connect: true,
     ui: {
-        loading: '', // 全局loading文本内容, 为空则不展示
+        loading: '连接服务器中...', // 全局loading文本内容, 为空则不展示
     },
 });
 
