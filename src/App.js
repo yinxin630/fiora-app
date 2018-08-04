@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, AsyncStorage, Alert } from 'react-native';
+import { StyleSheet, View, AsyncStorage, Alert, Image } from 'react-native';
 import { Provider } from 'react-redux';
 import { Scene, Router } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
@@ -101,19 +101,22 @@ export default class App extends React.Component {
     }
     render() {
         return (
-            <Provider store={store}>
-                <Root>
-                    <Router>
-                        <View style={styles.container}>
-                            <Scene key="test" component={Test} title="测试页面" />
-                            <Scene key="chatlist" component={ChatList} title="消息" onRight={App.updateVersion} rightTitle={`v${packageInfo.version}`} initial />
-                            <Scene key="chat" component={Chat} title="聊天" getTitle={this.props.title} />
-                            <Scene key="login" component={Login} title="登录" backTitle="返回聊天" />
-                            <Scene key="signup" component={Signup} title="注册" backTitle="返回聊天" />
-                        </View>
-                    </Router>
-                </Root>
-            </Provider>
+            <View style={styles.container}>
+                {/* <Image style={styles.background} source={require('../src/assets/images/background.jpg')} blurRadius={15} /> */}
+                <Provider store={store}>
+                    <Root>
+                        <Router style={{ backgroundColor: 'red' }}>
+                            <View style={{ backgroundColor: 'green' }}>
+                                <Scene key="test" component={Test} title="测试页面" />
+                                <Scene key="chatlist" component={ChatList} title="消息" onRight={App.updateVersion} rightTitle={`v${packageInfo.version}`} initial />
+                                <Scene key="chat" component={Chat} title="聊天" getTitle={this.props.title} />
+                                <Scene key="login" component={Login} title="登录" backTitle="返回聊天" />
+                                <Scene key="signup" component={Signup} title="注册" backTitle="返回聊天" />
+                            </View>
+                        </Router>
+                    </Root>
+                </Provider>
+            </View>
         );
     }
 }
@@ -121,7 +124,11 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
+    // background: {
+    //     width: 375,
+    //     height: 667,
+    //     position: 'absolute',
+    // },
 });
 
