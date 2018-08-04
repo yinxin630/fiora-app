@@ -13,7 +13,7 @@ import store from './state/store';
 import convertRobot10Message from '../utils/convertRobot10Message';
 import getFriendId from '../utils/getFriendId';
 import platform from '../utils/platform';
-import packageInfo from '../package';
+import appInfo from '../app';
 
 import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
@@ -117,7 +117,7 @@ export default class App extends React.Component {
                         <Router style={{ backgroundColor: 'red' }}>
                             <View style={{ backgroundColor: 'green' }}>
                                 <Scene key="test" component={Test} title="测试页面" />
-                                <Scene key="chatlist" component={ChatList} title="消息" onRight={App.updateVersion} rightTitle={`v${packageInfo.version}`} initial />
+                                <Scene key="chatlist" component={ChatList} title="消息" onRight={App.updateVersion} rightTitle={`v${appInfo.expo.version}`} initial />
                                 <Scene key="chat" component={Chat} title="聊天" getTitle={this.props.title} />
                                 <Scene key="login" component={Login} title="登录" backTitle="返回聊天" />
                                 <Scene key="signup" component={Signup} title="注册" backTitle="返回聊天" />
