@@ -57,7 +57,7 @@ export default class Message extends Component {
         let hasExpression = false;
         content = content
             .replace(
-                /#\(([\u4e00-\u9fa5a-z]+)\)/,
+                /#\(([\u4e00-\u9fa5a-z]+)\)/g,
                 (r, e) => {
                     const i = content.indexOf(r);
                     const index = expressions.default.indexOf(e);
@@ -73,7 +73,7 @@ export default class Message extends Component {
                         hasExpression = true;
                         offset = i + r.length;
                     }
-                    return r;
+                    return '';
                 },
             )
             .replace(

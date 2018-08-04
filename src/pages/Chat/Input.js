@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, Platform, Text, Keyboard } from 'react-native';
+import { StyleSheet, View, TextInput, Platform, Text, Keyboard, Dimensions, TouchableOpacity } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -13,7 +13,14 @@ import { Rpc } from 'react-native-qiniu';
 import action from '../../state/action';
 import fetch from '../../../utils/fetch';
 import { isiOS } from '../../../utils/platform';
+import expressions from '../../../utils/expressions';
 
+import Expression from '../../components/Expression';
+
+const { width: ScreenWidth } = Dimensions.get('window');
+const ExpressionSize = (ScreenWidth - 16) / 10;
+
+@autobind
 class Input extends Component {
     static propTypes = {
         user: ImmutablePropTypes.map,
@@ -25,6 +32,11 @@ class Input extends Component {
         this.state = {
             value: '',
             showFunctionList: false,
+            showExpression: false,
+            cursorPosition: {
+                start: 0,
+                end: 0,
+            },
         };
     }
     componentDidMount() {
@@ -33,7 +45,6 @@ class Input extends Component {
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
     }
-    @autobind
     handleKeyboardShow() {
         this.closeFunctionList();
     }
@@ -60,7 +71,6 @@ class Input extends Component {
 
         return _id;
     }
-    @autobind
     async sendMessage(localId, type, content) {
         const { focus } = this.props;
         const [err, res] = await fetch('sendMessage', {
@@ -73,7 +83,6 @@ class Input extends Component {
             action.updateSelfMessage(focus, localId, res);
         }
     }
-    @autobind
     handleSubmit() {
         const message = this.state.value;
         if (message === '') {
@@ -83,32 +92,45 @@ class Input extends Component {
         const id = this.addSelfMessage('text', message);
         this.sendMessage(id, 'text', message);
 
-        /**
-         * clear() not work.
-         * find solution at https://github.com/facebook/react-native/issues/18272
-         */
-        // this.input.clear();
-        if (Platform.OS === 'ios') {
-            this.input.setNativeProps({ text: ' ' });
-        }
-        setTimeout(() => {
-            this.input.setNativeProps({ text: '' });
+        this.setState({ value: '' });
+    }
+    handleSelectionChange(event) {
+        const { start, end } = event.nativeEvent.selection;
+        this.setState({
+            cursorPosition: {
+                start,
+                end,
+            },
         });
     }
-    @autobind
+    handleFocus() {
+        this.closeFunctionList();
+        this.closeExpression();
+    }
     openFunctionList() {
         this.input.blur();
         this.setState({
             showFunctionList: true,
+            showExpression: false,
         });
     }
-    @autobind
     closeFunctionList() {
         this.setState({
             showFunctionList: false,
         });
     }
-    @autobind
+    openExpression() {
+        this.input.blur();
+        this.setState({
+            showExpression: true,
+            showFunctionList: false,
+        });
+    }
+    closeExpression() {
+        this.setState({
+            showExpression: false,
+        });
+    }
     async handleClickImage() {
         const { user } = this.props;
 
@@ -138,7 +160,6 @@ class Input extends Component {
             }
         }
     }
-    @autobind
     async handleClickCamera() {
         const { user } = this.props;
 
@@ -175,14 +196,27 @@ class Input extends Component {
             }
         }
     }
-    @autobind
     handleChangeText(value) {
         this.setState({
             value,
         });
     }
+    insertExpression(e) {
+        const { value, cursorPosition } = this.state;
+        const expression = `#(${e})`;
+        const newValue = `${value.substring(0, cursorPosition.start)}${expression}${value.substring(cursorPosition.end, value.length)}`;
+        this.setState({
+            value: newValue,
+            cursorPosition: {
+                start: cursorPosition.start + expression.length,
+                end: cursorPosition.start + expression.length,
+            },
+        });
+        this.closeExpression();
+    }
     render() {
         const { isLogin } = this.props;
+        console.log(this.state.showExpression);
         return (
             <View style={styles.container}>
                 {
@@ -195,6 +229,7 @@ class Input extends Component {
                                 ref={i => this.input = i}
                                 style={styles.input}
                                 placeholder="输入消息内容"
+                                value={this.state.value}
                                 onChangeText={this.handleChangeText}
                                 onSubmitEditing={this.handleSubmit}
                                 autoCapitalize="none"
@@ -203,6 +238,8 @@ class Input extends Component {
                                 returnKeyType="send"
                                 enablesReturnKeyAutomatically
                                 underlineColorAndroid="transparent"
+                                onSelectionChange={this.handleSelectionChange}
+                                onFocus={this.handleFocus}
                             />
                             <Button primary style={styles.sendButton} onPress={this.handleSubmit}>
                                 <Text style={styles.buttonText}>发送</Text>
@@ -217,6 +254,12 @@ class Input extends Component {
                     this.state.showFunctionList ?
                         <View>
                             <View style={styles.iconButtonContainer}>
+                                <Button transparent style={styles.iconButton} onPress={this.openExpression}>
+                                    <View style={styles.buttonIconContainer}>
+                                        <Ionicons name="ios-happy" size={28} color="#666" />
+                                    </View>
+                                    <Text style={styles.buttonIconText}>表情</Text>
+                                </Button>
                                 <Button transparent style={styles.iconButton} onPress={this.handleClickImage}>
                                     <View style={styles.buttonIconContainer}>
                                         <Ionicons name="ios-image" size={28} color="#666" />
@@ -233,6 +276,23 @@ class Input extends Component {
                             <Button full transparent style={styles.cancelButton} onPress={this.closeFunctionList}>
                                 <Text style={styles.cancelButtonText}>取消</Text>
                             </Button>
+                        </View>
+                        :
+                        null
+                }
+                {
+                    this.state.showExpression ?
+                        <View style={styles.expressionContainer}>
+                            {
+                                expressions.default.map((e, i) => (
+                                    <TouchableOpacity key={e} onPress={this.insertExpression.bind(this, e)} >
+                                        <View style={styles.expression} >
+                                            <Expression index={i} size={30} />
+                                        </View>
+                                    </TouchableOpacity>
+
+                                ))
+                            }
                         </View>
                         :
                         null
@@ -326,6 +386,23 @@ const styles = StyleSheet.create({
     },
     cancelButtonText: {
         color: '#666',
+    },
+
+    // 表情框
+    expressionContainer: {
+        height: ExpressionSize * 5 + 6,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        paddingTop: 3,
+        paddingBottom: 3,
+        paddingLeft: 8,
+        paddingRight: 8,
+    },
+    expression: {
+        width: ExpressionSize,
+        height: ExpressionSize,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
 
