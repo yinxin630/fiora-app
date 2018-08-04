@@ -27,7 +27,6 @@
     "react-native-qiniu": "^0.3.0",
     "react-native-router-flux": "^4.0.0-beta.31",
     "react-redux": "^5.0.7",
-    "react-router-native": "^4.2.0",
     "redux": "^4.0.0",
     "socket.io-client": "^2.1.1"
   },

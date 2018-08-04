@@ -58,14 +58,8 @@ socket.on('message', (message) => {
 
     const state = store.getState();
     const linkman = state.getIn(['user', 'linkmans']).find(l => l.get('_id') === message.to);
-    let title = '';
     if (linkman) {
         action.addLinkmanMessage(message.to, message);
-        if (linkman.get('type') === 'group') {
-            title = `${message.from.username} 在 ${linkman.get('name')} 对大家说:`;
-        } else {
-            title = `${message.from.username} 对你说:`;
-        }
     } else {
         const newLinkman = {
             _id: getFriendId(
@@ -80,7 +74,6 @@ socket.on('message', (message) => {
             unread: 1,
         };
         action.addLinkman(newLinkman);
-        title = `${message.from.username} 对你说:`;
 
         fetch('getLinkmanHistoryMessages', { linkmanId: newLinkman._id }).then(([err, res]) => {
             if (!err) {
@@ -88,13 +81,6 @@ socket.on('message', (message) => {
             }
         });
     }
-
-    // console.log('消息通知', {
-    //     title,
-    //     image: message.from.avatar,
-    //     content: message.type === 'text' ? message.content : `[${message.type}]`,
-    //     id: Math.random(),
-    // });
 });
 
 export default class App extends React.Component {
