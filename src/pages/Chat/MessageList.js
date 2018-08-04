@@ -208,4 +208,4 @@ export default connect((state) => {
         focus,
         messages: linkman.get('messages') || immutable.List(),
     };
-})(Chat);
+}, null, null, { withRef: true })(Chat);

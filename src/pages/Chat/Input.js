@@ -26,6 +26,7 @@ class Input extends Component {
         user: ImmutablePropTypes.map,
         focus: PropTypes.string.isRequired,
         isLogin: PropTypes.bool.isRequired,
+        onHeightChange: PropTypes.func.isRequired,
     }
     constructor(...args) {
         super(...args);
@@ -113,6 +114,7 @@ class Input extends Component {
             showFunctionList: true,
             showExpression: false,
         });
+        this.props.onHeightChange();
     }
     closeFunctionList() {
         this.setState({
@@ -125,6 +127,7 @@ class Input extends Component {
             showExpression: true,
             showFunctionList: false,
         });
+        this.props.onHeightChange();
     }
     closeExpression() {
         this.setState({
@@ -216,7 +219,6 @@ class Input extends Component {
     }
     render() {
         const { isLogin } = this.props;
-        console.log(this.state.showExpression);
         return (
             <View style={styles.container}>
                 {

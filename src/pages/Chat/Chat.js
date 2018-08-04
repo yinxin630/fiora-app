@@ -3,6 +3,7 @@ import { StyleSheet, KeyboardAvoidingView } from 'react-native';
 import { Container } from 'native-base';
 import { connect } from 'react-redux';
 import immutable from 'immutable';
+import autobind from 'autobind-decorator';
 
 import { isiOS } from '../../../utils/platform';
 
@@ -10,13 +11,17 @@ import MessageList from './MessageList';
 import Input from './Input';
 
 
+@autobind
 class Chat extends Component {
+    handleInputHeightChange() {
+        this.messageList.scrollToEnd();
+    }
     render() {
         return (
             <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={isiOS ? 64 : 80}>
                 <Container style={styles.container}>
-                    <MessageList />
-                    <Input />
+                    <MessageList ref={i => this.messageList = i.getWrappedInstance()} />
+                    <Input onHeightChange={this.handleInputHeightChange} />
                 </Container>
             </KeyboardAvoidingView>
         );
