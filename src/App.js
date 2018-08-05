@@ -36,11 +36,31 @@ async function guest() {
     action.loading('');
 }
 
+/**
+ * 获取token, 超过2s返回空token
+ * 安卓7以上机器, AsyncStorage.getItem会卡主一直不返回, 等待RN发版解决问题
+ * https://github.com/facebook/react-native/pull/16905
+ */
+async function getToken() {
+    return new Promise((resolve, reject) => {
+        AsyncStorage
+            .getItem('token')
+            .then((err, token) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(token);
+                }
+            });
+        setTimeout(() => resolve(''), 2000);
+    });
+}
+
 socket.on('connect', async () => {
     action.loading('登录中...');
 
     // await AsyncStorage.setItem('token', '');
-    const token = await AsyncStorage.getItem('token');
+    const token = await getToken();
 
     if (token) {
         const [err, res] = await fetch('loginByToken', Object.assign({
@@ -99,7 +119,9 @@ export default class App extends React.Component {
             return;
         }
 
+        action.loading('检查更新');
         const result = await Updates.fetchUpdateAsync();
+        action.loading('');
         if (result.isNew) {
             Updates.reload();
             Toast.show({
