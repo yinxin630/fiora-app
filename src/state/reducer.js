@@ -54,9 +54,10 @@ function reducer(state = initialState, action) {
     case 'SetLinkmanMessages': {
         const newLinkmans = state
             .getIn(['user', 'linkmans'])
-            .map(linkman => (
-                linkman.set('messages', immutable.fromJS(action.messages[linkman.get('_id')]))
-            ))
+            .map((linkman) => {
+                action.messages[linkman.get('_id')].forEach(message => convertMessageHtml(message));
+                return linkman.set('messages', immutable.fromJS(action.messages[linkman.get('_id')]));
+            })
             .sort((linkman1, linkman2) => {
                 const messages1 = linkman1.get('messages');
                 const messages2 = linkman2.get('messages');
@@ -136,7 +137,7 @@ function reducer(state = initialState, action) {
                     .delete(linkmanIndex)
                     .unshift(linkman
                         .update('messages', (messages) => {
-                            const newMessages = messages.push(immutable.fromJS(action.message));
+                            const newMessages = messages.push(immutable.fromJS(convertMessageHtml(action.message)));
                             if (
                                 action.message.from === state.getIn(['user', '_id']) &&
                                  newMessages.size > 300
@@ -149,6 +150,7 @@ function reducer(state = initialState, action) {
             ));
     }
     case 'AddLinkmanMessages': {
+        action.messages.forEach(message => convertMessageHtml(message));
         const linkmanIndex = state
             .getIn(['user', 'linkmans'])
             .findIndex(l => l.get('_id') === action.linkmanId);
@@ -166,7 +168,7 @@ function reducer(state = initialState, action) {
             .findIndex(l => l.get('_id') === action.linkmanId);
         return state.updateIn(['user', 'linkmans', linkmanIndex, 'messages'], (messages) => {
             const messageIndex = messages.findLastIndex(m => m.get('_id') === action.messageId);
-            return messages.update(messageIndex, message => message.mergeDeep(immutable.fromJS(action.message)));
+            return messages.update(messageIndex, message => message.mergeDeep(immutable.fromJS(convertMessageHtml(action.message))));
         });
     }
     case 'SetAvatar': {
@@ -193,3 +195,16 @@ function reducer(state = initialState, action) {
 }
 
 export default reducer;
+
+/**
+ * 处理文本消息的html转义字符
+ * @param {Object} message 消息
+ */
+function convertMessageHtml(message) {
+    if (message.type === 'text') {
+        message.content = message.content
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>');
+    }
+    return message;
+}
