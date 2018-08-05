@@ -42,15 +42,11 @@ async function guest() {
  * https://github.com/facebook/react-native/pull/16905
  */
 async function getToken() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         AsyncStorage
             .getItem('token')
-            .then((err, token) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(token);
-                }
+            .then((token) => {
+                resolve(token);
             });
         setTimeout(() => resolve(''), 2000);
     });
