@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import Image from './Image';
 
-const baiduImage = require('../assets/images/baidu.png');
+const uri = 'https://cdn.suisuijiang.com/fiora/img/baidu.bd067c14.png';
 
 export default class Expression extends Component {
     static propTypes = {
@@ -16,7 +16,7 @@ export default class Expression extends Component {
         const { size, index, style } = this.props;
         return (
             <View style={[{ width: size, height: size, overflow: 'hidden' }, style]}>
-                <Image src={baiduImage} width={size} height={size * 3200 / 64} style={{ marginTop: -size * index }} />
+                <Image src={uri} width={size} height={size * 3200 / 64} style={{ marginTop: -size * index }} />
             </View>
         );
     }
