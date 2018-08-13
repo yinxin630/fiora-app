@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, Platform, Text, Keyboard, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TextInput, Text, Keyboard, Dimensions, TouchableOpacity } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -32,7 +32,7 @@ class Input extends Component {
         super(...args);
         this.state = {
             value: '',
-            showFunctionList: false,
+            showFunctionList: true,
             showExpression: false,
             cursorPosition: {
                 start: 0,
@@ -45,9 +45,6 @@ class Input extends Component {
     }
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
-    }
-    handleKeyboardShow() {
-        this.closeFunctionList();
     }
     addSelfMessage(type, content) {
         const { user, focus } = this.props;
@@ -93,7 +90,11 @@ class Input extends Component {
         const id = this.addSelfMessage('text', message);
         this.sendMessage(id, 'text', message);
 
-        this.setState({ value: '' });
+        this.setState({
+            value: '',
+            showFunctionList: true,
+            showExpression: false,
+        });
     }
     handleSelectionChange(event) {
         const { start, end } = event.nativeEvent.selection;
@@ -105,20 +106,9 @@ class Input extends Component {
         });
     }
     handleFocus() {
-        this.closeFunctionList();
-        this.closeExpression();
-    }
-    openFunctionList() {
-        this.input.blur();
         this.setState({
             showFunctionList: true,
             showExpression: false,
-        });
-        this.props.onHeightChange();
-    }
-    closeFunctionList() {
-        this.setState({
-            showFunctionList: false,
         });
     }
     openExpression() {
@@ -145,7 +135,6 @@ class Input extends Component {
             }
         }
 
-        this.closeFunctionList();
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: 'Images',
             quality: isiOS ? 0.1 : 0.8,
@@ -182,7 +171,6 @@ class Input extends Component {
             }
         }
 
-        this.closeFunctionList();
         const result = await ImagePicker.launchCameraAsync({
             quality: isiOS ? 0.1 : 0.8,
         });
@@ -215,7 +203,6 @@ class Input extends Component {
                 end: cursorPosition.start + expression.length,
             },
         });
-        this.closeExpression();
     }
     render() {
         const { isLogin } = this.props;
@@ -224,9 +211,6 @@ class Input extends Component {
                 {
                     isLogin ?
                         <View style={styles.inputContainer}>
-                            <Button transparent style={styles.iconContainer} onPress={this.openFunctionList} >
-                                <Ionicons style={styles.icon} name="ios-add-circle" size={32} color="#c9c9c9" />
-                            </Button>
                             <TextInput
                                 ref={i => this.input = i}
                                 style={styles.input}
@@ -254,29 +238,15 @@ class Input extends Component {
                 }
                 {
                     this.state.showFunctionList ?
-                        <View>
-                            <View style={styles.iconButtonContainer}>
-                                <Button transparent style={styles.iconButton} onPress={this.openExpression}>
-                                    <View style={styles.buttonIconContainer}>
-                                        <Ionicons name="ios-happy" size={28} color="#666" />
-                                    </View>
-                                    <Text style={styles.buttonIconText}>表情</Text>
-                                </Button>
-                                <Button transparent style={styles.iconButton} onPress={this.handleClickImage}>
-                                    <View style={styles.buttonIconContainer}>
-                                        <Ionicons name="ios-image" size={28} color="#666" />
-                                    </View>
-                                    <Text style={styles.buttonIconText}>图片</Text>
-                                </Button>
-                                <Button transparent style={styles.iconButton} onPress={this.handleClickCamera}>
-                                    <View style={styles.buttonIconContainer}>
-                                        <Ionicons name="ios-camera" size={28} color="#666" />
-                                    </View>
-                                    <Text style={styles.buttonIconText}>拍照</Text>
-                                </Button>
-                            </View>
-                            <Button full transparent style={styles.cancelButton} onPress={this.closeFunctionList}>
-                                <Text style={styles.cancelButtonText}>取消</Text>
+                        <View style={styles.iconButtonContainer}>
+                            <Button transparent style={styles.iconButton} onPress={this.openExpression}>
+                                <Ionicons name="ios-happy" size={28} color="#666" />
+                            </Button>
+                            <Button transparent style={styles.iconButton} onPress={this.handleClickImage}>
+                                <Ionicons name="ios-image" size={28} color="#666" />
+                            </Button>
+                            <Button transparent style={styles.iconButton} onPress={this.handleClickCamera}>
+                                <Ionicons name="ios-camera" size={28} color="#666" />
                             </Button>
                         </View>
                         :
@@ -327,7 +297,6 @@ const styles = StyleSheet.create({
         paddingLeft: 8,
         paddingRight: 8,
         backgroundColor: 'white',
-        marginLeft: 8,
         borderWidth: 1,
         borderColor: '#e5e5e5',
     },
@@ -357,29 +326,12 @@ const styles = StyleSheet.create({
 
     iconButtonContainer: {
         flexDirection: 'row',
-        paddingLeft: 26,
-        paddingRight: 26,
+        paddingLeft: 15,
+        paddingRight: 15,
+        height: 44,
     },
     iconButton: {
-        width: '25%',
-        height: 80,
-        flexDirection: 'column',
-        justifyContent: 'center',
-    },
-    buttonIconContainer: {
-        width: 44,
-        height: 44,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 5,
-        borderWidth: 1,
-        borderColor: '#f1f1f1',
-    },
-    buttonIconText: {
-        color: '#999',
-        fontSize: 12,
-        marginTop: 4,
+        width: '15%',
     },
 
     cancelButton: {
