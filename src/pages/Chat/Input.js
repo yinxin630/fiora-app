@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
 
     // 表情框
     expressionContainer: {
-        height: ExpressionSize * 5 + 6,
+        height: (isiOS ? 34 : 30) * 5 + 6,
         flexDirection: 'row',
         flexWrap: 'wrap',
         paddingTop: 3,
@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
     },
     expression: {
         width: ExpressionSize,
-        height: ExpressionSize,
+        height: isiOS ? 34 : 30,
         alignItems: 'center',
         justifyContent: 'center',
     },
