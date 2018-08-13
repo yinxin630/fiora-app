@@ -214,7 +214,7 @@ class Input extends Component {
                             <TextInput
                                 ref={i => this.input = i}
                                 style={styles.input}
-                                placeholder="输入消息内容"
+                                placeholder="代码会写了吗, 给加薪了吗, 股票涨了吗~~"
                                 onChangeText={this.handleChangeText}
                                 onSubmitEditing={this.handleSubmit}
                                 autoCapitalize="none"
