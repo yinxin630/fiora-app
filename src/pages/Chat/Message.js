@@ -48,62 +48,72 @@ export default class Message extends Component {
         openImageViewer(content);
     }
     renderText() {
-        let { content } = this.props;
-        const { isSelf } = this.props;
+        const { isSelf, content } = this.props;
         const children = [];
+        let copy = content;
 
-        // Handle expression and link
+        // 处理文本消息中的表情和链接
         let offset = 0;
         let hasExpression = false;
-        content = content
-            .replace(
-                /#\(([\u4e00-\u9fa5a-z]+)\)|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
-                (r, e) => {
-                    const i = content.indexOf(r);
-                    if (r[0] === '#') {
-                        const index = expressions.default.indexOf(e);
-                        if (index !== -1) {
-                            if (offset < i) {
-                                if (isiOS) {
-                                    children.push(content.substring(offset, i));
-                                } else {
-                                    children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{content.substring(offset, i)}</Text>);
-                                }
-                            }
-                            children.push(<Expression key={Math.random()} style={styles.expression} size={30} index={index} />);
-                            hasExpression = true;
-                            offset = i + r.length;
-                            return '';
-                        }
-                    } else {
+        while (true) {
+            if (copy === '') {
+                break;
+            }
+
+            const regex = /#\(([\u4e00-\u9fa5a-z]+)\)|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g;
+            const matchResult = regex.exec(copy);
+            if (matchResult) {
+                const r = matchResult[0];
+                const e = matchResult[1];
+                const i = copy.indexOf(r);
+                if (r[0] === '#') {
+                    // 表情消息
+                    const index = expressions.default.indexOf(e);
+                    if (index !== -1) {
+                        // 处理从开头到匹配位置的文本
                         if (offset < i) {
                             if (isiOS) {
-                                children.push(content.substring(offset, i));
+                                children.push(copy.substring(offset, i));
                             } else {
-                                children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{content.substring(offset, i)}</Text>);
+                                children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{copy.substring(offset, i)}</Text>);
                             }
                         }
-                        children.push((
-                            <TouchableOpacity key={Math.random()} onPress={WebBrowser.openBrowserAsync.bind(WebBrowser, r)} >
-                                {
-                                // Do not nest in view error in dev environment
-                                    process.env.NODE_ENV === 'development' ?
-                                        <View>
-                                            <Text style={{ color: '#001be5' }}>{r}</Text>
-                                        </View>
-                                        :
-                                        <Text style={{ color: '#001be5' }}>{r}</Text>
-
-                                }
-                            </TouchableOpacity>
-                        ));
-                        offset = i + r.length;
+                        children.push(<Expression key={Math.random()} style={styles.expression} size={30} index={index} />);
+                        hasExpression = true;
+                        offset += i + r.length;
                     }
-                    return r;
-                },
-            );
+                } else {
+                    // 链接消息
+                    if (offset < i) {
+                        if (isiOS) {
+                            children.push(copy.substring(offset, i));
+                        } else {
+                            children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{copy.substring(offset, i)}</Text>);
+                        }
+                    }
+                    children.push((
+                        <TouchableOpacity key={Math.random()} onPress={WebBrowser.openBrowserAsync.bind(WebBrowser, r)} >
+                            {
+                                // Do not nest in view error in dev environment
+                                process.env.NODE_ENV === 'development' ?
+                                    <View>
+                                        <Text style={{ color: '#001be5' }}>{r}</Text>
+                                    </View>
+                                    :
+                                    <Text style={{ color: '#001be5' }}>{r}</Text>
 
-        // The remaining content
+                            }
+                        </TouchableOpacity>
+                    ));
+                    offset += i + r.length;
+                }
+                copy = copy.replace(r, '');
+            } else {
+                break;
+            }
+        }
+
+        // 处理剩余文本
         if (offset < content.length) {
             if (isiOS) {
                 children.push(content.substring(offset, content.length));

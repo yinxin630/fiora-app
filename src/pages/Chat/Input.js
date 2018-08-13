@@ -40,9 +40,6 @@ class Input extends Component {
             },
         };
     }
-    componentWillUnmount() {
-        this.keyboardDidShowListener.remove();
-    }
     addSelfMessage(type, content) {
         const { user, focus } = this.props;
         const _id = focus + Date.now();
