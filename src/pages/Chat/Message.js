@@ -73,6 +73,7 @@ export default class Message extends Component {
                             children.push(<Expression key={Math.random()} style={styles.expression} size={30} index={index} />);
                             hasExpression = true;
                             offset = i + r.length;
+                            return '';
                         }
                     } else {
                         if (offset < i) {
