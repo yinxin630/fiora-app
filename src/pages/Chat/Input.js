@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, Text, Keyboard, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TextInput, Text, Dimensions, TouchableOpacity } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -39,9 +39,6 @@ class Input extends Component {
                 end: 0,
             },
         };
-    }
-    componentDidMount() {
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this.handleKeyboardShow);
     }
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
@@ -95,6 +92,9 @@ class Input extends Component {
             showFunctionList: true,
             showExpression: false,
         });
+        setTimeout(() => {
+            this.input.setNativeProps({ text: '' });
+        }, 5);
     }
     handleSelectionChange(event) {
         const { start, end } = event.nativeEvent.selection;
@@ -203,6 +203,9 @@ class Input extends Component {
                 end: cursorPosition.start + expression.length,
             },
         });
+        setTimeout(() => {
+            this.input.setNativeProps({ text: newValue });
+        }, 5);
     }
     render() {
         const { isLogin } = this.props;
@@ -215,7 +218,6 @@ class Input extends Component {
                                 ref={i => this.input = i}
                                 style={styles.input}
                                 placeholder="输入消息内容"
-                                value={this.state.value}
                                 onChangeText={this.handleChangeText}
                                 onSubmitEditing={this.handleSubmit}
                                 autoCapitalize="none"

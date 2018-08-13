@@ -12,7 +12,7 @@ import action from './state/action';
 import store from './state/store';
 import convertRobot10Message from '../utils/convertRobot10Message';
 import getFriendId from '../utils/getFriendId';
-import platform, { isiOS } from '../utils/platform';
+import platform from '../utils/platform';
 import appInfo from '../app';
 
 import ChatList from './pages/ChatList/ChatList';
