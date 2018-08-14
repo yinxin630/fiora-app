@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, Text, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TextInput, Text, Dimensions, TouchableOpacity, Platform } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -39,6 +39,14 @@ class Input extends Component {
                 end: 0,
             },
         };
+    }
+    setInputText(text = ' ') {
+        if (isiOS) {
+            this.input.setNativeProps({ text });
+        }
+        setTimeout(() => {
+            this.input.setNativeProps({ text });
+        });
     }
     addSelfMessage(type, content) {
         const { user, focus } = this.props;
@@ -89,9 +97,7 @@ class Input extends Component {
             showFunctionList: true,
             showExpression: false,
         });
-        setTimeout(() => {
-            this.input.setNativeProps({ text: '' });
-        }, 5);
+        this.setInputText();
     }
     handleSelectionChange(event) {
         const { start, end } = event.nativeEvent.selection;
@@ -200,9 +206,7 @@ class Input extends Component {
                 end: cursorPosition.start + expression.length,
             },
         });
-        setTimeout(() => {
-            this.input.setNativeProps({ text: newValue });
-        }, 5);
+        this.setInputText(newValue);
     }
     render() {
         const { isLogin } = this.props;
