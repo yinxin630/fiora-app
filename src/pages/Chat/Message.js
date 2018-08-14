@@ -52,14 +52,18 @@ export default class Message extends Component {
         const children = [];
         let copy = content;
 
+        function push(str) {
+            if (isiOS) {
+                children.push(str);
+            } else {
+                children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{str}</Text>);
+            }
+        }
+
         // 处理文本消息中的表情和链接
         let offset = 0;
         let hasExpression = false;
-        while (true) {
-            if (copy === '') {
-                break;
-            }
-
+        while (copy.length > 0) {
             const regex = /#\(([\u4e00-\u9fa5a-z]+)\)|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g;
             const matchResult = regex.exec(copy);
             if (matchResult) {
@@ -71,12 +75,8 @@ export default class Message extends Component {
                     const index = expressions.default.indexOf(e);
                     if (index !== -1) {
                         // 处理从开头到匹配位置的文本
-                        if (offset < i) {
-                            if (isiOS) {
-                                children.push(copy.substring(offset, i));
-                            } else {
-                                children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{copy.substring(offset, i)}</Text>);
-                            }
+                        if (i > 0) {
+                            push(copy.substring(0, i));
                         }
                         children.push(<Expression key={Math.random()} style={styles.expression} size={30} index={index} />);
                         hasExpression = true;
@@ -84,12 +84,8 @@ export default class Message extends Component {
                     }
                 } else {
                     // 链接消息
-                    if (offset < i) {
-                        if (isiOS) {
-                            children.push(copy.substring(offset, i));
-                        } else {
-                            children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{copy.substring(offset, i)}</Text>);
-                        }
+                    if (i > 0) {
+                        push(copy.substring(0, i));
                     }
                     children.push((
                         <TouchableOpacity key={Math.random()} onPress={WebBrowser.openBrowserAsync.bind(WebBrowser, r)} >
@@ -107,7 +103,7 @@ export default class Message extends Component {
                     ));
                     offset += i + r.length;
                 }
-                copy = copy.replace(r, '');
+                copy = copy.substr(i + r.length);
             } else {
                 break;
             }
@@ -115,11 +111,7 @@ export default class Message extends Component {
 
         // 处理剩余文本
         if (offset < content.length) {
-            if (isiOS) {
-                children.push(content.substring(offset, content.length));
-            } else {
-                children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{content.substring(offset, content.length)}</Text>);
-            }
+            push(content.substring(offset, content.length));
         }
 
         return (
