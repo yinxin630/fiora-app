@@ -40,12 +40,13 @@ class Input extends Component {
             },
         };
     }
-    setInputText(text = ' ') {
+    setInputText(text) {
+        // iossetNativeProps无效, 解决办法参考:https://github.com/facebook/react-native/issues/18272
         if (isiOS) {
-            this.input.setNativeProps({ text });
+            this.input.setNativeProps({ text: text || ' ' });
         }
         setTimeout(() => {
-            this.input.setNativeProps({ text });
+            this.input.setNativeProps({ text: text || '' });
         });
     }
     addSelfMessage(type, content) {
