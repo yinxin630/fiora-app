@@ -119,10 +119,10 @@ export default class App extends React.Component {
         const result = await Updates.fetchUpdateAsync();
         action.loading('');
         if (result.isNew) {
-            Updates.reload();
             Toast.show({
                 text: '有新版本可用, 后台更新中...',
             });
+            Updates.reload();
         } else {
             Alert.alert('提示', '当前版本已经是最新了');
         }
