@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, TextInput, Text, Dimensions, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, View, TextInput, Text, Dimensions, TouchableOpacity } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -237,7 +237,7 @@ class Input extends Component {
                         </View>
                         :
                         <Button block style={styles.button} onPress={Actions.login}>
-                            <Text style={styles.buttonText}>游客朋友你好, 请登录后参与聊天</Text>
+                            <Text style={styles.buttonText}>游客你好, 点击按钮登录后参与聊天</Text>
                         </Button>
                 }
                 {

@@ -6,7 +6,6 @@ import autobind from 'autobind-decorator';
 
 import Time from '../../../utils/time';
 import expressions from '../../../utils/expressions';
-import { isiOS } from '../../../utils/platform';
 
 import Avatar from '../../components/Avatar';
 import Expression from '../../components/Expression';
@@ -18,7 +17,7 @@ export default class Message extends Component {
     static propTypes = {
         avatar: PropTypes.string.isRequired,
         nickname: PropTypes.string.isRequired,
-        type: PropTypes.oneOf(['text', 'image', 'url', 'code']),
+        type: PropTypes.oneOf(['text', 'image', 'url', 'code', 'invite']),
         time: PropTypes.object,
         content: PropTypes.string.isRequired,
         shouldScroll: PropTypes.bool.isRequired,
@@ -53,16 +52,11 @@ export default class Message extends Component {
         let copy = content;
 
         function push(str) {
-            if (isiOS) {
-                children.push(str);
-            } else {
-                children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{str}</Text>);
-            }
+            children.push(<Text key={Math.random()} style={isSelf ? styles.textSelf : styles.empty}>{str}</Text>);
         }
 
         // 处理文本消息中的表情和链接
         let offset = 0;
-        let hasExpression = false;
         while (copy.length > 0) {
             const regex = /#\(([\u4e00-\u9fa5a-z]+)\)|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g;
             const matchResult = regex.exec(copy);
@@ -79,7 +73,6 @@ export default class Message extends Component {
                             push(copy.substring(0, i));
                         }
                         children.push(<Expression key={Math.random()} style={styles.expression} size={30} index={index} />);
-                        hasExpression = true;
                         offset += i + r.length;
                     }
                 } else {
@@ -117,10 +110,7 @@ export default class Message extends Component {
         return (
             <View style={[styles.textContent, isSelf ? styles.textContentSelf : styles.empty]}>
                 {
-                    isiOS ?
-                        <Text style={[styles.text, isSelf ? styles.textSelf : styles.empty, hasExpression ? styles.empty : styles.lineHeight20]}>{children}</Text>
-                        :
-                        <View style={[styles.textView]}>{children}</View>
+                    <View style={[styles.textView]}>{children}</View>
                 }
             </View>
         );
