@@ -4,7 +4,7 @@
     "privacy": "public",
     "name": "fiora",
     "icon": "./icon.png",
-    "version": "0.4.4",
+    "version": "0.4.5",
     "description": "App for fiora. A online chatroom",
     "slug": "fiora",
     "ios": {
