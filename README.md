@@ -20,7 +20,7 @@ Click link or scan qrcode to download APK
 
 ![](https://cdn.suisuijiang.com/ImageMessage/5adad39555703565e7903f78_1528384800528.png?width=850&height=644)
 
-## Connecting the server built by the individual
+## Connecting to a personal server
 
 Edit this code https://github.com/yinxin630/fiora-app/blob/master/src/socket.js#L6 , change to your server address
 
