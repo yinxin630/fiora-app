@@ -1,11 +1,14 @@
 import { Toast } from 'native-base';
 import socket from '../src/socket';
 
+let instance = null;
+socket.onNewInstance(newInstance => instance = newInstance);
+
 export default function fetch(event, data = {}, {
     toast = true,
 } = {}) {
     return new Promise((resolve) => {
-        socket.emit(event, data, (res) => {
+        instance.emit(event, data, (res) => {
             if (typeof res === 'string') {
                 if (toast) {
                     Toast.show({
