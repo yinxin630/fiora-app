@@ -241,7 +241,7 @@ class Input extends Component {
                         </Button>
                 }
                 {
-                    this.state.showFunctionList ?
+                    isLogin && this.state.showFunctionList ?
                         <View style={styles.iconButtonContainer}>
                             <Button transparent style={styles.iconButton} onPress={this.openExpression}>
                                 <Ionicons name="ios-happy" size={28} color="#666" />
