@@ -7,7 +7,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Button } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { Ionicons } from '@expo/vector-icons';
-import { ImagePicker, Permissions } from 'expo';
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
 import { Rpc } from 'react-native-qiniu';
 
 import action from '../../state/action';

@@ -15,18 +15,25 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@react-native-community/masked-view": "0.1.10",
     "autobind-decorator": "^2.1.0",
-    "expo": "^33.0.0",
-    "expo-constants": "^5.0.1",
+    "expo": "^38.0.0",
+    "expo-constants": "~9.1.1",
+    "expo-image-picker": "^8.4.0",
+    "expo-web-browser": "^8.3.1",
     "immutable": "^3.8.2",
     "native-base": "^2.4.5",
     "prop-types": "^15.6.1",
-    "react": "16.8.3",
+    "react": "16.11.0",
     "react-immutable-proptypes": "^2.1.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
+    "react-native-gesture-handler": "~1.6.0",
     "react-native-image-zoom-viewer": "^2.2.5",
     "react-native-qiniu": "^0.3.0",
-    "react-native-router-flux": "^4.0.0-beta.31",
+    "react-native-reanimated": "~1.9.0",
+    "react-native-router-flux": "^4.2.0",
+    "react-native-safe-area-context": "~3.0.7",
+    "react-native-screens": "~2.9.0",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "socket.io-client": "^2.1.1"
@@ -41,7 +48,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.8.2",
     "expo-cli": "^2.19.4",
-    "jest-expo": "^33.0.2",
+    "jest-expo": "^38.0.0",
     "react-test-renderer": "16.3.1"
   }
 }
