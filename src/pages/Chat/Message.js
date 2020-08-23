@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
-import { WebBrowser } from 'expo';
+import * as WebBrowser from 'expo-web-browser';
 import autobind from 'autobind-decorator';
 
 import Time from '../../../utils/time';
@@ -81,7 +81,7 @@ export default class Message extends Component {
                         push(copy.substring(0, i));
                     }
                     children.push((
-                        <TouchableOpacity key={Math.random()} onPress={WebBrowser.openBrowserAsync.bind(WebBrowser, r)} >
+                        <TouchableOpacity key={Math.random()} onPress={() => WebBrowser.openBrowserAsync(r)} >
                             {
                                 // Do not nest in view error in dev environment
                                 process.env.NODE_ENV === 'development' ?

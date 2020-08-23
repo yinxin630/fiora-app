@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import { Provider } from 'react-redux';
-import { Scene, Router, Actions } from 'react-native-router-flux';
+import { Scene, Router, Actions, Stack } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
-import { Root, Toast } from 'native-base';
+import { Root, Toast, Text } from 'native-base';
 import { Updates } from 'expo';
 
 import socket from './socket';
@@ -142,8 +142,8 @@ export default class App extends React.Component {
                     {/* react-native-router-flux不支持透明背景色, 暂时不能实现背景图 */}
                     {/* <Image style={styles.background} source={require('../src/assets/images/background.jpg')} blurRadius={15} /> */}
                     <Root>
-                        <Router style={{ backgroundColor: 'red' }}>
-                            <View style={{ backgroundColor: 'green' }}>
+                        <Router>
+                            <Stack key="root">
                                 <Scene key="test" component={Test} title="测试页面" />
                                 <Scene
                                     key="chatlist"
@@ -178,7 +178,7 @@ export default class App extends React.Component {
                                     component={Setting}
                                     title="设置"
                                 />
-                            </View>
+                            </Stack>
                         </Router>
                     </Root>
 
