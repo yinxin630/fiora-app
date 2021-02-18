@@ -1,33 +1,39 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleSheet, KeyboardAvoidingView } from 'react-native';
-import { Container } from 'native-base';
 import { connect } from 'react-redux';
 import immutable from 'immutable';
-import autobind from 'autobind-decorator';
+import Constants from 'expo-constants';
 
 import { isiOS } from '../../../utils/platform';
 
 import MessageList from './MessageList';
 import Input from './Input';
 
+function Chat() {
+    const $messageList = useRef();
 
-@autobind
-class Chat extends Component {
-    handleInputHeightChange() {
-        if (this.messageList && this.messageList.getWrappedInstance) {
-            this.messageList.getWrappedInstance().scrollToEnd();
+    useEffect(() => {
+        console.log('==>', Constants.statusBarHeight);
+    }, []);
+
+    function handleInputHeightChange() {
+        if ($messageList.current && $messageList.current.getWrappedInstance) {
+            $messageList.current.getWrappedInstance().scrollToEnd();
         }
     }
-    render() {
-        return (
-            <KeyboardAvoidingView style={styles.container} behavior="padding" keyboardVerticalOffset={isiOS ? 64 : 80}>
-                <Container style={styles.container}>
-                    <MessageList ref={i => this.messageList = i} />
-                    <Input onHeightChange={this.handleInputHeightChange} />
-                </Container>
-            </KeyboardAvoidingView>
-        );
-    }
+
+    return (
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={isiOS ? 'padding' : 'height'}
+            keyboardVerticalOffset={Constants.statusBarHeight + 44}
+        >
+
+            <MessageList ref={$messageList} />
+            <Input onHeightChange={handleInputHeightChange} />
+
+        </KeyboardAvoidingView>
+    );
 }
 
 const styles = StyleSheet.create({
