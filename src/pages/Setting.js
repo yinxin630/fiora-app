@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, AsyncStorage } from 'react-native';
+import { View, Text, TextInput, StyleSheet, AsyncStorage, SafeAreaView } from 'react-native';
 import { Container, Form, Label, Button } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 
@@ -25,23 +25,25 @@ export default class Test extends Component {
     }
     render() {
         return (
-            <Container style={styles.container}>
-                <View>
-                    <Form>
-                        <Label style={styles.label}>服务端地址</Label>
-                        <TextInput
-                            style={[styles.input, isiOS ? styles.inputiOS : {}]}
-                            clearButtonMode="while-editing"
-                            value={this.state.host}
-                            onChangeText={this.handleHostChange}
-                            autoCapitalize="none"
-                        />
-                    </Form>
-                    <Button primary block style={styles.button} onPress={this.handleChangeHost}>
-                        <Text style={styles.buttonText}>更新</Text>
-                    </Button>
-                </View>
-            </Container>
+            <SafeAreaView style={{ flex: 1 }}>
+                <Container style={styles.container}>
+                    <View>
+                        <Form>
+                            <Label style={styles.label}>服务端地址</Label>
+                            <TextInput
+                                style={[styles.input, isiOS ? styles.inputiOS : {}]}
+                                clearButtonMode="while-editing"
+                                value={this.state.host}
+                                onChangeText={this.handleHostChange}
+                                autoCapitalize="none"
+                            />
+                        </Form>
+                        <Button primary block style={styles.button} onPress={this.handleChangeHost}>
+                            <Text style={styles.buttonText}>更新</Text>
+                        </Button>
+                    </View>
+                </Container>
+            </SafeAreaView>
         );
     }
 }

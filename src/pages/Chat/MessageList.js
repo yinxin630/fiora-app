@@ -58,7 +58,7 @@ class Chat extends Component {
             if (this.scrollView && this.scrollView.scrollToEnd) {
                 this.scrollView.scrollToEnd();
             }
-        }, 100);
+        }, 200);
     }
     async handleRefresh() {
         this.setState({ refreshing: true });
@@ -185,7 +185,7 @@ class Chat extends Component {
 const styles = StyleSheet.create({
     container: {
         paddingTop: 8,
-        paddingRight: 8,
+        paddingBottom: 8,
         backgroundColor: '#ebebeb',
     },
 });

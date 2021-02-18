@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import immutable from 'immutable';
 import Constants from 'expo-constants';
@@ -23,23 +23,25 @@ function Chat() {
     }
 
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={isiOS ? 'padding' : 'height'}
-            keyboardVerticalOffset={Constants.statusBarHeight + 44}
-        >
+        <SafeAreaView style={styles.container}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={isiOS ? 'padding' : 'height'}
+                keyboardVerticalOffset={Constants.statusBarHeight + 44}
+            >
 
-            <MessageList ref={$messageList} />
-            <Input onHeightChange={handleInputHeightChange} />
+                <MessageList ref={$messageList} />
+                <Input onHeightChange={handleInputHeightChange} />
 
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#ebebeb',
+        backgroundColor: '#f6f6f6',
     },
 });
 
