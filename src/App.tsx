@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Alert, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
-import { Scene, Router, Actions, Stack } from 'react-native-router-flux';
-import { Root, Toast } from 'native-base';
-import { Updates } from 'expo';
+import { Scene, Router, Stack } from 'react-native-router-flux';
+import { Root } from 'native-base';
 
 import socket from './socket';
 import fetch from './utils/fetch';
@@ -13,14 +12,12 @@ import convertRobot10Message from './utils/convertRobot10Message';
 import getFriendId from './utils/getFriendId';
 import platform from './utils/platform';
 import getStorageValue from './utils/getStorageValue';
-import appInfo from '../app';
 
 import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
 import Login from './pages/LoginSignup/Login';
 import Signup from './pages/LoginSignup/Signup';
 import Test from './pages/test';
-import Setting from './pages/Setting';
 
 import Loading from './components/Loading';
 
@@ -32,9 +29,9 @@ async function guest() {
     action.loading('');
 }
 
-socket.onNewInstance((instance) => {
+(async function initSocketEvents() {
     let hasShowAlert = false;
-    instance.on('connect', async () => {
+    socket.on('connect', async () => {
         hasShowAlert = false;
         action.loading('登录中...');
 
@@ -62,10 +59,10 @@ socket.onNewInstance((instance) => {
             guest();
         }
     });
-    instance.on('disconnect', () => {
+    socket.on('disconnect', () => {
         action.disconnect();
     });
-    instance.on('message', (message) => {
+    socket.on('message', (message) => {
         // robot10
         convertRobot10Message(message);
 
@@ -92,14 +89,14 @@ socket.onNewInstance((instance) => {
             });
         }
     });
-    instance.on('connect_error', () => {
+    socket.on('connect_error', () => {
         if (!hasShowAlert) {
             action.loading('');
             alert('连接服务端失败, 无网络或者服务端地址错误');
             hasShowAlert = true;
         }
     });
-});
+}());
 
 type Props = {
     title: string;
@@ -113,33 +110,9 @@ export default function App({ title }: Props) {
         })();
     }, []);
 
-    function gotoSetting() {
-        Actions.setting();
-    }
-
-    async function updateVersion() {
-        if (process.env.NODE_ENV === 'development') {
-            return;
-        }
-
-        action.loading('检查更新');
-        const result = await Updates.fetchUpdateAsync();
-        action.loading('');
-        if (result.isNew) {
-            Toast.show({
-                text: '有新版本可用, 后台更新中...',
-            });
-            Updates.reload();
-        } else {
-            Alert.alert('提示', '当前版本已经是最新了');
-        }
-    }
-
     return (
         <Provider store={store}>
             <View style={styles.container}>
-                {/* react-native-router-flux不支持透明背景色, 暂时不能实现背景图 */}
-                {/* <Image style={styles.background} source={require('../src/assets/images/background.jpg')} blurRadius={15} /> */}
                 <Root>
                     <Router>
                         <Stack key="root">
@@ -148,10 +121,6 @@ export default function App({ title }: Props) {
                                 key="chatlist"
                                 component={ChatList}
                                 title="消息"
-                                onLeft={gotoSetting}
-                                leftTitle="设置"
-                                onRight={updateVersion}
-                                rightTitle={` v${appInfo.expo.version}`}
                                 initial
                             />
                             <Scene
@@ -172,11 +141,6 @@ export default function App({ title }: Props) {
                                 title="注册"
                                 backTitle="返回聊天"
                             />
-                            <Scene
-                                key="setting"
-                                component={Setting}
-                                title="设置"
-                            />
                         </Stack>
                     </Router>
                 </Root>
@@ -191,9 +155,4 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    // background: {
-    //     width: 375,
-    //     height: 667,
-    //     position: 'absolute',
-    // },
 });
