@@ -5,7 +5,7 @@ import autobind from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
 
-import { isiOS } from '../../../utils/platform';
+import { isiOS } from '../../utils/platform';
 
 export default class Login extends Component {
     static propTypes = {

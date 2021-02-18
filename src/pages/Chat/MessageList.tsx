@@ -9,8 +9,8 @@ import { Toast } from 'native-base';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 import action from '../../state/action';
-import fetch from '../../../utils/fetch';
-import openClose from '../../../utils/openClose';
+import fetch from '../../utils/fetch';
+import openClose from '../../utils/openClose';
 
 import Message from './Message';
 

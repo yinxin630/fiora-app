@@ -6,13 +6,13 @@ import { Root, Toast } from 'native-base';
 import { Updates } from 'expo';
 
 import socket from './socket';
-import fetch from '../utils/fetch';
+import fetch from './utils/fetch';
 import action from './state/action';
 import store from './state/store';
-import convertRobot10Message from '../utils/convertRobot10Message';
-import getFriendId from '../utils/getFriendId';
-import platform from '../utils/platform';
-import getStorageValue from '../utils/getStorageValue';
+import convertRobot10Message from './utils/convertRobot10Message';
+import getFriendId from './utils/getFriendId';
+import platform from './utils/platform';
+import getStorageValue from './utils/getStorageValue';
 import appInfo from '../app';
 
 import ChatList from './pages/ChatList/ChatList';

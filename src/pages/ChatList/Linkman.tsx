@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import autobind from 'autobind-decorator';
 import { Actions } from 'react-native-router-flux';
 
-import Time from '../../../utils/time';
+import Time from '../../utils/time';
 import action from '../../state/action';
 
 import Avatar from '../../components/Avatar';

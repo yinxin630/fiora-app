@@ -1,6 +1,6 @@
-import fetch from '../../utils/fetch';
-import convertRobot10Message from '../../utils/convertRobot10Message';
-import getFriendId from '../../utils/getFriendId';
+import fetch from '../utils/fetch';
+import convertRobot10Message from '../utils/convertRobot10Message';
+import getFriendId from '../utils/getFriendId';
 import store from './store';
 
 const { dispatch } = store;
