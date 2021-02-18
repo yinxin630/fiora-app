@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import * as WebBrowser from 'expo-web-browser';
 import autobind from 'autobind-decorator';
 
-import Time from '../../../utils/time';
-import expressions from '../../../utils/expressions';
+import Time from '../../utils/time';
+import expressions from '../../utils/expressions';
 
 import Avatar from '../../components/Avatar';
 import Expression from '../../components/Expression';

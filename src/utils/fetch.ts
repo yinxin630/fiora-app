@@ -1,5 +1,5 @@
 import { Toast } from 'native-base';
-import socket from '../src/socket';
+import socket from '../socket';
 
 let instance = null;
 socket.onNewInstance(newInstance => instance = newInstance);

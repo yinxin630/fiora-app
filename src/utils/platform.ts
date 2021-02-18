@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
-import packageInfo from '../package';
+import packageInfo from '../../package.json';
 
 const os = Platform.OS === 'ios' ? 'iOS' : 'Android';
 

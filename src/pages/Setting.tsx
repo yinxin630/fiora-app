@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, AsyncStorage, SafeAreaView } from 'r
 import { Container, Form, Label, Button } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 
-import { isiOS } from '../../utils/platform';
+import { isiOS } from '../utils/platform';
 import socket from '../socket';
 
 export default class Test extends Component {

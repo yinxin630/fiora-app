@@ -12,9 +12,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { Rpc } from 'react-native-qiniu';
 
 import action from '../../state/action';
-import fetch from '../../../utils/fetch';
-import { isiOS } from '../../../utils/platform';
-import expressions from '../../../utils/expressions';
+import fetch from '../../utils/fetch';
+import { isiOS } from '../../utils/platform';
+import expressions from '../../utils/expressions';
 
 import Expression from '../../components/Expression';
 

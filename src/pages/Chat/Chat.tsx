@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import immutable from 'immutable';
 import Constants from 'expo-constants';
 
-import { isiOS } from '../../../utils/platform';
+import { isiOS } from '../../utils/platform';
 
 import MessageList from './MessageList';
 import Input from './Input';
