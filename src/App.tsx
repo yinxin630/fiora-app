@@ -1,9 +1,8 @@
-import React from 'react';
-import { StyleSheet, View, Alert, SafeAreaView } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, Alert, SafeAreaView } from 'react-native';
 import { Provider } from 'react-redux';
 import { Scene, Router, Actions, Stack } from 'react-native-router-flux';
-import PropTypes from 'prop-types';
-import { Root, Toast, Text } from 'native-base';
+import { Root, Toast } from 'native-base';
 import { Updates } from 'expo';
 
 import socket from './socket';
@@ -26,11 +25,7 @@ import Setting from './pages/Setting';
 import Loading from './components/Loading';
 
 async function guest() {
-    const [err, res] = await fetch('guest', {
-        os: platform.os.family,
-        browser: platform.name,
-        environment: platform.description,
-    });
+    const [err, res] = await fetch('guest', {});
     if (!err) {
         action.setGuest(res);
     }
@@ -106,14 +101,23 @@ socket.onNewInstance((instance) => {
     });
 });
 
-export default class App extends React.Component {
-    static propTypes = {
-        title: PropTypes.string,
-    };
-    static gotoSetting() {
+type Props = {
+    title: string;
+}
+
+export default function App({ title }: Props) {
+    useEffect(() => {
+        (async () => {
+            const host = await getStorageValue('host');
+            socket.connect(host);
+        })();
+    }, []);
+
+    function gotoSetting() {
         Actions.setting();
     }
-    static async updateVersion() {
+
+    async function updateVersion() {
         if (process.env.NODE_ENV === 'development') {
             return;
         }
@@ -130,68 +134,62 @@ export default class App extends React.Component {
             Alert.alert('提示', '当前版本已经是最新了');
         }
     }
-    async componentDidMount() {
-        const host = await getStorageValue('host');
-        socket.connect(host);
-    }
 
-    render() {
-        return (
-            <Provider store={store}>
-                <SafeAreaView style={styles.container}>
-                    {/* react-native-router-flux不支持透明背景色, 暂时不能实现背景图 */}
-                    {/* <Image style={styles.background} source={require('../src/assets/images/background.jpg')} blurRadius={15} /> */}
-                    <Root>
-                        <Router>
-                            <Stack key="root">
-                                <Scene key="test" component={Test} title="测试页面2" />
-                                <Scene
-                                    key="chatlist"
-                                    component={ChatList}
-                                    title="消息"
-                                    onLeft={App.gotoSetting}
-                                    leftTitle="设置"
-                                    onRight={App.updateVersion}
-                                    rightTitle={` v${appInfo.expo.version}`}
-                                    initial
-                                    headerForceInset={{ top: 'never' }}
-                                />
-                                <Scene
-                                    key="chat"
-                                    component={Chat}
-                                    title="聊天"
-                                    getTitle={this.props.title}
-                                    headerForceInset={{ top: 'never' }}
-                                />
-                                <Scene
-                                    key="login"
-                                    component={Login}
-                                    title="登录"
-                                    backTitle="返回聊天"
-                                    headerForceInset={{ top: 'never' }}
-                                />
-                                <Scene
-                                    key="signup"
-                                    component={Signup}
-                                    title="注册"
-                                    backTitle="返回聊天"
-                                    headerForceInset={{ top: 'never' }}
-                                />
-                                <Scene
-                                    key="setting"
-                                    component={Setting}
-                                    title="设置"
-                                    headerForceInset={{ top: 'never' }}
-                                />
-                            </Stack>
-                        </Router>
-                    </Root>
+    return (
+        <Provider store={store}>
+            <SafeAreaView style={styles.container}>
+                {/* react-native-router-flux不支持透明背景色, 暂时不能实现背景图 */}
+                {/* <Image style={styles.background} source={require('../src/assets/images/background.jpg')} blurRadius={15} /> */}
+                <Root>
+                    <Router>
+                        <Stack key="root">
+                            <Scene key="test" component={Test} title="测试页面2" />
+                            <Scene
+                                key="chatlist"
+                                component={ChatList}
+                                title="消息"
+                                onLeft={gotoSetting}
+                                leftTitle="设置"
+                                onRight={updateVersion}
+                                rightTitle={` v${appInfo.expo.version}`}
+                                initial
+                                headerForceInset={{ top: 'never' }}
+                            />
+                            <Scene
+                                key="chat"
+                                component={Chat}
+                                title="聊天"
+                                getTitle={title}
+                                headerForceInset={{ top: 'never' }}
+                            />
+                            <Scene
+                                key="login"
+                                component={Login}
+                                title="登录"
+                                backTitle="返回聊天"
+                                headerForceInset={{ top: 'never' }}
+                            />
+                            <Scene
+                                key="signup"
+                                component={Signup}
+                                title="注册"
+                                backTitle="返回聊天"
+                                headerForceInset={{ top: 'never' }}
+                            />
+                            <Scene
+                                key="setting"
+                                component={Setting}
+                                title="设置"
+                                headerForceInset={{ top: 'never' }}
+                            />
+                        </Stack>
+                    </Router>
+                </Root>
 
-                    <Loading />
-                </SafeAreaView>
-            </Provider>
-        );
-    }
+                <Loading />
+            </SafeAreaView>
+        </Provider>
+    );
 }
 
 const styles = StyleSheet.create({

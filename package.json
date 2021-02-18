@@ -39,6 +39,11 @@
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
+    "@types/react": "^17.0.2",
+    "@types/react-native": "^0.63.50",
+    "@types/react-redux": "^7.1.16",
+    "@types/redux": "^3.6.0",
+    "@types/socket.io-client": "^1.4.35",
     "babel-eslint": "^8.2.3",
     "babel-plugin-transform-react-jsx-source": "^6.22.0",
     "eslint": "^4.19.1",
