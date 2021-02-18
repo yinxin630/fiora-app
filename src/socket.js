@@ -1,10 +1,11 @@
 import IO from 'socket.io-client';
+import { Socket } from './types/socket';
 
 const options = {
     transports: ['websocket'],
 };
 
-let socket = null;
+let socket: Socket = null;
 
 const newInstanceListener = [];
 
@@ -23,7 +24,7 @@ export default {
         socket.connect(host);
         newInstanceListener.forEach(callback => callback(socket));
     },
-    onNewInstance(callback) {
+    onNewInstance(callback: (socket: Socket) => void) {
         newInstanceListener.push(callback);
         if (socket) {
             callback(socket);
