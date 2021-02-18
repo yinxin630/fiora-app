@@ -68,7 +68,7 @@ export default class Login extends Component {
                 <Button primary block style={styles.button} onPress={this.handlePress}>
                     <Text style={styles.buttonText}>{buttonText}</Text>
                 </Button>
-                <Button transparent primary style={styles.signup} onPress={this.handleJump}>
+                <Button transparent style={styles.signup} onPress={this.handleJump}>
                     <Text style={styles.signupText}>{jumpText}</Text>
                 </Button>
             </Container>
