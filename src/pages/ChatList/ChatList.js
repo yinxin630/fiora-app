@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView } from 'react-native';
-import { Container } from 'native-base';
+import { ScrollView, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
@@ -39,7 +38,7 @@ class ChatList extends Component {
     render() {
         const { linkmans } = this.props;
         return (
-            <Container>
+            <SafeAreaView>
                 <ScrollView>
                     {
                         linkmans && linkmans.map(linkman => (
@@ -47,7 +46,7 @@ class ChatList extends Component {
                         ))
                     }
                 </ScrollView>
-            </Container>
+            </SafeAreaView>
         );
     }
 }

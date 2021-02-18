@@ -109,9 +109,7 @@ export default class Message extends Component {
 
         return (
             <View style={[styles.textContent, isSelf ? styles.textContentSelf : styles.empty]}>
-                {
-                    <View style={[styles.textView]}>{children}</View>
-                }
+                <View style={[styles.textView]}>{children}</View>
             </View>
         );
     }

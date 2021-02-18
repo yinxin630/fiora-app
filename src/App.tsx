@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Alert, SafeAreaView } from 'react-native';
+import { StyleSheet, Alert, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { Scene, Router, Actions, Stack } from 'react-native-router-flux';
 import { Root, Toast } from 'native-base';
@@ -137,7 +137,7 @@ export default function App({ title }: Props) {
 
     return (
         <Provider store={store}>
-            <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
                 {/* react-native-router-flux不支持透明背景色, 暂时不能实现背景图 */}
                 {/* <Image style={styles.background} source={require('../src/assets/images/background.jpg')} blurRadius={15} /> */}
                 <Root>
@@ -153,41 +153,36 @@ export default function App({ title }: Props) {
                                 onRight={updateVersion}
                                 rightTitle={` v${appInfo.expo.version}`}
                                 initial
-                                headerForceInset={{ top: 'never' }}
                             />
                             <Scene
                                 key="chat"
                                 component={Chat}
                                 title="聊天"
                                 getTitle={title}
-                                headerForceInset={{ top: 'never' }}
                             />
                             <Scene
                                 key="login"
                                 component={Login}
                                 title="登录"
                                 backTitle="返回聊天"
-                                headerForceInset={{ top: 'never' }}
                             />
                             <Scene
                                 key="signup"
                                 component={Signup}
                                 title="注册"
                                 backTitle="返回聊天"
-                                headerForceInset={{ top: 'never' }}
                             />
                             <Scene
                                 key="setting"
                                 component={Setting}
                                 title="设置"
-                                headerForceInset={{ top: 'never' }}
                             />
                         </Stack>
                     </Router>
                 </Root>
 
                 <Loading />
-            </SafeAreaView>
+            </View>
         </Provider>
     );
 }

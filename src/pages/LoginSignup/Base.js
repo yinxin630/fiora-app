@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, TextInput } from 'react-native';
+import { StyleSheet, Text, TextInput, SafeAreaView } from 'react-native';
 import { Container, Form, Label, Button } from 'native-base';
 import autobind from 'autobind-decorator';
 import PropTypes from 'prop-types';
@@ -45,33 +45,36 @@ export default class Login extends Component {
     render() {
         const { buttonText, jumpText } = this.props;
         return (
-            <Container style={styles.container}>
-                <Form>
-                    <Label style={styles.label}>用户名</Label>
-                    <TextInput
-                        style={[styles.input, isiOS ? styles.inputiOS : {}]}
-                        ref={i => this.username = i}
-                        clearButtonMode="while-editing"
-                        onChangeText={this.handleTextChange.bind(this, 'username')}
-                        autoCapitalize="none"
-                    />
-                    <Label style={styles.label}>密码</Label>
-                    <TextInput
-                        style={[styles.input, isiOS ? styles.inputiOS : {}]}
-                        ref={i => this.password = i}
-                        secureTextEntry
-                        clearButtonMode="while-editing"
-                        onChangeText={this.handleTextChange.bind(this, 'password')}
-                        autoCapitalize="none"
-                    />
-                </Form>
-                <Button primary block style={styles.button} onPress={this.handlePress}>
-                    <Text style={styles.buttonText}>{buttonText}</Text>
-                </Button>
-                <Button transparent style={styles.signup} onPress={this.handleJump}>
-                    <Text style={styles.signupText}>{jumpText}</Text>
-                </Button>
-            </Container>
+            <SafeAreaView style={{ flex: 1 }}>
+                <Container style={styles.container}>
+                    <Form>
+                        <Label style={styles.label}>用户名</Label>
+                        <TextInput
+                            style={[styles.input, isiOS ? styles.inputiOS : {}]}
+                            ref={i => this.username = i}
+                            clearButtonMode="while-editing"
+                            onChangeText={this.handleTextChange.bind(this, 'username')}
+                            autoCapitalize="none"
+                        />
+                        <Label style={styles.label}>密码</Label>
+                        <TextInput
+                            style={[styles.input, isiOS ? styles.inputiOS : {}]}
+                            ref={i => this.password = i}
+                            secureTextEntry
+                            clearButtonMode="while-editing"
+                            onChangeText={this.handleTextChange.bind(this, 'password')}
+                            autoCapitalize="none"
+                        />
+                    </Form>
+                    <Button primary block style={styles.button} onPress={this.handlePress}>
+                        <Text style={styles.buttonText}>{buttonText}</Text>
+                    </Button>
+                    <Button transparent style={styles.signup} onPress={this.handleJump}>
+                        <Text style={styles.signupText}>{jumpText}</Text>
+                    </Button>
+                </Container>
+
+            </SafeAreaView>
         );
     }
 }

@@ -220,7 +220,7 @@ class Input extends Component {
                             <TextInput
                                 ref={i => this.input = i}
                                 style={styles.input}
-                                placeholder="代码会写了吗, 给加薪了吗, 股票涨了吗~~"
+                                placeholder="随便聊点啥吧, 不要无意义刷屏~~"
                                 onChangeText={this.handleChangeText}
                                 onSubmitEditing={this.handleSubmit}
                                 autoCapitalize="none"
@@ -232,9 +232,6 @@ class Input extends Component {
                                 onSelectionChange={this.handleSelectionChange}
                                 onFocus={this.handleFocus}
                             />
-                            <Button primary style={styles.sendButton} onPress={this.handleSubmit}>
-                                <Text style={styles.buttonText}>发送</Text>
-                            </Button>
                         </View>
                         :
                         <Button block style={styles.button} onPress={Actions.login}>
@@ -289,7 +286,6 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: 4,
         backgroundColor: '#f6f6f6',
-        marginTop: isiOS ? 6 : 0,
     },
     inputContainer: {
         flexDirection: 'row',
@@ -304,6 +300,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderWidth: 1,
         borderColor: '#e5e5e5',
+        borderRadius: 5,
     },
     sendButton: {
         width: 50,
