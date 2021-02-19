@@ -2,12 +2,41 @@ import fetch from '../utils/fetch';
 import convertRobot10Message from '../utils/convertRobot10Message';
 import getFriendId from '../utils/getFriendId';
 import store from './store';
+import { Friend, Group, Linkman, Message, State, User } from './reducer';
 
 const { dispatch } = store;
 
+export const ConnectActionType = 'SetConnect';
+export type ConnectAction = {
+    type: typeof ConnectActionType;
+    value: boolean;
+};
+function connect() {
+    dispatch({
+        type: ConnectActionType,
+        value: true,
+    } as ConnectAction);
+}
+function disconnect() {
+    dispatch({
+        type: ConnectActionType,
+        value: false,
+    } as ConnectAction);
+}
+
 /* ===== 用户 ===== */
-async function setUser(user) {
-    user.groups.forEach((group) => {
+export const SetUserActionType = 'SetUser';
+export type SetUserAction = {
+    type: typeof SetUserActionType;
+    user: User;
+};
+export const SetLinkmanMessagesActionType = 'SetLinkmanMessages';
+export type SetLinkmanMessagesAction = {
+    type: typeof SetLinkmanMessagesActionType;
+    messages: { [linkmanId: string]: Message[] };
+};
+async function setUser(user: any) {
+    user.groups.forEach((group: Group) => {
         Object.assign(group, {
             type: 'group',
             unread: 0,
@@ -15,7 +44,7 @@ async function setUser(user) {
             members: [],
         });
     });
-    user.friends.forEach((friend) => {
+    user.friends.forEach((friend: Friend) => {
         Object.assign(friend, {
             type: 'friend',
             _id: getFriendId(friend.from, friend.to._id),
@@ -29,118 +58,166 @@ async function setUser(user) {
 
     const linkmans = [...user.groups, ...user.friends];
     dispatch({
-        type: 'SetUser',
+        type: SetUserActionType,
         user: {
             _id: user._id,
             avatar: user.avatar,
             username: user.username,
             linkmans,
         },
-    });
-
-    connect();
+    } as SetUserAction);
 
     const linkmanIds = [
-        ...user.groups.map(g => g._id),
-        ...user.friends.map(f => f._id),
+        ...user.groups.map((g: Group) => g._id),
+        ...user.friends.map((f: Friend) => f._id),
     ];
-    const [err, messages] = await fetch('getLinkmansLastMessages', { linkmans: linkmanIds });
+    const [err, messages] = await fetch<{ [linkmanId: string]: Message[] }>(
+        'getLinkmansLastMessages',
+        { linkmans: linkmanIds },
+    );
     for (const key in messages) {
-        messages[key].forEach(m => convertRobot10Message(m));
+        messages[key].forEach((m) => convertRobot10Message(m));
     }
     if (!err) {
         dispatch({
             type: 'SetLinkmanMessages',
             messages,
-        });
+        } as SetLinkmanMessagesAction);
     }
 }
-async function setGuest(defaultGroup) {
-    defaultGroup.messages.forEach(m => convertRobot10Message(m));
+
+export const SetGuestActionType = 'SetGuest';
+export type SetGuestAction = {
+    type: typeof SetGuestActionType;
+    linkmans: Linkman[];
+};
+async function setGuest(defaultGroup: Group) {
+    defaultGroup.messages.forEach((m) => convertRobot10Message(m));
     dispatch({
-        type: 'SetDeepValue',
-        keys: ['user'],
-        value: { linkmans: [
+        type: SetGuestActionType,
+        linkmans: [
             Object.assign(defaultGroup, {
                 type: 'group',
                 unread: 0,
                 members: [],
             }),
-        ] },
-    });
+        ],
+    } as SetGuestAction);
 }
-function connect() {
-    dispatch({
-        type: 'SetDeepValue',
-        keys: ['connect'],
-        value: true,
-    });
-}
-function disconnect() {
-    dispatch({
-        type: 'SetDeepValue',
-        keys: ['connect'],
-        value: false,
-    });
-}
+
+export const LogoutActionType = 'Logout';
+export type LogoutAction = {
+    type: typeof LogoutActionType;
+};
 function logout() {
     dispatch({
-        type: 'Logout',
-    });
-}
-function setAvatar(avatar) {
-    dispatch({
-        type: 'SetAvatar',
-        avatar,
+        type: LogoutActionType,
     });
 }
 
-function addLinkmanMessage(linkmanId, message) {
+export const UpdateUserPropertyActionType = 'UpdateUserProperty';
+export type UpdateUserPropertyAction = {
+    type: typeof UpdateUserPropertyActionType;
+    key: keyof User;
+    value: any;
+};
+function setAvatar(avatar: string) {
+    // @ts-expect-error
     dispatch({
-        type: 'AddLinkmanMessage',
+        type: UpdateUserPropertyActionType,
+        key: 'avatar',
+        value: avatar,
+    } as UpdateUserPropertyAction);
+}
+
+export const AddlinkmanMessageActionType = 'AddlinkmanMessage';
+export type AddlinkmanMessageAction = {
+    type: typeof AddlinkmanMessageActionType;
+    linkmanId: string;
+    message: Message;
+};
+function addLinkmanMessage(linkmanId: string, message: Message) {
+    dispatch({
+        type: AddlinkmanMessageActionType,
         linkmanId,
         message,
-    });
+    } as AddlinkmanMessageAction);
 }
-function addLinkmanMessages(linkmanId, messages) {
-    messages.forEach(m => convertRobot10Message(m));
+
+export const AddLinkmanHistoryMessagesActionType = 'AddLinkmanHistoryMessages';
+export type AddLinkmanHistoryMessagesAction = {
+    type: typeof AddLinkmanHistoryMessagesActionType;
+    linkmanId: string;
+    messages: Message[];
+};
+function addLinkmanMessages(linkmanId: string, messages: Message[]) {
     dispatch({
-        type: 'AddLinkmanMessages',
+        type: AddLinkmanHistoryMessagesActionType,
         linkmanId,
         messages,
-    });
+    } as AddLinkmanHistoryMessagesAction);
 }
-function updateSelfMessage(linkmanId, messageId, message) {
+
+export const UpdateSelfMessageActionType = 'UpdateSelfMessageActionType';
+export type UpdateSelfMessageAction = {
+    type: typeof UpdateSelfMessageActionType;
+    linkmanId: string;
+    messageId: string;
+    message: Message;
+};
+function updateSelfMessage(linkmanId: string, messageId: string, message: Message) {
     dispatch({
-        type: 'UpdateSelfMessage',
+        type: UpdateSelfMessageActionType,
         linkmanId,
         messageId,
         message,
-    });
+    } as UpdateSelfMessageAction);
 }
 
 /* ===== 联系人 ===== */
-function setFocus(linkmanId) {
+export const SetFocusActionType = 'SetFocus';
+export type SetFocusAction = {
+    type: typeof SetFocusActionType;
+    linkmanId: string;
+};
+function setFocus(linkmanId: string) {
     dispatch({
         type: 'SetFocus',
         linkmanId,
-    });
+    } as SetFocusAction);
 }
-function setGroupMembers(groupId, members) {
+
+export const UpdateGroupPropertyActionType = 'UpdateGroupProperty';
+export type UpdateGroupPropertyAction = {
+    type: typeof UpdateGroupPropertyActionType;
+    groupId: string;
+    key: keyof Group;
+    value: any;
+};
+function setGroupMembers(groupId: string, members: Group['members']) {
     dispatch({
-        type: 'SetGroupMembers',
+        type: UpdateGroupPropertyActionType,
         groupId,
-        members,
-    });
+        key: 'members',
+        value: members,
+    } as UpdateGroupPropertyAction);
 }
-function setGroupAvatar(groupId, avatar) {
+function setGroupAvatar(groupId: string, avatar: string) {
     dispatch({
-        type: 'SetGroupAvatar',
+        type: UpdateGroupPropertyActionType,
         groupId,
-        avatar,
+        key: 'avatar',
+        value: avatar,
     });
 }
-function addLinkman(linkman, focus = false) {
+
+export const AddLinkmanActionType = 'AddLinkman';
+export type AddLinkmanAction = {
+    type: typeof AddLinkmanActionType;
+    linkman: Linkman;
+    focus: boolean;
+};
+function addLinkman(linkman: Linkman, focus = false) {
     if (linkman.type === 'group') {
         linkman.members = [];
         linkman.messages = [];
@@ -150,32 +227,68 @@ function addLinkman(linkman, focus = false) {
         type: 'AddLinkman',
         linkman,
         focus,
-    });
+    } as AddLinkmanAction);
 }
-function removeLinkman(linkmanId) {
+
+export const RemoveLinkmanActionType = 'RemoveLinkmanActionType';
+export type RemoveLinkmanAction = {
+    type: typeof RemoveLinkmanActionType;
+    linkmanId: string;
+};
+function removeLinkman(linkmanId: string) {
     dispatch({
-        type: 'RemoveLinkman',
+        type: RemoveLinkmanActionType,
         linkmanId,
-    });
+    } as RemoveLinkmanAction);
 }
-function setFriend(linkmanId, from, to) {
+
+export const SetFriendActionType = 'SetFriend';
+export type SetFriendAction = {
+    type: typeof SetFriendActionType;
+    linkmanId: string;
+    from: Friend['from'];
+    to: Friend['to'];
+};
+function setFriend(linkmanId: string, from: Friend['from'], to: Friend['to']) {
     dispatch({
         type: 'SetFriend',
         linkmanId,
         from,
         to,
-    });
+    } as SetFriendAction);
 }
 
 /* ====== UI ====== */
-function loading(text) {
+export const UpdateUIPropertyActionType = 'UpdateUIPropertyActionType';
+export type UpdateUIPropertyAction = {
+    type: typeof UpdateUIPropertyActionType;
+    key: keyof State['ui'];
+    value: any;
+};
+function loading(text: string) {
     dispatch({
-        type: 'SetDeepValue',
-        keys: ['ui', 'loading'],
+        type: UpdateUIPropertyActionType,
+        key: 'loading',
         value: text,
-    });
+    } as UpdateUIPropertyAction);
 }
 
+export type ActionTypes =
+    | ConnectAction
+    | SetUserAction
+    | SetLinkmanMessagesAction
+    | UpdateGroupPropertyAction
+    | SetGuestAction
+    | SetFocusAction
+    | SetFriendAction
+    | AddLinkmanAction
+    | RemoveLinkmanAction
+    | AddlinkmanMessageAction
+    | AddLinkmanHistoryMessagesAction
+    | UpdateSelfMessageAction
+    | UpdateUserPropertyAction
+    | UpdateUIPropertyAction
+    | LogoutAction;
 
 export default {
     setUser,
