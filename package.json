@@ -15,6 +15,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.13.4",
     "@react-native-community/masked-view": "0.1.10",
     "autobind-decorator": "^2.1.0",
     "expo": "~40.0.0",
@@ -34,7 +35,7 @@
     "react-native-router-flux": "^4.2.0",
     "react-native-safe-area-context": "~3.0.7",
     "react-native-screens": "~2.9.0",
-    "react-redux": "^5.0.7",
+    "react-redux": "^7.2.2",
     "redux": "^4.0.0",
     "socket.io-client": "^2.1.1"
   },

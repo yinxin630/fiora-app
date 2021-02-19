@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, KeyboardAvoidingView, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import immutable from 'immutable';
@@ -11,10 +11,6 @@ import Input from './Input';
 
 function Chat() {
     const $messageList = useRef();
-
-    useEffect(() => {
-        console.log('==>', Constants.statusBarHeight);
-    }, []);
 
     function handleInputHeightChange() {
         if ($messageList.current && $messageList.current.getWrappedInstance) {
