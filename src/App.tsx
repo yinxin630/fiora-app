@@ -147,13 +147,13 @@ export default function App({ title }: Props) {
                                     key="login"
                                     component={Login}
                                     title="登录"
-                                    backTitle="返回聊天"
+                                    hideNavBar={false}
                                 />
                                 <Scene
                                     key="signup"
                                     component={Signup}
                                     title="注册"
-                                    backTitle="返回聊天"
+                                    hideNavBar={false}
                                 />
                                 <Scene key="test" component={Test} title="测试页面2" tabs={false} />
                             </Stack>
