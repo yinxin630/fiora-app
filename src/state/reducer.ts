@@ -1,210 +1,239 @@
-import immutable from 'immutable';
+import produce from 'immer';
+import {
+    ActionTypes,
+    ConnectActionType,
+    LogoutActionType,
+    UpdateGroupPropertyActionType,
+    SetGuestActionType,
+    SetLinkmanMessagesActionType,
+    SetUserActionType,
+    SetFocusActionType,
+    SetFriendActionType,
+    AddLinkmanActionType,
+    RemoveLinkmanActionType,
+    AddlinkmanMessageActionType,
+    AddLinkmanHistoryMessagesActionType,
+    UpdateSelfMessageActionType,
+    UpdateUserPropertyActionType,
+    UpdateUIPropertyActionType,
+} from './action';
 
-const initialState = immutable.fromJS({
+export type Message = {
+    _id: string;
+    type: string;
+    content: string;
+    createTime: number;
+};
+
+export type Group = {
+    _id: string;
+    type: 'group';
+    messages: Message[];
+    unread: number;
+    members: {}[];
+    createTime: number;
+};
+
+export type Friend = {
+    _id: string;
+    type: 'friend';
+    from: string;
+    to: {
+        _id: string;
+        avatar: string;
+        username: string;
+    };
+    messages: Message[];
+    unread: number;
+    createTime: number;
+};
+
+export type Linkman = Group | Friend;
+
+export type User = {
+    _id: string;
+    linkmans: Linkman[];
+};
+
+export type Guest = {
+    linkmans: Linkman[];
+};
+
+export type State = {
+    user?: User | Guest;
+    focus: string;
+    connect: boolean;
+    ui: {
+        loading: string;
+    };
+};
+
+/**
+ * 处理文本消息的html转义字符
+ * @param {Object} message 消息
+ */
+function convertMessageHtml(message: Message) {
+    if (message.type === 'text') {
+        message.content = message.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    }
+    return message;
+}
+
+const initialState = {
     user: null,
     focus: '',
     connect: true,
     ui: {
         loading: '连接服务器中...', // 全局loading文本内容, 为空则不展示
     },
-});
+};
 
-
-function reducer(state = initialState, action) {
+const reducer = produce((state: State, action: ActionTypes) => {
     switch (action.type) {
-    case 'Logout': {
-        const newState = initialState;
-        return newState;
-    }
-    case 'SetDeepValue': {
-        return state.setIn(action.keys, immutable.fromJS(action.value));
-    }
-
-    case 'SetUser': {
-        let newState = state;
-        if (state.getIn(['user', '_id']) === undefined) {
-            newState = newState
-                .set('user', immutable.fromJS(action.user))
-                .set('focus', state.get('focus') || action.user.linkmans[0]._id);
-        } else {
-            newState = newState.updateIn(['user', 'linkmans'], (linkmans) => {
-                let newLinkmans = linkmans;
-                action.user.linkmans.forEach((linkman) => {
-                    const index = linkmans.findIndex(l => l.get('_id') === linkman._id);
-                    if (index === -1) {
-                        newLinkmans = newLinkmans.push(immutable.fromJS(linkman));
-                    }
-                });
-                newLinkmans.forEach((linkman, linkmanIndex) => {
-                    const index = action.user.linkmans.findIndex(l => l._id === linkman.get('_id'));
-                    if (index === -1) {
-                        newLinkmans = newLinkmans.splice(linkmanIndex, 1);
-                    }
-                });
-                return newLinkmans;
-            });
-
-            const focusIndex = newState.getIn(['user', 'linkmans']).findIndex(l => l.get('_id') === newState.get('focus'));
-            if (focusIndex === -1) {
-                newState = newState.set('focus', newState.getIn(['user', 'linkmans', 0, '_id']));
+        case ConnectActionType: {
+            state.connect = action.value;
+            return state;
+        }
+        case LogoutActionType: {
+            return initialState;
+        }
+        case SetUserActionType: {
+            state.user = action.user;
+            if (action.user.linkmans.length > 0) {
+                state.focus = action.user.linkmans[0]._id;
             }
+            return state;
         }
-        return newState;
-    }
-    case 'SetLinkmanMessages': {
-        const newLinkmans = state
-            .getIn(['user', 'linkmans'])
-            .map((linkman) => {
-                action.messages[linkman.get('_id')].forEach(message => convertMessageHtml(message));
-                return linkman.set('messages', immutable.fromJS(action.messages[linkman.get('_id')]));
-            })
-            .sort((linkman1, linkman2) => {
-                const messages1 = linkman1.get('messages');
-                const messages2 = linkman2.get('messages');
-                const time1 = messages1.size > 0 ? messages1.get(messages1.size - 1).get('createTime') : linkman1.get('createTime');
-                const time2 = messages2.size > 0 ? messages2.get(messages2.size - 1).get('createTime') : linkman2.get('createTime');
-                return new Date(time1) < new Date(time2) ? 1 : -1;
+        case SetGuestActionType: {
+            state.user = {
+                linkmans: action.linkmans,
+            };
+            return state;
+        }
+        case UpdateUserPropertyActionType: {
+            // @ts-expect-error
+            state!.user[action.key] = action.value;
+            return state;
+        }
+        case SetLinkmanMessagesActionType: {
+            state.user!.linkmans.forEach((linkman) => {
+                linkman.messages = action.messages[linkman._id].map(convertMessageHtml);
             });
-        return state
-            .setIn(['user', 'linkmans'], newLinkmans)
-            .set('focus', state.get('focus') || newLinkmans.getIn([0, '_id']));
-    }
-    case 'SetGroupMembers': {
-        const linkmanIndex = state
-            .getIn(['user', 'linkmans'])
-            .findIndex(l => l.get('_id') === action.groupId);
-        return state.setIn(['user', 'linkmans', linkmanIndex, 'members'], immutable.fromJS(action.members));
-    }
-    case 'SetGroupAvatar': {
-        const linkmanIndex = state
-            .getIn(['user', 'linkmans'])
-            .findIndex(l => l.get('_id') === action.groupId);
-        return state.setIn(['user', 'linkmans', linkmanIndex, 'avatar'], action.avatar);
-    }
-    case 'SetFocus': {
-        const linkmanIndex = state
-            .getIn(['user', 'linkmans'])
-            .findIndex(l => l.get('_id') === action.linkmanId);
-        return state
-            .set('focus', action.linkmanId)
-            .setIn(['user', 'linkmans', linkmanIndex, 'unread'], 0);
-    }
-    case 'SetFriend': {
-        const linkmanIndex = state
-            .getIn(['user', 'linkmans'])
-            .findIndex(l => l.get('_id') === action.linkmanId);
-        return state
-            .updateIn(['user', 'linkmans', linkmanIndex], linkman => (
-                linkman
-                    .set('type', 'friend')
-                    .set('from', action.from)
-                    .set('to', action.to)
-                    .set('unread', 0)
-            ))
-            .set('focus', action.linkmanId);
-    }
-
-    case 'AddLinkman': {
-        const newState = state.updateIn(['user', 'linkmans'], linkmans => (
-            linkmans.unshift(immutable.fromJS(action.linkman))
-        ));
-        if (action.focus) {
-            return newState.set('focus', action.linkman._id);
+            state.user!.linkmans.sort((linkman1, linkman2) => {
+                const lastMessageTime1 =
+                    linkman1.messages.length > 0
+                        ? linkman1.messages[linkman1.messages.length - 1].createTime
+                        : linkman1.createTime;
+                const lastMessageTime2 =
+                    linkman2.messages.length > 0
+                        ? linkman2.messages[linkman2.messages.length - 1].createTime
+                        : linkman2.createTime;
+                return new Date(lastMessageTime1) < new Date(lastMessageTime2) ? 1 : -1;
+            });
+            if (!state.focus && state.user!.linkmans.length > 0) {
+                state.focus = state.user!.linkmans[0]._id;
+            }
+            return state;
         }
-        return newState;
-    }
-    case 'RemoveLinkman': {
-        const linkmanIndex = state
-            .getIn(['user', 'linkmans'])
-            .findIndex(l => l.get('_id') === action.linkmanId);
-        const newState = state.updateIn(['user', 'linkmans'], linkmans => (
-            linkmans.delete(linkmanIndex)
-        ));
-        return newState.set('focus', newState.getIn(['user', 'linkmans', 0, '_id']));
-    }
-    case 'AddLinkmanMessage': {
-        const linkmanIndex = state
-            .getIn(['user', 'linkmans'])
-            .findIndex(l => l.get('_id') === action.linkmanId);
-        const linkman = state.getIn(['user', 'linkmans', linkmanIndex]);
-        let unread = 0;
-        if (state.get('focus') !== linkman.get('_id')) {
-            unread = linkman.get('unread') + 1;
+        case UpdateGroupPropertyActionType: {
+            const group = state.user!.linkmans.find(
+                (linkman) => linkman.type === 'group' && linkman._id === action.groupId,
+            ) as Group;
+            if (group) {
+                // @ts-expect-error
+                group[action.key] = action.value;
+            }
+            return state;
         }
-        return state
-            .updateIn(['user', 'linkmans'], linkmans => (
-                linkmans
-                    .delete(linkmanIndex)
-                    .unshift(linkman
-                        .update('messages', (messages) => {
-                            const newMessages = messages.push(immutable.fromJS(convertMessageHtml(action.message)));
-                            if (
-                                action.message.from === state.getIn(['user', '_id']) &&
-                                 newMessages.size > 300
-                            ) {
-                                return newMessages.splice(0, 200);
-                            }
-                            return newMessages;
-                        })
-                        .set('unread', unread))
-            ));
+        case SetFocusActionType: {
+            const targetLinkman = state.user!.linkmans.find(
+                (linkman) => linkman._id === action.linkmanId,
+            );
+            if (targetLinkman) {
+                state.focus = action.linkmanId;
+                targetLinkman.unread = 0;
+            }
+            return state;
+        }
+        case SetFriendActionType: {
+            const friend = state.user!.linkmans.find(
+                (linkman) => linkman._id === action.linkmanId,
+            ) as Friend;
+            if (friend) {
+                friend.type = 'friend';
+                friend.from = action.from;
+                friend.to = action.to;
+                friend.unread = 0;
+                state.focus = action.linkmanId;
+            }
+            return state;
+        }
+        case AddLinkmanActionType: {
+            state.user!.linkmans.unshift(action.linkman);
+            if (action.focus) {
+                state.focus = action.linkman._id;
+            }
+            return state;
+        }
+        case RemoveLinkmanActionType: {
+            const index = state.user!.linkmans.findIndex(
+                (linkman) => linkman._id === action.linkmanId,
+            );
+            if (index !== -1) {
+                state.user!.linkmans.splice(index, 1);
+                if (state.focus === action.linkmanId) {
+                    state.focus =
+                        state.user!.linkmans.length > 0 ? state.user!.linkmans[0]._id : '';
+                }
+            }
+            return state;
+        }
+        case AddlinkmanMessageActionType: {
+            const targetLinkman = state.user!.linkmans.find(
+                (linkman) => linkman._id === action.linkmanId,
+            );
+            if (targetLinkman) {
+                if (state.focus !== targetLinkman._id) {
+                    targetLinkman.unread += 1;
+                }
+                targetLinkman.messages.push(convertMessageHtml(action.message));
+                if (targetLinkman.messages.length > 500) {
+                    targetLinkman.messages.slice(250);
+                }
+            }
+            return state;
+        }
+        case AddLinkmanHistoryMessagesActionType: {
+            const targetLinkman = state.user!.linkmans.find(
+                (linkman) => linkman._id === action.linkmanId,
+            );
+            if (targetLinkman) {
+                targetLinkman.messages.unshift(...action.messages.map(convertMessageHtml));
+            }
+            return state;
+        }
+        case UpdateSelfMessageActionType: {
+            const targetLinkman = state.user!.linkmans.find(
+                (linkman) => linkman._id === action.linkmanId,
+            );
+            if (targetLinkman) {
+                const targetMessage = targetLinkman.messages.find(
+                    (message) => message._id === action.messageId,
+                );
+                if (targetMessage) {
+                    Object.assign(targetMessage, convertMessageHtml(action.message));
+                }
+            }
+            return state;
+        }
+        case UpdateUIPropertyActionType: {
+            state.ui[action.key] = action.value;
+            return state;
+        }
+        default: {
+            return state;
+        }
     }
-    case 'AddLinkmanMessages': {
-        action.messages.forEach(message => convertMessageHtml(message));
-        const linkmanIndex = state
-            .getIn(['user', 'linkmans'])
-            .findIndex(l => l.get('_id') === action.linkmanId);
-        return state
-            .updateIn(['user', 'linkmans', linkmanIndex], l => (
-                l.update('messages', messages => (
-                    immutable.fromJS(action.messages).concat(messages)
-                ))
-            ));
-    }
-
-    case 'UpdateSelfMessage': {
-        const linkmanIndex = state
-            .getIn(['user', 'linkmans'])
-            .findIndex(l => l.get('_id') === action.linkmanId);
-        return state.updateIn(['user', 'linkmans', linkmanIndex, 'messages'], (messages) => {
-            const messageIndex = messages.findLastIndex(m => m.get('_id') === action.messageId);
-            return messages.update(messageIndex, message => message.mergeDeep(immutable.fromJS(convertMessageHtml(action.message))));
-        });
-    }
-    case 'SetAvatar': {
-        const userId = state.getIn(['user', '_id']);
-        return state
-            .setIn(['user', 'avatar'], action.avatar)
-            .updateIn(['user', 'linkmans'], linkmans => (
-                linkmans.map(l => (
-                    l.update('messages', messages => (
-                        messages.map((message) => {
-                            if (message.getIn(['from', '_id']) === userId) {
-                                return message.setIn(['from', 'avatar'], action.avatar);
-                            }
-                            return message;
-                        })
-                    ))
-                ))
-            ));
-    }
-
-    default:
-        return state;
-    }
-}
+}, initialState);
 
 export default reducer;
-
-/**
- * 处理文本消息的html转义字符
- * @param {Object} message 消息
- */
-function convertMessageHtml(message) {
-    if (message.type === 'text') {
-        message.content = message.content
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>');
-    }
-    return message;
-}

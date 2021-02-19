@@ -33,6 +33,7 @@ async function guest() {
 (async function initSocketEvents() {
     let hasShowAlert = false;
     socket.on('connect', async () => {
+        action.connect();
         hasShowAlert = false;
         action.loading('登录中...');
 

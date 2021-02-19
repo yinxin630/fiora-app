@@ -1,22 +1,24 @@
 {
-    "extends": [
-        "airbnb"
-    ],
+    "extends": ["eslint-config-airbnb", "prettier"],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "./tsconfig.json",
+        "createDefaultProgram": true
+    },
     "env": {
         "browser": true,
         "node": true
     },
-    "plugins": [
-        "react",
-        "jsx-a11y",
-        "import"
-    ],
-    "parser": "babel-eslint",
-    "globals": {
-
-    }, 
+    "plugins": ["react", "jsx-a11y", "import"],
+    "globals": {},
     "rules": {
-        "indent": [2, 4],
+        "indent": [
+            2,
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
         "global-require": 0,
         "new-cap": 0,
         "func-names": 0,
