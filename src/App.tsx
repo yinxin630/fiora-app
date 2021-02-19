@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Provider } from 'react-redux';
-import { Scene, Router, Stack, Tabs, Modal } from 'react-native-router-flux';
-import { Root } from 'native-base';
+import { Scene, Router, Stack, Tabs, Modal, Actions } from 'react-native-router-flux';
+import { Icon, Root } from 'native-base';
 
 import socket from './socket';
 import fetch from './utils/fetch';
@@ -69,7 +69,7 @@ async function guest() {
         convertRobot10Message(message);
 
         const state = store.getState() as State;
-        const linkman = state.user!.linkmans.find(x => x._id === message.to);
+        const linkman = state.user!.linkmans.find((x) => x._id === message.to);
         if (linkman) {
             action.addLinkmanMessage(message.to, message);
         } else {
@@ -98,20 +98,15 @@ async function guest() {
             hasShowAlert = true;
         }
     });
-}());
+
+    socket.connect();
+})();
 
 type Props = {
     title: string;
-}
+};
 
 export default function App({ title }: Props) {
-    useEffect(() => {
-        (async () => {
-            const host = await getStorageValue('host');
-            socket.connect(host);
-        })();
-    }, []);
-
     return (
         <Provider store={store}>
             <View style={styles.container}>
@@ -126,14 +121,30 @@ export default function App({ title }: Props) {
                                         initial
                                         hideNavBar
                                         title="消息"
-                                        icon={() => <Text>icon</Text>}
+                                        icon={({ focused }) => (
+                                            <Icon
+                                                name="chatbubble-ellipses-outline"
+                                                style={{
+                                                    fontSize: 24,
+                                                    color: focused ? '#3586f1' : 'gray',
+                                                }}
+                                            />
+                                        )}
                                     />
                                     <Scene
                                         key="other"
                                         component={Other}
                                         hideNavBar
                                         title="其它"
-                                        icon={() => <Text>icon</Text>}
+                                        icon={({ focused }) => (
+                                            <Icon
+                                                name="aperture-outline"
+                                                style={{
+                                                    fontSize: 24,
+                                                    color: focused ? '#3586f1' : 'gray',
+                                                }}
+                                            />
+                                        )}
                                     />
                                 </Tabs>
                                 <Scene
