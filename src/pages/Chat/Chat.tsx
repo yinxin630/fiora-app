@@ -1,11 +1,12 @@
 import React, { useRef } from 'react';
-import { StyleSheet, KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView } from 'react-native';
 import Constants from 'expo-constants';
 
 import { isiOS } from '../../utils/platform';
 
 import MessageList from './MessageList';
 import Input from './Input';
+import PageContainer from '../../components/PageContainer';
 
 export default function Chat() {
     const $messageList = useRef();
@@ -17,7 +18,7 @@ export default function Chat() {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <PageContainer disableSafeAreaView>
             <KeyboardAvoidingView
                 style={styles.container}
                 behavior={isiOS ? 'padding' : 'height'}
@@ -26,13 +27,12 @@ export default function Chat() {
                 <MessageList ref={$messageList} />
                 <Input onHeightChange={handleInputHeightChange} />
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </PageContainer>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f6f6f6',
     },
 });
