@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { Provider } from 'react-redux';
-import { Scene, Router, Stack } from 'react-native-router-flux';
+import { Scene, Router, Stack, Tabs, Modal } from 'react-native-router-flux';
 import { Root } from 'native-base';
 
 import socket from './socket';
@@ -11,7 +11,7 @@ import store from './state/store';
 import convertRobot10Message from './utils/convertRobot10Message';
 import getFriendId from './utils/getFriendId';
 import platform from './utils/platform';
-import getStorageValue from './utils/getStorageValue';
+import { getStorageValue } from './utils/storage';
 
 import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
@@ -20,6 +20,7 @@ import Signup from './pages/LoginSignup/Signup';
 import Test from './pages/test';
 
 import Loading from './components/Loading';
+import Other from './pages/Other/Other';
 
 async function guest() {
     const [err, res] = await fetch('guest', {});
@@ -35,7 +36,6 @@ async function guest() {
         hasShowAlert = false;
         action.loading('登录中...');
 
-        // await AsyncStorage.setItem('token', '');
         const token = await getStorageValue('token');
 
         if (token) {
@@ -115,33 +115,47 @@ export default function App({ title }: Props) {
             <View style={styles.container}>
                 <Root>
                     <Router>
-                        <Stack key="root">
-                            <Scene key="test" component={Test} title="测试页面2" />
-                            <Scene
-                                key="chatlist"
-                                component={ChatList}
-                                title="消息"
-                                initial
-                            />
-                            <Scene
-                                key="chat"
-                                component={Chat}
-                                title="聊天"
-                                getTitle={title}
-                            />
-                            <Scene
-                                key="login"
-                                component={Login}
-                                title="登录"
-                                backTitle="返回聊天"
-                            />
-                            <Scene
-                                key="signup"
-                                component={Signup}
-                                title="注册"
-                                backTitle="返回聊天"
-                            />
-                        </Stack>
+                        <Modal>
+                            <Stack hideNavBar>
+                                <Tabs key="tabs" hideNavBar>
+                                    <Scene
+                                        key="chatlist"
+                                        component={ChatList}
+                                        initial
+                                        hideNavBar
+                                        title="消息"
+                                        icon={() => <Text>icon</Text>}
+                                    />
+                                    <Scene
+                                        key="other"
+                                        component={Other}
+                                        hideNavBar
+                                        title="其它"
+                                        icon={() => <Text>icon</Text>}
+                                    />
+                                </Tabs>
+                                <Scene
+                                    key="chat"
+                                    component={Chat}
+                                    title="聊天"
+                                    getTitle={title}
+                                    hideNavBar={false}
+                                />
+                                <Scene
+                                    key="login"
+                                    component={Login}
+                                    title="登录"
+                                    backTitle="返回聊天"
+                                />
+                                <Scene
+                                    key="signup"
+                                    component={Signup}
+                                    title="注册"
+                                    backTitle="返回聊天"
+                                />
+                                <Scene key="test" component={Test} title="测试页面2" tabs={false} />
+                            </Stack>
+                        </Modal>
                     </Router>
                 </Root>
 

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
 import { Container, Toast } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 
@@ -8,6 +7,7 @@ import platform from '../../utils/platform';
 import action from '../../state/action';
 
 import Base from './Base';
+import { setStorageValue } from '../../utils/storage';
 
 export default class Signup extends Component {
     static async handleSubmit(username, password) {
@@ -22,7 +22,7 @@ export default class Signup extends Component {
             });
             action.setUser(res);
             Actions.chatlist();
-            await AsyncStorage.setItem('token', res.token);
+            await setStorageValue('token', res.token);
         }
     }
     render() {

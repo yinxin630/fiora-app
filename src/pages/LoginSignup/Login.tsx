@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
 import { Container } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 
@@ -8,6 +7,7 @@ import platform from '../../utils/platform';
 import action from '../../state/action';
 
 import Base from './Base';
+import { setStorageValue } from '../../utils/storage';
 
 export default class Login extends Component {
     static async handleSubmit(username, password) {
@@ -18,7 +18,7 @@ export default class Login extends Component {
         if (!err) {
             action.setUser(res);
             Actions.pop();
-            await AsyncStorage.setItem('token', res.token);
+            await setStorageValue('token', res.token);
         }
     }
     render() {
