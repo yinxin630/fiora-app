@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { StyleSheet, View, TextInput, Text, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TextInput, Text, Dimensions, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Button } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { Ionicons } from '@expo/vector-icons';
@@ -215,62 +215,66 @@ export default function Input({ onHeightChange }: Props) {
     }
 
     return (
-        <View style={styles.container}>
-            {isLogin ? (
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        ref={$input}
-                        style={styles.input}
-                        placeholder="随便聊点啥吧, 不要无意义刷屏~~"
-                        onChangeText={handleChangeText}
-                        onSubmitEditing={handleSubmit}
-                        autoCapitalize="none"
-                        blurOnSubmit={false}
-                        maxLength={2048}
-                        returnKeyType="send"
-                        enablesReturnKeyAutomatically
-                        underlineColorAndroid="transparent"
-                        onSelectionChange={handleSelectionChange}
-                        onFocus={handleFocus}
-                    />
-                </View>
-            ) : (
-                <Button block style={styles.button} onPress={Actions.login}>
-                    <Text style={styles.buttonText}>游客你好, 点击按钮登录后参与聊天</Text>
-                </Button>
-            )}
-            {isLogin && showFunctionList ? (
-                <View style={styles.iconButtonContainer}>
-                    <Button transparent style={styles.iconButton} onPress={openExpression}>
-                        <Ionicons name="ios-happy" size={28} color="#666" />
+        <SafeAreaView style={styles.safeView}>
+            <View style={styles.container}>
+                {isLogin ? (
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            ref={$input}
+                            style={styles.input}
+                            placeholder="随便聊点啥吧, 不要无意义刷屏~~"
+                            onChangeText={handleChangeText}
+                            onSubmitEditing={handleSubmit}
+                            autoCapitalize="none"
+                            blurOnSubmit={false}
+                            maxLength={2048}
+                            returnKeyType="send"
+                            enablesReturnKeyAutomatically
+                            underlineColorAndroid="transparent"
+                            onSelectionChange={handleSelectionChange}
+                            onFocus={handleFocus}
+                        />
+                    </View>
+                ) : (
+                    <Button block style={styles.button} onPress={Actions.login}>
+                        <Text style={styles.buttonText}>游客你好, 点击按钮登录后参与聊天</Text>
                     </Button>
-                    <Button transparent style={styles.iconButton} onPress={handleClickImage}>
-                        <Ionicons name="ios-image" size={28} color="#666" />
-                    </Button>
-                    <Button transparent style={styles.iconButton} onPress={handleClickCamera}>
-                        <Ionicons name="ios-camera" size={28} color="#666" />
-                    </Button>
-                </View>
-            ) : null}
-            {showExpression ? (
-                <View style={styles.expressionContainer}>
-                    {expressions.default.map((e, i) => (
-                        <TouchableOpacity key={e} onPress={() => insertExpression(e)}>
-                            <View style={styles.expression}>
-                                <Expression index={i} size={30} />
-                            </View>
-                        </TouchableOpacity>
-                    ))}
-                </View>
-            ) : null}
-        </View>
+                )}
+                {isLogin && showFunctionList ? (
+                    <View style={styles.iconButtonContainer}>
+                        <Button transparent style={styles.iconButton} onPress={openExpression}>
+                            <Ionicons name="ios-happy" size={28} color="#999" />
+                        </Button>
+                        <Button transparent style={styles.iconButton} onPress={handleClickImage}>
+                            <Ionicons name="ios-image" size={28} color="#999" />
+                        </Button>
+                        <Button transparent style={styles.iconButton} onPress={handleClickCamera}>
+                            <Ionicons name="ios-camera" size={28} color="#999" />
+                        </Button>
+                    </View>
+                ) : null}
+                {showExpression ? (
+                    <View style={styles.expressionContainer}>
+                        {expressions.default.map((e, i) => (
+                            <TouchableOpacity key={e} onPress={() => insertExpression(e)}>
+                                <View style={styles.expression}>
+                                    <Expression index={i} size={30} />
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                ) : null}
+            </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    safeView: {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    },
     container: {
         paddingTop: 4,
-        backgroundColor: '#f6f6f6',
     },
     inputContainer: {
         flexDirection: 'row',

@@ -14,6 +14,7 @@ import {
 import React from 'react';
 import { Linking, SafeAreaView, StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import PageContainer from '../../components/PageContainer';
 
 import { useIsLogin } from '../../hooks/useStore';
 import socket from '../../socket';
@@ -36,37 +37,35 @@ function Other() {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <Container>
-                <Content>
-                    <List>
-                        <ListItem
-                            icon
-                            onPress={() => Linking.openURL('https://github.com/yinxin630/fiora')}
-                        >
-                            <Left>
-                                <Icon name="github" style={{ fontSize: 25 }} type="AntDesign" />
-                            </Left>
-                            <Body>
-                                <Text>源码</Text>
-                            </Body>
-                            <Right>
-                                <Icon active name="arrow-forward" />
-                            </Right>
-                        </ListItem>
-                    </List>
-                </Content>
-                {isLogin ? (
-                    <Button danger block style={styles.logoutButton} onPress={logout}>
-                        <Text>退出登录</Text>
-                    </Button>
-                ) : (
-                    <Button block style={styles.logoutButton} onPress={login}>
-                        <Text>登录 / 注册</Text>
-                    </Button>
-                )}
-            </Container>
-        </SafeAreaView>
+        <PageContainer>
+            <Content>
+                <List>
+                    <ListItem
+                        icon
+                        onPress={() => Linking.openURL('https://github.com/yinxin630/fiora')}
+                    >
+                        <Left>
+                            <Icon name="github" style={{ fontSize: 25 }} type="AntDesign" />
+                        </Left>
+                        <Body>
+                            <Text>源码</Text>
+                        </Body>
+                        <Right>
+                            <Icon active name="arrow-forward" />
+                        </Right>
+                    </ListItem>
+                </List>
+            </Content>
+            {isLogin ? (
+                <Button danger block style={styles.logoutButton} onPress={logout}>
+                    <Text>退出登录</Text>
+                </Button>
+            ) : (
+                <Button block style={styles.logoutButton} onPress={login}>
+                    <Text>登录 / 注册</Text>
+                </Button>
+            )}
+        </PageContainer>
     );
 }
 

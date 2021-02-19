@@ -189,6 +189,5 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: 8,
         paddingBottom: 8,
-        backgroundColor: '#ebebeb',
     },
 });

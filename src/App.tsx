@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Scene, Router, Stack, Tabs, Modal } from 'react-native-router-flux';
-import { Icon, Root } from 'native-base';
+import { Scene, Router, Stack, Tabs, Modal, Lightbox } from 'react-native-router-flux';
+import { Icon, Root, Text } from 'native-base';
 
 import socket from './socket';
 import fetch from './utils/fetch';
@@ -23,6 +23,7 @@ import Other from './pages/Other/Other';
 import { State, User } from './types/redux';
 import { useTheme } from './hooks/useStore';
 import { connect } from 'react-redux';
+import SelfInfo from './pages/ChatList/SelfInfo';
 
 async function guest() {
     const [err, res] = await fetch('guest', {});
@@ -106,38 +107,44 @@ async function guest() {
 type Props = {
     title: string;
     primaryColor: string;
+    isLogin: boolean;
 };
 
-function App({ title, primaryColor }: Props) {
-    const iconColor = `rgb(${primaryColor})`;
+function App({ title, primaryColor, isLogin }: Props) {
+    const primaryColor10 = `rgba(${primaryColor}, 1)`;
+    const primaryColor8 = `rgba(${primaryColor}, 0.8)`;
 
     return (
         <View style={styles.container}>
             <Root>
                 <Router>
-                    <Modal>
-                        <Stack hideNavBar>
+                    <Stack hideNavBar>
+                        <Lightbox>
                             <Tabs
                                 key="tabs"
                                 hideNavBar
-                                tabBarStyle={{ backgroundColor: `rgba(255, 255, 255, 0.5)` }}
+                                tabBarStyle={{ backgroundColor: primaryColor8, borderTopWidth: 0 }}
                                 showLabel={false}
                             >
                                 <Scene
                                     key="chatlist"
                                     component={ChatList}
                                     initial
-                                    hideNavBar
-                                    title="消息"
+                                    hideNavBar={!isLogin}
                                     icon={({ focused }) => (
                                         <Icon
                                             name="chatbubble-ellipses-outline"
                                             style={{
                                                 fontSize: 24,
-                                                color: focused ? iconColor : '#aaa',
+                                                color: focused ? 'white' : '#bbb',
                                             }}
                                         />
                                     )}
+                                    renderLeftButton={() => <SelfInfo />}
+                                    navigationBarStyle={{
+                                        backgroundColor: primaryColor10,
+                                        borderBottomWidth: 0,
+                                    }}
                                 />
                                 <Scene
                                     key="other"
@@ -149,29 +156,30 @@ function App({ title, primaryColor }: Props) {
                                             name="aperture-outline"
                                             style={{
                                                 fontSize: 24,
-                                                color: focused ? iconColor : '#aaa',
+                                                color: focused ? 'white' : '#bbb',
                                             }}
                                         />
                                     )}
                                 />
                             </Tabs>
-                            <Scene
-                                key="chat"
-                                component={Chat}
-                                title="聊天"
-                                getTitle={title}
-                                hideNavBar={false}
-                            />
-                            <Scene key="login" component={Login} title="登录" hideNavBar={false} />
-                            <Scene
-                                key="signup"
-                                component={Signup}
-                                title="注册"
-                                hideNavBar={false}
-                            />
-                            <Scene key="test" component={Test} title="测试页面2" tabs={false} />
-                        </Stack>
-                    </Modal>
+                        </Lightbox>
+                        <Scene
+                            key="chat"
+                            component={Chat}
+                            title="聊天"
+                            getTitle={title}
+                            hideNavBar
+                            navigationBarStyle={{
+                                backgroundColor: primaryColor10,
+                                borderBottomWidth: 0,
+                            }}
+                            navBarButtonColor="#f9f9f9"
+                            backTitle="返回"
+                        />
+                        <Scene key="login" component={Login} title="登录" hideNavBar={false} />
+                        <Scene key="signup" component={Signup} title="注册" hideNavBar={false} />
+                        <Scene key="test" component={Test} title="测试页面2" tabs={false} />
+                    </Stack>
                 </Router>
             </Root>
 
@@ -182,6 +190,7 @@ function App({ title, primaryColor }: Props) {
 
 export default connect((state: State) => ({
     primaryColor: state.ui.primaryColor,
+    isLogin: !!(state.user as User)?._id,
 }))(App);
 
 const styles = StyleSheet.create({
