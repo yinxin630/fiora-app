@@ -11,8 +11,8 @@ export default function Chat() {
     const $messageList = useRef();
 
     function handleInputHeightChange() {
-        if ($messageList.current?.getWrappedInstance) {
-            $messageList.current!.scrollToEnd();
+        if ($messageList.current) {
+            $messageList.current!.scrollToEnd({ animated: false });
         }
     }
 
@@ -23,10 +23,8 @@ export default function Chat() {
                 behavior={isiOS ? 'padding' : 'height'}
                 keyboardVerticalOffset={Constants.statusBarHeight + 44}
             >
-
                 <MessageList ref={$messageList} />
                 <Input onHeightChange={handleInputHeightChange} />
-
             </KeyboardAvoidingView>
         </SafeAreaView>
     );

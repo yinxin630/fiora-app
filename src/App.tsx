@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { Provider } from 'react-redux';
-import { Scene, Router, Stack, Tabs, Modal, Actions } from 'react-native-router-flux';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Scene, Router, Stack, Tabs, Modal } from 'react-native-router-flux';
 import { Icon, Root } from 'native-base';
 
 import socket from './socket';
@@ -22,6 +21,8 @@ import Test from './pages/test';
 import Loading from './components/Loading';
 import Other from './pages/Other/Other';
 import { State, User } from './types/redux';
+import { useTheme } from './hooks/useStore';
+import { connect } from 'react-redux';
 
 async function guest() {
     const [err, res] = await fetch('guest', {});
@@ -104,79 +105,84 @@ async function guest() {
 
 type Props = {
     title: string;
+    primaryColor: string;
 };
 
-export default function App({ title }: Props) {
-    return (
-        <Provider store={store}>
-            <View style={styles.container}>
-                <Root>
-                    <Router>
-                        <Modal>
-                            <Stack hideNavBar>
-                                <Tabs key="tabs" hideNavBar>
-                                    <Scene
-                                        key="chatlist"
-                                        component={ChatList}
-                                        initial
-                                        hideNavBar
-                                        title="消息"
-                                        icon={({ focused }) => (
-                                            <Icon
-                                                name="chatbubble-ellipses-outline"
-                                                style={{
-                                                    fontSize: 24,
-                                                    color: focused ? '#3586f1' : 'gray',
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                    <Scene
-                                        key="other"
-                                        component={Other}
-                                        hideNavBar
-                                        title="其它"
-                                        icon={({ focused }) => (
-                                            <Icon
-                                                name="aperture-outline"
-                                                style={{
-                                                    fontSize: 24,
-                                                    color: focused ? '#3586f1' : 'gray',
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                </Tabs>
-                                <Scene
-                                    key="chat"
-                                    component={Chat}
-                                    title="聊天"
-                                    getTitle={title}
-                                    hideNavBar={false}
-                                />
-                                <Scene
-                                    key="login"
-                                    component={Login}
-                                    title="登录"
-                                    hideNavBar={false}
-                                />
-                                <Scene
-                                    key="signup"
-                                    component={Signup}
-                                    title="注册"
-                                    hideNavBar={false}
-                                />
-                                <Scene key="test" component={Test} title="测试页面2" tabs={false} />
-                            </Stack>
-                        </Modal>
-                    </Router>
-                </Root>
+function App({ title, primaryColor }: Props) {
+    const iconColor = `rgb(${primaryColor})`;
 
-                <Loading />
-            </View>
-        </Provider>
+    return (
+        <View style={styles.container}>
+            <Root>
+                <Router>
+                    <Modal>
+                        <Stack hideNavBar>
+                            <Tabs
+                                key="tabs"
+                                hideNavBar
+                                tabBarStyle={{ backgroundColor: `rgba(255, 255, 255, 0.5)` }}
+                                showLabel={false}
+                            >
+                                <Scene
+                                    key="chatlist"
+                                    component={ChatList}
+                                    initial
+                                    hideNavBar
+                                    title="消息"
+                                    icon={({ focused }) => (
+                                        <Icon
+                                            name="chatbubble-ellipses-outline"
+                                            style={{
+                                                fontSize: 24,
+                                                color: focused ? iconColor : '#aaa',
+                                            }}
+                                        />
+                                    )}
+                                />
+                                <Scene
+                                    key="other"
+                                    component={Other}
+                                    hideNavBar
+                                    title="其它"
+                                    icon={({ focused }) => (
+                                        <Icon
+                                            name="aperture-outline"
+                                            style={{
+                                                fontSize: 24,
+                                                color: focused ? iconColor : '#aaa',
+                                            }}
+                                        />
+                                    )}
+                                />
+                            </Tabs>
+                            <Scene
+                                key="chat"
+                                component={Chat}
+                                title="聊天"
+                                getTitle={title}
+                                hideNavBar={false}
+                            />
+                            <Scene key="login" component={Login} title="登录" hideNavBar={false} />
+                            <Scene
+                                key="signup"
+                                component={Signup}
+                                title="注册"
+                                hideNavBar={false}
+                            />
+                            <Scene key="test" component={Test} title="测试页面2" tabs={false} />
+                        </Stack>
+                    </Modal>
+                </Router>
+            </Root>
+
+            <Loading />
+        </View>
     );
 }
+
+export default connect((state: State) => ({
+    primaryColor: state.ui.primaryColor,
+}))(App);
 
 const styles = StyleSheet.create({
     container: {

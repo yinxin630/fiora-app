@@ -1,12 +1,15 @@
 import React from 'react';
-import { ScrollView, SafeAreaView } from 'react-native';
+import { ScrollView, SafeAreaView, StyleSheet } from 'react-native';
 
 import Linkman from './Linkman';
-import { useUser } from '../../hooks/useStore';
+import { useTheme, useUser } from '../../hooks/useStore';
 import { Group, Linkman as LinkmanType, User } from '../../types/redux';
+import SelfInfo from './SelfInfo';
 
 export default function ChatList() {
     const user = useUser();
+    const { primaryColor8 } = useTheme();
+
     const linkmans = user?.linkmans || [];
 
     function renderLinkman(linkman: LinkmanType) {
@@ -27,7 +30,9 @@ export default function ChatList() {
             <Linkman
                 key={linkmanId}
                 id={linkmanId}
-                name={(linkman as unknown as User).username || (linkman as unknown as Group).name}
+                name={
+                    ((linkman as unknown) as User).username || ((linkman as unknown) as Group).name
+                }
                 avatar={linkman.avatar}
                 preview={preview}
                 time={time}
@@ -37,8 +42,20 @@ export default function ChatList() {
     }
 
     return (
-        <SafeAreaView>
-            <ScrollView>{linkmans && linkmans.map((linkman) => renderLinkman(linkman))}</ScrollView>
+        <SafeAreaView style={[styles.container, { backgroundColor: primaryColor8 }]}>
+            <SelfInfo />
+            <ScrollView style={styles.messageList}>
+                {linkmans && linkmans.map((linkman) => renderLinkman(linkman))}
+            </ScrollView>
         </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    messageList: {
+        backgroundColor: '#f9f9f9',
+    },
+});
