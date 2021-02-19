@@ -1,7 +1,5 @@
 import React, { useRef } from 'react';
 import { StyleSheet, KeyboardAvoidingView, SafeAreaView } from 'react-native';
-import { connect } from 'react-redux';
-import immutable from 'immutable';
 import Constants from 'expo-constants';
 
 import { isiOS } from '../../utils/platform';
@@ -9,12 +7,12 @@ import { isiOS } from '../../utils/platform';
 import MessageList from './MessageList';
 import Input from './Input';
 
-function Chat() {
+export default function Chat() {
     const $messageList = useRef();
 
     function handleInputHeightChange() {
-        if ($messageList.current && $messageList.current.getWrappedInstance) {
-            $messageList.current.getWrappedInstance().scrollToEnd();
+        if ($messageList.current?.getWrappedInstance) {
+            $messageList.current!.scrollToEnd();
         }
     }
 
@@ -40,29 +38,3 @@ const styles = StyleSheet.create({
         backgroundColor: '#f6f6f6',
     },
 });
-
-export default connect((state) => {
-    const isLogin = !!state.getIn(['user', '_id']);
-    if (!isLogin) {
-        return {
-            userId: '',
-            focus: state.getIn(['user', 'linkmans', 0, '_id']),
-            creator: '',
-            avatar: state.getIn(['user', 'linkmans', 0, 'avatar']),
-            members: state.getIn(['user', 'linkmans', 0, 'members']) || immutable.List(),
-        };
-    }
-
-    const focus = state.get('focus');
-    const linkman = state.getIn(['user', 'linkmans']).find(g => g.get('_id') === focus);
-
-    return {
-        userId: state.getIn(['user', '_id']),
-        focus,
-        type: linkman.get('type'),
-        creator: linkman.get('creator'),
-        to: linkman.get('to'),
-        avatar: linkman.get('avatar'),
-        members: linkman.get('members') || immutable.List(),
-    };
-})(Chat);

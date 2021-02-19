@@ -2,15 +2,10 @@ import fetch from '../utils/fetch';
 import convertRobot10Message from '../utils/convertRobot10Message';
 import getFriendId from '../utils/getFriendId';
 import store from './store';
-import { Friend, Group, Linkman, Message, State, User } from './reducer';
+import { ConnectActionType, ConnectAction, Friend, SetUserActionType, SetUserAction, SetLinkmanMessagesAction, SetGuestActionType, SetGuestAction, LogoutActionType, UpdateUserPropertyActionType, UpdateUserPropertyAction, AddlinkmanMessageActionType, AddlinkmanMessageAction, AddLinkmanHistoryMessagesActionType, AddLinkmanHistoryMessagesAction, UpdateSelfMessageActionType, UpdateSelfMessageAction, SetFocusAction, UpdateGroupPropertyActionType, UpdateGroupPropertyAction, AddLinkmanAction, RemoveLinkmanActionType, RemoveLinkmanAction, SetFriendAction, UpdateUIPropertyActionType, UpdateUIPropertyAction, Group, Message, Linkman } from '../types/redux';
 
 const { dispatch } = store;
 
-export const ConnectActionType = 'SetConnect';
-export type ConnectAction = {
-    type: typeof ConnectActionType;
-    value: boolean;
-};
 function connect() {
     dispatch({
         type: ConnectActionType,
@@ -24,17 +19,6 @@ function disconnect() {
     } as ConnectAction);
 }
 
-/* ===== 用户 ===== */
-export const SetUserActionType = 'SetUser';
-export type SetUserAction = {
-    type: typeof SetUserActionType;
-    user: User;
-};
-export const SetLinkmanMessagesActionType = 'SetLinkmanMessages';
-export type SetLinkmanMessagesAction = {
-    type: typeof SetLinkmanMessagesActionType;
-    messages: { [linkmanId: string]: Message[] };
-};
 async function setUser(user: any) {
     user.groups.forEach((group: Group) => {
         Object.assign(group, {
@@ -85,12 +69,6 @@ async function setUser(user: any) {
         } as SetLinkmanMessagesAction);
     }
 }
-
-export const SetGuestActionType = 'SetGuest';
-export type SetGuestAction = {
-    type: typeof SetGuestActionType;
-    linkmans: Linkman[];
-};
 async function setGuest(defaultGroup: Group) {
     defaultGroup.messages.forEach((m) => convertRobot10Message(m));
     dispatch({
@@ -104,23 +82,11 @@ async function setGuest(defaultGroup: Group) {
         ],
     } as SetGuestAction);
 }
-
-export const LogoutActionType = 'Logout';
-export type LogoutAction = {
-    type: typeof LogoutActionType;
-};
 function logout() {
     dispatch({
         type: LogoutActionType,
     });
 }
-
-export const UpdateUserPropertyActionType = 'UpdateUserProperty';
-export type UpdateUserPropertyAction = {
-    type: typeof UpdateUserPropertyActionType;
-    key: keyof User;
-    value: any;
-};
 function setAvatar(avatar: string) {
     // @ts-expect-error
     dispatch({
@@ -130,12 +96,6 @@ function setAvatar(avatar: string) {
     } as UpdateUserPropertyAction);
 }
 
-export const AddlinkmanMessageActionType = 'AddlinkmanMessage';
-export type AddlinkmanMessageAction = {
-    type: typeof AddlinkmanMessageActionType;
-    linkmanId: string;
-    message: Message;
-};
 function addLinkmanMessage(linkmanId: string, message: Message) {
     dispatch({
         type: AddlinkmanMessageActionType,
@@ -143,13 +103,6 @@ function addLinkmanMessage(linkmanId: string, message: Message) {
         message,
     } as AddlinkmanMessageAction);
 }
-
-export const AddLinkmanHistoryMessagesActionType = 'AddLinkmanHistoryMessages';
-export type AddLinkmanHistoryMessagesAction = {
-    type: typeof AddLinkmanHistoryMessagesActionType;
-    linkmanId: string;
-    messages: Message[];
-};
 function addLinkmanMessages(linkmanId: string, messages: Message[]) {
     dispatch({
         type: AddLinkmanHistoryMessagesActionType,
@@ -157,14 +110,6 @@ function addLinkmanMessages(linkmanId: string, messages: Message[]) {
         messages,
     } as AddLinkmanHistoryMessagesAction);
 }
-
-export const UpdateSelfMessageActionType = 'UpdateSelfMessageActionType';
-export type UpdateSelfMessageAction = {
-    type: typeof UpdateSelfMessageActionType;
-    linkmanId: string;
-    messageId: string;
-    message: Message;
-};
 function updateSelfMessage(linkmanId: string, messageId: string, message: Message) {
     dispatch({
         type: UpdateSelfMessageActionType,
@@ -174,26 +119,12 @@ function updateSelfMessage(linkmanId: string, messageId: string, message: Messag
     } as UpdateSelfMessageAction);
 }
 
-/* ===== 联系人 ===== */
-export const SetFocusActionType = 'SetFocus';
-export type SetFocusAction = {
-    type: typeof SetFocusActionType;
-    linkmanId: string;
-};
 function setFocus(linkmanId: string) {
     dispatch({
         type: 'SetFocus',
         linkmanId,
     } as SetFocusAction);
 }
-
-export const UpdateGroupPropertyActionType = 'UpdateGroupProperty';
-export type UpdateGroupPropertyAction = {
-    type: typeof UpdateGroupPropertyActionType;
-    groupId: string;
-    key: keyof Group;
-    value: any;
-};
 function setGroupMembers(groupId: string, members: Group['members']) {
     dispatch({
         type: UpdateGroupPropertyActionType,
@@ -210,13 +141,6 @@ function setGroupAvatar(groupId: string, avatar: string) {
         value: avatar,
     });
 }
-
-export const AddLinkmanActionType = 'AddLinkman';
-export type AddLinkmanAction = {
-    type: typeof AddLinkmanActionType;
-    linkman: Linkman;
-    focus: boolean;
-};
 function addLinkman(linkman: Linkman, focus = false) {
     if (linkman.type === 'group') {
         linkman.members = [];
@@ -229,26 +153,12 @@ function addLinkman(linkman: Linkman, focus = false) {
         focus,
     } as AddLinkmanAction);
 }
-
-export const RemoveLinkmanActionType = 'RemoveLinkmanActionType';
-export type RemoveLinkmanAction = {
-    type: typeof RemoveLinkmanActionType;
-    linkmanId: string;
-};
 function removeLinkman(linkmanId: string) {
     dispatch({
         type: RemoveLinkmanActionType,
         linkmanId,
     } as RemoveLinkmanAction);
 }
-
-export const SetFriendActionType = 'SetFriend';
-export type SetFriendAction = {
-    type: typeof SetFriendActionType;
-    linkmanId: string;
-    from: Friend['from'];
-    to: Friend['to'];
-};
 function setFriend(linkmanId: string, from: Friend['from'], to: Friend['to']) {
     dispatch({
         type: 'SetFriend',
@@ -258,13 +168,6 @@ function setFriend(linkmanId: string, from: Friend['from'], to: Friend['to']) {
     } as SetFriendAction);
 }
 
-/* ====== UI ====== */
-export const UpdateUIPropertyActionType = 'UpdateUIPropertyActionType';
-export type UpdateUIPropertyAction = {
-    type: typeof UpdateUIPropertyActionType;
-    key: keyof State['ui'];
-    value: any;
-};
 function loading(text: string) {
     dispatch({
         type: UpdateUIPropertyActionType,
@@ -272,23 +175,6 @@ function loading(text: string) {
         value: text,
     } as UpdateUIPropertyAction);
 }
-
-export type ActionTypes =
-    | ConnectAction
-    | SetUserAction
-    | SetLinkmanMessagesAction
-    | UpdateGroupPropertyAction
-    | SetGuestAction
-    | SetFocusAction
-    | SetFriendAction
-    | AddLinkmanAction
-    | RemoveLinkmanAction
-    | AddlinkmanMessageAction
-    | AddLinkmanHistoryMessagesAction
-    | UpdateSelfMessageAction
-    | UpdateUserPropertyAction
-    | UpdateUIPropertyAction
-    | LogoutAction;
 
 export default {
     setUser,
