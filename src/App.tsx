@@ -168,7 +168,7 @@ function App({ title, primaryColor, isLogin }: Props) {
                             component={Chat}
                             title="聊天"
                             getTitle={title}
-                            hideNavBar
+                            hideNavBar={false}
                             navigationBarStyle={{
                                 backgroundColor: primaryColor10,
                                 borderBottomWidth: 0,
