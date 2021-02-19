@@ -18,6 +18,8 @@ const initialState = {
     connect: true,
     ui: {
         loading: '', // 全局loading文本内容, 为空则不展示
+        primaryColor: '5,159,149',
+        primaryTextColor: '255, 255, 255',
     },
 };
 

@@ -177,5 +177,7 @@ export type State = {
     connect: boolean;
     ui: {
         loading: string;
+        primaryColor: string;
+        primaryTextColor: string;
     };
 };
