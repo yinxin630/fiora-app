@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Linking } from 'react-native';
 import PropTypes from 'prop-types';
-import * as WebBrowser from 'expo-web-browser';
 import autobind from 'autobind-decorator';
 
 import Time from '../../utils/time';
@@ -17,7 +16,7 @@ export default class Message extends Component {
     static propTypes = {
         avatar: PropTypes.string.isRequired,
         nickname: PropTypes.string.isRequired,
-        type: PropTypes.oneOf(['text', 'image', 'url', 'code', 'invite']),
+        type: PropTypes.oneOf(['text', 'image', 'file', 'code', 'inviteV2', 'system']),
         time: PropTypes.object,
         content: PropTypes.string.isRequired,
         shouldScroll: PropTypes.bool.isRequired,
@@ -81,7 +80,7 @@ export default class Message extends Component {
                         push(copy.substring(0, i));
                     }
                     children.push((
-                        <TouchableOpacity key={Math.random()} onPress={() => WebBrowser.openBrowserAsync(r)} >
+                        <TouchableOpacity key={Math.random()} onPress={() => Linking.openURL(r)} >
                             {
                                 // Do not nest in view error in dev environment
                                 process.env.NODE_ENV === 'development' ?
@@ -144,16 +143,16 @@ export default class Message extends Component {
     renderContent() {
         const { type } = this.props;
         switch (type) {
-        case 'text': {
-            return this.renderText();
-        }
-        case 'image': {
-            return this.renderImage();
-        }
-        default:
-            return (
-                <Text style={styles.notSupport}>不支持的消息类型, 请在Web端查看</Text>
-            );
+            case 'text': {
+                return this.renderText();
+            }
+            case 'image': {
+                return this.renderImage();
+            }
+            default:
+                return (
+                    <Text style={styles.notSupport}>不支持的消息类型, 请在Web端查看</Text>
+                );
         }
     }
     render() {

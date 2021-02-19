@@ -1,14 +1,27 @@
-import { Body, Button, Container, Content, Icon, Left, List, ListItem, Right, Text, Toast } from 'native-base';
+import {
+    Body,
+    Button,
+    Container,
+    Content,
+    Icon,
+    Left,
+    List,
+    ListItem,
+    Right,
+    Text,
+    Toast,
+} from 'native-base';
 import React from 'react';
 import { Linking, SafeAreaView, StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
+
+import { useIsLogin } from '../../hooks/useStore';
 import socket from '../../socket';
 import action from '../../state/action';
 import { removeStorageValue } from '../../utils/storage';
 
 function Other() {
-    const selfId = useSelector(state => state.user?._id);
-    console.log(selfId);
+    const isLogin = useIsLogin();
 
     async function logout() {
         action.logout();
@@ -18,12 +31,19 @@ function Other() {
         socket.connect();
     }
 
+    function login() {
+        Actions.push('login');
+    }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Container>
                 <Content>
                     <List>
-                        <ListItem icon onPress={() => Linking.openURL('https://github.com/yinxin630/fiora')}>
+                        <ListItem
+                            icon
+                            onPress={() => Linking.openURL('https://github.com/yinxin630/fiora')}
+                        >
                             <Left>
                                 <Icon name="github" style={{ fontSize: 25 }} type="AntDesign" />
                             </Left>
@@ -36,9 +56,15 @@ function Other() {
                         </ListItem>
                     </List>
                 </Content>
-                <Button danger block style={styles.logoutButton} onPress={logout}>
-                    <Text>退出登录</Text>
-                </Button>
+                {isLogin ? (
+                    <Button danger block style={styles.logoutButton} onPress={logout}>
+                        <Text>退出登录</Text>
+                    </Button>
+                ) : (
+                    <Button block style={styles.logoutButton} onPress={login}>
+                        <Text>登录 / 注册</Text>
+                    </Button>
+                )}
             </Container>
         </SafeAreaView>
     );
