@@ -1,56 +1,44 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { ScrollView, SafeAreaView } from 'react-native';
-import { connect } from 'react-redux';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 
 import Linkman from './Linkman';
+import { useUser } from '../../hooks/useStore';
+import { Group, Linkman as LinkmanType, User } from '../../types/redux';
 
-class ChatList extends Component {
-    static propTypes = {
-        linkmans: ImmutablePropTypes.list,
-    }
-    static renderLinkman(linkman) {
-        const linkmanId = linkman.get('_id');
-        const unread = linkman.get('unread');
-        const lastMessage = linkman.getIn(['messages', linkman.get('messages').size - 1]);
+export default function ChatList() {
+    const user = useUser();
+    const linkmans = user?.linkmans || [];
 
-        let time = new Date(linkman.get('createTime'));
+    function renderLinkman(linkman: LinkmanType) {
+        const { _id: linkmanId, unread, messages, createTime } = linkman;
+        const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
+
+        let time = new Date(createTime);
         let preview = '暂无消息';
         if (lastMessage) {
-            time = new Date(lastMessage.get('createTime'));
-            preview = `${lastMessage.get('content')}`;
-            if (linkman.get('type') === 'group') {
-                preview = `${lastMessage.getIn(['from', 'username'])}: ${preview}`;
+            time = new Date(lastMessage.createTime);
+            preview =
+                lastMessage.type === 'text' ? `${lastMessage.content}` : `[${lastMessage.type}]`;
+            if (linkman.type === 'group') {
+                preview = `${lastMessage.from.username}: ${preview}`;
             }
         }
         return (
             <Linkman
                 key={linkmanId}
                 id={linkmanId}
-                name={linkman.get('name')}
-                avatar={linkman.get('avatar')}
+                name={(linkman as unknown as User).username || (linkman as unknown as Group).name}
+                avatar={linkman.avatar}
                 preview={preview}
                 time={time}
                 unread={unread}
             />
         );
     }
-    render() {
-        const { linkmans } = this.props;
-        return (
-            <SafeAreaView>
-                <ScrollView>
-                    {
-                        linkmans && linkmans.map(linkman => (
-                            ChatList.renderLinkman(linkman)
-                        ))
-                    }
-                </ScrollView>
-            </SafeAreaView>
-        );
-    }
-}
 
-export default connect(state => ({
-    linkmans: state.getIn(['user', 'linkmans']),
-}))(ChatList);
+    return (
+        <SafeAreaView>
+            <ScrollView>{linkmans && linkmans.map((linkman) => renderLinkman(linkman))}</ScrollView>
+        </SafeAreaView>
+    );
+}

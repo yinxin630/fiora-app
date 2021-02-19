@@ -21,6 +21,7 @@ import Test from './pages/test';
 
 import Loading from './components/Loading';
 import Other from './pages/Other/Other';
+import { State, User } from './types/redux';
 
 async function guest() {
     const [err, res] = await fetch('guest', {});
@@ -67,13 +68,13 @@ async function guest() {
         // robot10
         convertRobot10Message(message);
 
-        const state = store.getState();
-        const linkman = state.getIn(['user', 'linkmans']).find(l => l.get('_id') === message.to);
+        const state = store.getState() as State;
+        const linkman = state.user!.linkmans.find(x => x._id === message.to);
         if (linkman) {
             action.addLinkmanMessage(message.to, message);
         } else {
             const newLinkman = {
-                _id: getFriendId(state.getIn(['user', '_id']), message.from._id),
+                _id: getFriendId((state.user as User)._id, message.from._id),
                 type: 'temporary',
                 createTime: Date.now(),
                 avatar: message.from.avatar,

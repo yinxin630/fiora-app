@@ -1,38 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import { Spinner } from 'native-base';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useStore } from '../hooks/useStore';
 
-const {
-    width: ScreenWidth,
-    height: ScreenHeight,
-} = Dimensions.get('window');
+const { width: ScreenWidth, height: ScreenHeight } = Dimensions.get('window');
 
-class Loading extends Component {
-    static propTypes = {
-        loading: PropTypes.string,
+export default function Loading() {
+    const { loading } = useStore().ui;
+    if (!loading) {
+        return null;
     }
-    render() {
-        const { loading } = this.props;
-        if (!loading) {
-            return null;
-        }
 
-        return (
-            <View style={styles.loadingView}>
-                <View style={styles.loadingBox}>
-                    <Spinner color="white" />
-                    <Text style={styles.loadingText}>{loading}</Text>
-                </View>
+    return (
+        <View style={styles.loadingView}>
+            <View style={styles.loadingBox}>
+                <Spinner color="white" />
+                <Text style={styles.loadingText}>{loading}</Text>
             </View>
-        );
-    }
+        </View>
+    );
 }
-
-export default connect(state => ({
-    loading: state.getIn(['ui', 'loading']),
-}))(Loading);
 
 const styles = StyleSheet.create({
     loadingView: {

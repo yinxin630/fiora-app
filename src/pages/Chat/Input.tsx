@@ -1,9 +1,5 @@
-import React, { Component } from 'react';
+import React, { useRef, useState } from 'react';
 import { StyleSheet, View, TextInput, Text, Dimensions, TouchableOpacity } from 'react-native';
-import autobind from 'autobind-decorator';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Button } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,51 +13,50 @@ import { isiOS } from '../../utils/platform';
 import expressions from '../../utils/expressions';
 
 import Expression from '../../components/Expression';
+import { useIsLogin, useStore, useUser } from '../../hooks/useStore';
+import { Message } from '../../types/redux';
 
 const { width: ScreenWidth } = Dimensions.get('window');
 const ExpressionSize = (ScreenWidth - 16) / 10;
 
-@autobind
-class Input extends Component {
-    static propTypes = {
-        user: ImmutablePropTypes.map,
-        focus: PropTypes.string.isRequired,
-        isLogin: PropTypes.bool.isRequired,
-        onHeightChange: PropTypes.func.isRequired,
-    }
-    constructor(...args) {
-        super(...args);
-        this.state = {
-            value: '',
-            showFunctionList: true,
-            showExpression: false,
-            cursorPosition: {
-                start: 0,
-                end: 0,
-            },
-        };
-    }
-    setInputText(text) {
+type Props = {
+    onHeightChange: () => void;
+};
+
+export default function Input({ onHeightChange }: Props) {
+    const isLogin = useIsLogin();
+    const user = useUser();
+    const { focus } = useStore();
+
+    const [message, setMessage] = useState('');
+    const [showFunctionList, toggleShowFunctionList] = useState(true);
+    const [showExpression, toggleShowExpression] = useState(false);
+    const [cursorPosition, setCursorPosition] = useState({ start: 0, end: 0 });
+
+    const $input = useRef<TextInput>();
+
+    function setInputText(text = '') {
         // iossetNativeProps无效, 解决办法参考:https://github.com/facebook/react-native/issues/18272
         if (isiOS) {
-            this.input.setNativeProps({ text: text || ' ' });
+            $input.current!.setNativeProps({ text: text || ' ' });
         }
         setTimeout(() => {
-            this.input.setNativeProps({ text: text || '' });
+            $input.current!.setNativeProps({ text: text || '' });
         });
     }
-    addSelfMessage(type, content) {
-        const { user, focus } = this.props;
+
+    function addSelfMessage(type: string, content: string) {
         const _id = focus + Date.now();
-        const message = {
+        const newMessage: Message = {
             _id,
             type,
             content,
             createTime: Date.now(),
             from: {
-                _id: user.get('_id'),
-                username: user.get('username'),
-                avatar: user.get('avatar'),
+                _id: user._id,
+                username: user.username,
+                avatar: user.avatar,
+                tag: user.tag,
             },
             loading: true,
         };
@@ -69,12 +64,12 @@ class Input extends Component {
         if (type === 'image') {
             message.percent = 0;
         }
-        action.addLinkmanMessage(focus, message);
+        action.addLinkmanMessage(focus, newMessage);
 
         return _id;
     }
-    async sendMessage(localId, type, content) {
-        const { focus } = this.props;
+
+    async function sendMessage(localId: string, type: string, content: string) {
         const [err, res] = await fetch('sendMessage', {
             to: focus,
             type,
@@ -85,53 +80,48 @@ class Input extends Component {
             action.updateSelfMessage(focus, localId, res);
         }
     }
-    handleSubmit() {
-        const message = this.state.value;
+
+    function handleSubmit() {
         if (message === '') {
             return;
         }
 
-        const id = this.addSelfMessage('text', message);
-        this.sendMessage(id, 'text', message);
+        const id = addSelfMessage('text', message);
+        sendMessage(id, 'text', message);
 
-        this.setState({
-            value: '',
-            showFunctionList: true,
-            showExpression: false,
-        });
-        this.setInputText();
+        setMessage('');
+        toggleShowFunctionList(true);
+        toggleShowExpression(false);
+        setInputText();
     }
-    handleSelectionChange(event) {
+
+    function handleSelectionChange(event: any) {
         const { start, end } = event.nativeEvent.selection;
-        this.setState({
-            cursorPosition: {
-                start,
-                end,
-            },
-        });
+        setCursorPosition({
+            start,
+            end,
+        })
     }
-    handleFocus() {
-        this.setState({
-            showFunctionList: true,
-            showExpression: false,
-        });
-    }
-    openExpression() {
-        this.input.blur();
-        this.setState({
-            showExpression: true,
-            showFunctionList: false,
-        });
-        this.props.onHeightChange();
-    }
-    closeExpression() {
-        this.setState({
-            showExpression: false,
-        });
-    }
-    async handleClickImage() {
-        const { user } = this.props;
 
+    function handleFocus() {
+        toggleShowFunctionList(true);
+        toggleShowExpression(false);
+    }
+
+    function openExpression() {
+        $input.current!.blur();
+
+        toggleShowFunctionList(false);
+        toggleShowExpression(true);
+        
+        onHeightChange();
+    }
+
+    function closeExpression() {
+        toggleShowExpression(false);
+    }
+
+    async function handleClickImage() {
         const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
         if (status !== 'granted') {
             const { status: returnStatus } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -146,20 +136,26 @@ class Input extends Component {
         });
 
         if (!result.cancelled) {
-            const id = this.addSelfMessage('image', `${result.uri}?width=${result.width}&height=${result.height}`);
+            const id = addSelfMessage(
+                'image',
+                `${result.uri}?width=${result.width}&height=${result.height}`,
+            );
             const [err, tokenResult] = await fetch('uploadToken');
             if (!err) {
-                const key = `ImageMessage/${user.get('_id')}_${Date.now()}`;
+                const key = `ImageMessage/${user._id}_${Date.now()}`;
                 await Rpc.uploadFile(result.uri, tokenResult.token, {
                     key,
                 });
-                this.sendMessage(id, 'image', `${tokenResult.urlPrefix}${key}?width=${result.width}&height=${result.height}`);
+                sendMessage(
+                    id,
+                    'image',
+                    `${tokenResult.urlPrefix}${key}?width=${result.width}&height=${result.height}`,
+                );
             }
         }
     }
-    async handleClickCamera() {
-        const { user } = this.props;
 
+    async function handleClickCamera() {
         const { status: cameraStatus } = await Permissions.getAsync(Permissions.CAMERA);
         if (cameraStatus !== 'granted') {
             const { status: returnStatus } = await Permissions.askAsync(Permissions.CAMERA);
@@ -181,106 +177,95 @@ class Input extends Component {
         });
 
         if (!result.cancelled) {
-            const id = this.addSelfMessage('image', `${result.uri}?width=${result.width}&height=${result.height}`);
+            const id = addSelfMessage(
+                'image',
+                `${result.uri}?width=${result.width}&height=${result.height}`,
+            );
             const [err, tokenResult] = await fetch('uploadToken');
             if (!err) {
-                const key = `ImageMessage/${user.get('_id')}_${Date.now()}`;
+                const key = `ImageMessage/${user._id}_${Date.now()}`;
                 await Rpc.uploadFile(result.uri, tokenResult.token, {
                     key,
                 });
-                this.sendMessage(id, 'image', `${tokenResult.urlPrefix}${key}?width=${result.width}&height=${result.height}`);
+                sendMessage(
+                    id,
+                    'image',
+                    `${tokenResult.urlPrefix}${key}?width=${result.width}&height=${result.height}`,
+                );
             }
         }
     }
-    handleChangeText(value) {
-        this.setState({
-            value,
-        });
+
+    function handleChangeText(value: string) {
+        setMessage(value);
     }
-    insertExpression(e) {
-        const { value, cursorPosition } = this.state;
+
+    function insertExpression(e: string) {
         const expression = `#(${e})`;
-        const newValue = `${value.substring(0, cursorPosition.start)}${expression}${value.substring(cursorPosition.end, value.length)}`;
-        this.setState({
-            value: newValue,
-            cursorPosition: {
-                start: cursorPosition.start + expression.length,
-                end: cursorPosition.start + expression.length,
-            },
-        });
-        this.setInputText(newValue);
+        const newValue = `${message.substring(0, cursorPosition.start)}${expression}${message.substring(
+            cursorPosition.end,
+            message.length,
+        )}`;
+        setMessage(newValue);
+        setCursorPosition({
+            start: cursorPosition.start + expression.length,
+            end: cursorPosition.start + expression.length,
+        })
+        setInputText(newValue);
     }
-    render() {
-        const { isLogin } = this.props;
-        return (
-            <View style={styles.container}>
-                {
-                    isLogin ?
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                ref={i => this.input = i}
-                                style={styles.input}
-                                placeholder="随便聊点啥吧, 不要无意义刷屏~~"
-                                onChangeText={this.handleChangeText}
-                                onSubmitEditing={this.handleSubmit}
-                                autoCapitalize="none"
-                                blurOnSubmit={false}
-                                maxLength={2048}
-                                returnKeyType="send"
-                                enablesReturnKeyAutomatically
-                                underlineColorAndroid="transparent"
-                                onSelectionChange={this.handleSelectionChange}
-                                onFocus={this.handleFocus}
-                            />
-                        </View>
-                        :
-                        <Button block style={styles.button} onPress={Actions.login}>
-                            <Text style={styles.buttonText}>游客你好, 点击按钮登录后参与聊天</Text>
-                        </Button>
-                }
-                {
-                    isLogin && this.state.showFunctionList ?
-                        <View style={styles.iconButtonContainer}>
-                            <Button transparent style={styles.iconButton} onPress={this.openExpression}>
-                                <Ionicons name="ios-happy" size={28} color="#666" />
-                            </Button>
-                            <Button transparent style={styles.iconButton} onPress={this.handleClickImage}>
-                                <Ionicons name="ios-image" size={28} color="#666" />
-                            </Button>
-                            <Button transparent style={styles.iconButton} onPress={this.handleClickCamera}>
-                                <Ionicons name="ios-camera" size={28} color="#666" />
-                            </Button>
-                        </View>
-                        :
-                        null
-                }
-                {
-                    this.state.showExpression ?
-                        <View style={styles.expressionContainer}>
-                            {
-                                expressions.default.map((e, i) => (
-                                    <TouchableOpacity key={e} onPress={this.insertExpression.bind(this, e)} >
-                                        <View style={styles.expression} >
-                                            <Expression index={i} size={30} />
-                                        </View>
-                                    </TouchableOpacity>
 
-                                ))
-                            }
-                        </View>
-                        :
-                        null
-                }
-            </View>
-        );
-    }
+    return (
+        <View style={styles.container}>
+            {isLogin ? (
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        ref={$input}
+                        style={styles.input}
+                        placeholder="随便聊点啥吧, 不要无意义刷屏~~"
+                        onChangeText={handleChangeText}
+                        onSubmitEditing={handleSubmit}
+                        autoCapitalize="none"
+                        blurOnSubmit={false}
+                        maxLength={2048}
+                        returnKeyType="send"
+                        enablesReturnKeyAutomatically
+                        underlineColorAndroid="transparent"
+                        onSelectionChange={handleSelectionChange}
+                        onFocus={handleFocus}
+                    />
+                </View>
+            ) : (
+                <Button block style={styles.button} onPress={Actions.login}>
+                    <Text style={styles.buttonText}>游客你好, 点击按钮登录后参与聊天</Text>
+                </Button>
+            )}
+            {isLogin && showFunctionList ? (
+                <View style={styles.iconButtonContainer}>
+                    <Button transparent style={styles.iconButton} onPress={openExpression}>
+                        <Ionicons name="ios-happy" size={28} color="#666" />
+                    </Button>
+                    <Button transparent style={styles.iconButton} onPress={handleClickImage}>
+                        <Ionicons name="ios-image" size={28} color="#666" />
+                    </Button>
+                    <Button transparent style={styles.iconButton} onPress={handleClickCamera}>
+                        <Ionicons name="ios-camera" size={28} color="#666" />
+                    </Button>
+                </View>
+            ) : null}
+            {showExpression ? (
+                <View style={styles.expressionContainer}>
+                    {expressions.default.map((e, i) => (
+                        <TouchableOpacity key={e} onPress={() => insertExpression(e)}>
+                            <View style={styles.expression}>
+                                <Expression index={i} size={30} />
+                            </View>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            ) : null}
+        </View>
+    );
 }
-
-export default connect(state => ({
-    isLogin: !!state.getIn(['user', '_id']),
-    focus: state.get('focus'),
-    user: state.get('user'),
-}))(Input);
 
 const styles = StyleSheet.create({
     container: {
@@ -321,9 +306,11 @@ const styles = StyleSheet.create({
         height: 40,
     },
     icon: {
-        transform: [{
-            translate: [0, -3],
-        }],
+        transform: [
+            {
+                translate: [0, -3],
+            },
+        ],
     },
 
     iconButtonContainer: {
@@ -361,4 +348,3 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
 });
-
