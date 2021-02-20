@@ -25,8 +25,15 @@ function convertSystemMessage(message: Message) {
         message.from.avatar = WuZeiNiangImage;
         message.from.tag = 'system';
 
-        const content = JSON.parse(message.content);
-        switch (content.command) {
+        let content = null;
+        try {
+            content = JSON.parse(message.content);
+        } catch {
+            content = {
+                command: 'parse-error',
+            };
+        }
+        switch (content?.command) {
             case 'roll': {
                 message.content = `掷出了${content.value}点 (上限${content.top}点)`;
                 break;
@@ -43,7 +50,19 @@ function convertSystemMessage(message: Message) {
     return message;
 }
 
+/**
+ * 处理文本消息的html转义字符
+ * @param {Object} message 消息
+ */
+function convertMessageHtml(message: Message) {
+    if (message.type === 'text') {
+        message.content = message.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    }
+    return message;
+}
+
 export default function convertMessage(message: Message) {
     convertSystemMessage(message);
+    convertMessageHtml(message);
     return message;
 }

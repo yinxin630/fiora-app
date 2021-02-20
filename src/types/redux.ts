@@ -176,7 +176,18 @@ export type Friend = {
     isOnline?: boolean;
 };
 
-export type Linkman = Group | Friend;
+export type Temporary = {
+    _id: string;
+    type: 'temporary';
+    name: string;
+    avatar: string;
+    messages: Message[];
+    unread: number;
+    createTime: number;
+    isOnline?: boolean;
+}
+
+export type Linkman = Group | Friend | Temporary;
 
 export type User = {
     _id: string;

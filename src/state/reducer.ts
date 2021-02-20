@@ -1,16 +1,28 @@
 import produce from 'immer';
-import { State, ActionTypes, ConnectActionType, LogoutActionType, SetUserActionType, SetGuestActionType, UpdateUserPropertyActionType, SetLinkmanMessagesActionType, UpdateLinkmanPropertyActionType, SetFocusActionType, SetFriendActionType, Friend, AddLinkmanActionType, RemoveLinkmanActionType, AddlinkmanMessageActionType, AddLinkmanHistoryMessagesActionType, UpdateSelfMessageActionType, UpdateUIPropertyActionType, Message, Group, UpdateGroupPropertyActionType, UpdateFriendPropertyActionType, DeleteLinkmanMessageActionType } from '../types/redux';
-
-/**
- * 处理文本消息的html转义字符
- * @param {Object} message 消息
- */
-function convertMessageHtml(message: Message) {
-    if (message.type === 'text') {
-        message.content = message.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-    }
-    return message;
-}
+import {
+    State,
+    ActionTypes,
+    ConnectActionType,
+    LogoutActionType,
+    SetUserActionType,
+    SetGuestActionType,
+    UpdateUserPropertyActionType,
+    SetLinkmanMessagesActionType,
+    SetFocusActionType,
+    SetFriendActionType,
+    Friend,
+    AddLinkmanActionType,
+    RemoveLinkmanActionType,
+    AddlinkmanMessageActionType,
+    AddLinkmanHistoryMessagesActionType,
+    UpdateSelfMessageActionType,
+    UpdateUIPropertyActionType,
+    Group,
+    UpdateGroupPropertyActionType,
+    UpdateFriendPropertyActionType,
+    DeleteLinkmanMessageActionType,
+} from '../types/redux';
+import convertMessage from '../utils/convertMessage';
 
 const initialState = {
     user: null,
@@ -52,7 +64,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
         }
         case SetLinkmanMessagesActionType: {
             state.user!.linkmans.forEach((linkman) => {
-                linkman.messages = action.messages[linkman._id].map(convertMessageHtml);
+                linkman.messages = action.messages[linkman._id].map(convertMessage);
             });
             state.user!.linkmans.sort((linkman1, linkman2) => {
                 const lastMessageTime1 =
@@ -141,7 +153,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
                 if (state.focus !== targetLinkman._id) {
                     targetLinkman.unread += 1;
                 }
-                targetLinkman.messages.push(convertMessageHtml(action.message));
+                targetLinkman.messages.push(convertMessage(action.message));
                 if (targetLinkman.messages.length > 500) {
                     targetLinkman.messages.slice(250);
                 }
@@ -149,11 +161,13 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case AddLinkmanHistoryMessagesActionType: {
+            console.log('AddLinkmanHistoryMessagesActionType');
             const targetLinkman = state.user!.linkmans.find(
                 (linkman) => linkman._id === action.linkmanId,
             );
             if (targetLinkman) {
-                targetLinkman.messages.unshift(...action.messages.map(convertMessageHtml));
+                console.log('11111111');
+                targetLinkman.messages.unshift(...action.messages.map(convertMessage));
             }
             return state;
         }
@@ -166,7 +180,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
                     (message) => message._id === action.messageId,
                 );
                 if (targetMessage) {
-                    Object.assign(targetMessage, convertMessageHtml(action.message));
+                    Object.assign(targetMessage, convertMessage(action.message));
                 }
             }
             return state;

@@ -32,7 +32,7 @@ function InviteMessage({ message, isSelf }: Props) {
     return (
         <TouchableNativeFeedback onPress={handleJoinGroup}>
             <View style={styles.container}>
-                <View style={[styles.info, { borderBottomColor: isSelf ? 'white' : '#666' }]}>
+                <View style={[styles.info, { borderBottomColor: isSelf ? 'white' : '#aaa' }]}>
                     <Text style={styles.text}>
                         &quot;{invite.inviterName}&quot; 邀请你加入群组「{invite.groupName}」
                     </Text>
@@ -50,10 +50,12 @@ export default InviteMessage;
 const styles = StyleSheet.create({
     container: {
         width: '90%',
+        alignItems: 'center',
     },
     text: {
         fontSize: 14,
         textAlign: 'center',
+        lineHeight: 16,
     },
     info: {
         width: '100%',

@@ -1,16 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Scene, Router, Stack, Tabs, Modal, Lightbox } from 'react-native-router-flux';
-import { Icon, Root, Text } from 'native-base';
-
-import socket from './socket';
-import fetch from './utils/fetch';
-import action from './state/action';
-import store from './state/store';
-import convertMessage from './utils/convertMessage';
-import getFriendId from './utils/getFriendId';
-import platform from './utils/platform';
-import { getStorageValue } from './utils/storage';
+import { Scene, Router, Stack, Tabs, Lightbox } from 'react-native-router-flux';
+import { Icon, Root } from 'native-base';
 
 import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
@@ -23,85 +14,6 @@ import Other from './pages/Other/Other';
 import { State, User } from './types/redux';
 import { connect } from 'react-redux';
 import SelfInfo from './pages/ChatList/SelfInfo';
-
-async function guest() {
-    const [err, res] = await fetch('guest', {});
-    if (!err) {
-        action.setGuest(res);
-    }
-    action.loading('');
-}
-
-(async function initSocketEvents() {
-    let hasShowAlert = false;
-    socket.on('connect', async () => {
-        action.connect();
-        hasShowAlert = false;
-        action.loading('登录中...');
-
-        const token = await getStorageValue('token');
-
-        if (token) {
-            const [err, res] = await fetch(
-                'loginByToken',
-                Object.assign(
-                    {
-                        token,
-                    },
-                    platform,
-                ),
-                { toast: false },
-            );
-            if (err) {
-                guest();
-            } else {
-                action.setUser(res);
-                action.loading('');
-            }
-        } else {
-            guest();
-        }
-    });
-    socket.on('disconnect', () => {
-        action.disconnect();
-    });
-    socket.on('message', (message) => {
-        // robot10
-        convertMessage(message);
-
-        const state = store.getState() as State;
-        const linkman = state.user!.linkmans.find((x) => x._id === message.to);
-        if (linkman) {
-            action.addLinkmanMessage(message.to, message);
-        } else {
-            const newLinkman = {
-                _id: getFriendId((state.user as User)._id, message.from._id),
-                type: 'temporary',
-                createTime: Date.now(),
-                avatar: message.from.avatar,
-                name: message.from.username,
-                messages: [],
-                unread: 1,
-            };
-            action.addLinkman(newLinkman);
-
-            fetch('getLinkmanHistoryMessages', { linkmanId: newLinkman._id }).then(([err, res]) => {
-                if (!err) {
-                    action.addLinkmanHistoryMessages(newLinkman._id, res);
-                }
-            });
-        }
-    });
-    socket.on('connect_error', () => {
-        if (!hasShowAlert) {
-            action.loading('');
-            alert('连接服务端失败, 无网络或者服务端地址错误');
-            hasShowAlert = true;
-        }
-    });
-
-    socket.connect();
-})();
 
 type Props = {
     title: string;

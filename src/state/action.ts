@@ -1,4 +1,3 @@
-import fetch from '../utils/fetch';
 import convertMessage from '../utils/convertMessage';
 import getFriendId from '../utils/getFriendId';
 import store from './store';
@@ -53,7 +52,7 @@ function disconnect() {
     } as ConnectAction);
 }
 
-async function setUser(user: any) {
+function setUser(user: any) {
     user.groups.forEach((group: Group) => {
         Object.assign(group, {
             type: 'group',
@@ -84,26 +83,17 @@ async function setUser(user: any) {
             linkmans,
         },
     } as SetUserAction);
-
-    const linkmanIds = [
-        ...user.groups.map((g: Group) => g._id),
-        ...user.friends.map((f: Friend) => f._id),
-    ];
-    const [err, messages] = await fetch<{ [linkmanId: string]: Message[] }>(
-        'getLinkmansLastMessages',
-        { linkmans: linkmanIds },
-    );
+}
+function setLinkmansLastMessages(messages: SetLinkmanMessagesAction['messages']) {
     for (const key in messages) {
         messages[key].forEach((m) => convertMessage(m));
     }
-    if (!err) {
-        dispatch({
-            type: 'SetLinkmanMessages',
-            messages,
-        } as SetLinkmanMessagesAction);
-    }
+    dispatch({
+        type: 'SetLinkmanMessages',
+        messages,
+    } as SetLinkmanMessagesAction);
 }
-async function setGuest(defaultGroup: Group) {
+function setGuest(defaultGroup: Group) {
     defaultGroup.messages.forEach((m) => convertMessage(m));
     dispatch({
         type: SetGuestActionType,
@@ -126,6 +116,13 @@ function setAvatar(avatar: string) {
         type: UpdateUserPropertyActionType,
         key: 'avatar',
         value: avatar,
+    } as UpdateUserPropertyAction);
+}
+function updateUserProperty(key: string, value: any) {
+    dispatch({
+        type: UpdateUserPropertyActionType,
+        key,
+        value,
     } as UpdateUserPropertyAction);
 }
 
@@ -241,6 +238,8 @@ export default {
     disconnect,
     logout,
     setAvatar,
+    updateUserProperty,
+    setLinkmansLastMessages,
 
     setFocus,
     setGroupMembers,
