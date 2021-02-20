@@ -12,7 +12,7 @@ function PageContainer({ children, disableSafeAreaView = false }: Props) {
         <ImageBackground
             source={require('../assets/images/background-cool.jpg')}
             style={styles.backgroundImage}
-            blurRadius={1}
+            blurRadius={10}
         >
             <View style={styles.children}>
                 {disableSafeAreaView ? (

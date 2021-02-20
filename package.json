@@ -17,6 +17,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.13.4",
     "@react-native-community/masked-view": "0.1.10",
+    "@react-native-toolkit/triangle": "^0.0.1",
     "autobind-decorator": "^2.1.0",
     "expo": "~40.0.0",
     "expo-constants": "~9.1.1",
@@ -25,6 +26,7 @@
     "immer": "^8.0.1",
     "native-base": "^2.4.5",
     "prop-types": "^15.6.1",
+    "randomcolor": "^0.6.2",
     "react": "16.11.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.0.tar.gz",
     "react-native-gesture-handler": "~1.6.0",
