@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Container, Toast } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 
@@ -9,12 +9,18 @@ import action from '../../state/action';
 import Base from './Base';
 import { setStorageValue } from '../../utils/storage';
 
-export default class Signup extends Component {
-    static async handleSubmit(username, password) {
-        const [err, res] = await fetch('register', Object.assign({
-            username,
-            password,
-        }, platform));
+export default function Signup() {
+    async function handleSubmit(username: string, password: string) {
+        const [err, res] = await fetch(
+            'register',
+            Object.assign(
+                {
+                    username,
+                    password,
+                },
+                platform,
+            ),
+        );
         if (!err) {
             Toast.show({
                 text: '创建成功',
@@ -25,16 +31,14 @@ export default class Signup extends Component {
             await setStorageValue('token', res.token);
         }
     }
-    render() {
-        return (
-            <Container>
-                <Base
-                    buttonText="注册"
-                    jumpText="已有账号? 去登陆"
-                    jumpPage="login"
-                    onSubmit={Signup.handleSubmit}
-                />
-            </Container>
-        );
-    }
+    return (
+        <Container>
+            <Base
+                buttonText="注册"
+                jumpText="已有账号? 去登陆"
+                jumpPage="login"
+                onSubmit={handleSubmit}
+            />
+        </Container>
+    );
 }

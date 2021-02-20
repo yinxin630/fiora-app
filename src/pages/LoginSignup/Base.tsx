@@ -1,82 +1,70 @@
-import React, { Component } from 'react';
+import React, { useRef, useState } from 'react';
 import { StyleSheet, Text, TextInput } from 'react-native';
-import { Container, Form, Label, Button, View } from 'native-base';
-import autobind from 'autobind-decorator';
-import PropTypes from 'prop-types';
+import { Form, Label, Button, View } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 
 import { isiOS } from '../../utils/platform';
 import PageContainer from '../../components/PageContainer';
 
-export default class Login extends Component {
-    static propTypes = {
-        buttonText: PropTypes.string.isRequired,
-        jumpText: PropTypes.string.isRequired,
-        jumpPage: PropTypes.string.isRequired,
-        onSubmit: PropTypes.func.isRequired,
-    };
-    constructor(...args) {
-        super(...args);
-        this.state = {
-            username: '',
-            password: '',
-        };
+type Props = {
+    buttonText: string;
+    jumpText: string;
+    jumpPage: string;
+    // eslint-disable-next-line no-unused-vars
+    onSubmit: (username: string, password: string) => void;
+};
+
+export default function Base({ buttonText, jumpText, jumpPage, onSubmit }: Props) {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const $username = useRef<TextInput>();
+    const $password = useRef<TextInput>();
+
+    function handlePress() {
+        $username.current!.blur();
+        $password.current!.blur();
+        onSubmit(username, password);
     }
-    handleTextChange(key, value) {
-        this.setState({
-            [key]: value,
-        });
-    }
-    @autobind
-    handlePress() {
-        const { username, password } = this.state;
-        this.username.blur();
-        this.password.blur();
-        this.props.onSubmit(username, password);
-    }
-    @autobind
-    handleJump() {
-        const { jumpPage } = this.props;
+
+    function handleJump() {
         if (Actions[jumpPage]) {
             Actions.replace(jumpPage);
         } else {
             console.error(`页面${jumpPage}不存在`);
         }
     }
-    render() {
-        const { buttonText, jumpText } = this.props;
-        return (
-            <PageContainer>
-                <View style={styles.container}>
-                    <Form>
-                        <Label style={styles.label}>用户名</Label>
-                        <TextInput
-                            style={[styles.input, isiOS ? styles.inputiOS : {}]}
-                            ref={(i) => (this.username = i)}
-                            clearButtonMode="while-editing"
-                            onChangeText={this.handleTextChange.bind(this, 'username')}
-                            autoCapitalize="none"
-                        />
-                        <Label style={styles.label}>密码</Label>
-                        <TextInput
-                            style={[styles.input, isiOS ? styles.inputiOS : {}]}
-                            ref={(i) => (this.password = i)}
-                            secureTextEntry
-                            clearButtonMode="while-editing"
-                            onChangeText={this.handleTextChange.bind(this, 'password')}
-                            autoCapitalize="none"
-                        />
-                    </Form>
-                    <Button primary block style={styles.button} onPress={this.handlePress}>
-                        <Text style={styles.buttonText}>{buttonText}</Text>
-                    </Button>
-                    <Button transparent style={styles.signup} onPress={this.handleJump}>
-                        <Text style={styles.signupText}>{jumpText}</Text>
-                    </Button>
-                </View>
-            </PageContainer>
-        );
-    }
+    return (
+        <PageContainer>
+            <View style={styles.container}>
+                <Form>
+                    <Label style={styles.label}>用户名</Label>
+                    <TextInput
+                        style={[styles.input, isiOS ? styles.inputiOS : {}]}
+                        ref={$username}
+                        clearButtonMode="while-editing"
+                        onChangeText={setUsername}
+                        autoCapitalize="none"
+                    />
+                    <Label style={styles.label}>密码</Label>
+                    <TextInput
+                        style={[styles.input, isiOS ? styles.inputiOS : {}]}
+                        ref={$password}
+                        secureTextEntry
+                        clearButtonMode="while-editing"
+                        onChangeText={setPassword}
+                        autoCapitalize="none"
+                    />
+                </Form>
+                <Button primary block style={styles.button} onPress={handlePress}>
+                    <Text style={styles.buttonText}>{buttonText}</Text>
+                </Button>
+                <Button transparent style={styles.signup} onPress={handleJump}>
+                    <Text style={styles.signupText}>{jumpText}</Text>
+                </Button>
+            </View>
+        </PageContainer>
+    );
 }
 
 const styles = StyleSheet.create({
