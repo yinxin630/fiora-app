@@ -103,7 +103,7 @@ function addLinkmanMessage(linkmanId: string, message: Message) {
         message,
     } as AddlinkmanMessageAction);
 }
-function addLinkmanMessages(linkmanId: string, messages: Message[]) {
+function addLinkmanHistoryMessages(linkmanId: string, messages: Message[]) {
     dispatch({
         type: AddLinkmanHistoryMessagesActionType,
         linkmanId,
@@ -192,7 +192,7 @@ export default {
     setFriend,
 
     addLinkmanMessage,
-    addLinkmanMessages,
+    addLinkmanHistoryMessages,
     updateSelfMessage,
 
     loading,

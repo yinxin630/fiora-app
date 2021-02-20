@@ -87,7 +87,7 @@ async function guest() {
 
             fetch('getLinkmanHistoryMessages', { linkmanId: newLinkman._id }).then(([err, res]) => {
                 if (!err) {
-                    action.addLinkmanMessages(newLinkman._id, res);
+                    action.addLinkmanHistoryMessages(newLinkman._id, res);
                 }
             });
         }

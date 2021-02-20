@@ -9,6 +9,8 @@ import SystemMessage from './SystemMessage';
 import ImageMessage from './ImageMessage';
 import TextMessage from './TextMessage';
 import { getPerRandomColor, getRandomColor } from '../../utils/getRandomColor';
+import InviteMessage from './InviteMessage';
+import { useTheme } from '../../hooks/useStore';
 
 const { width: ScreenWidth } = Dimensions.get('window');
 
@@ -28,6 +30,8 @@ export default function Message({
     scrollToEnd,
     openImageViewer,
 }: Props) {
+    const { primaryColor8 } = useTheme();
+
     useEffect(() => {
         if (shouldScroll) {
             scrollToEnd();
@@ -60,9 +64,11 @@ export default function Message({
             case 'system': {
                 return <SystemMessage message={message} />;
             }
-            case 'file':
-            case 'code':
             case 'inviteV2': {
+                return <InviteMessage message={message} isSelf={isSelf} />;
+            }
+            case 'file':
+            case 'code': {
                 return (
                     <Text style={styles.notSupport}>
                         暂未支持的消息类型[{message.type}], 请在Web端查看
@@ -94,7 +100,9 @@ export default function Message({
                     </Text>
                     <Text style={[styles.time, isSelf && styles.timeSelf]}>{formatTime()}</Text>
                 </View>
-                <View style={[styles.content, isSelf && styles.contentSelf]}>
+                <View
+                    style={[styles.content, { backgroundColor: isSelf ? primaryColor8 : 'white' }]}
+                >
                     {renderContent()}
                 </View>
                 <View
@@ -105,7 +113,7 @@ export default function Message({
                         mode={isSelf ? 'right' : 'left'}
                         base={10}
                         height={5}
-                        color={isSelf ? '#2a7bf6' : 'white'}
+                        color={isSelf ? primaryColor8 : 'white'}
                     />
                 </View>
             </View>
@@ -165,9 +173,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         minHeight: 26,
         minWidth: 20,
-    },
-    contentSelf: {
-        backgroundColor: '#2a7bf6',
     },
     notSupport: {
         color: '#73b668',
