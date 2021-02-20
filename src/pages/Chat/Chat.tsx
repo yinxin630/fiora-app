@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
+import { Actions } from 'react-native-router-flux';
 
 import { isiOS } from '../../utils/platform';
 
@@ -15,7 +16,6 @@ import {
     getUserOnlineStatus,
 } from '../../service';
 import action from '../../state/action';
-import { Actions } from 'react-native-router-flux';
 
 export default function Chat() {
     const isLogin = useIsLogin();
@@ -45,14 +45,14 @@ export default function Chat() {
         }
         const request = linkman.type === 'group' ? fetchGroupOnlineMembers : fetchUserOnlineStatus;
         request();
-        const timer = setInterval(() => request(), 1000 * 5);
+        const timer = setInterval(() => request(), 1000 * 60);
         return () => clearInterval(timer);
     }, [focus]);
 
     useEffect(() => {
-        if (linkman!.type === 'group' && linkman!.messages.length > 0) {
+        if (linkman!.type === 'group' && (linkman as Group).members.length > 0) {
             Actions.refresh({
-                title: `${(linkman as Group).name} (${(linkman as Group).messages.length})`,
+                title: `${(linkman as Group).name} (${(linkman as Group).members.length})`,
             });
         } else if (linkman!.type !== 'group' && (linkman as Friend).isOnline !== undefined) {
             Actions.refresh({
