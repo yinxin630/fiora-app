@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, TextInput, SafeAreaView } from 'react-native';
-import { Container, Form, Label, Button } from 'native-base';
+import { StyleSheet, Text, TextInput } from 'react-native';
+import { Container, Form, Label, Button, View } from 'native-base';
 import autobind from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
 
 import { isiOS } from '../../utils/platform';
+import PageContainer from '../../components/PageContainer';
 
 export default class Login extends Component {
     static propTypes = {
@@ -13,7 +14,7 @@ export default class Login extends Component {
         jumpText: PropTypes.string.isRequired,
         jumpPage: PropTypes.string.isRequired,
         onSubmit: PropTypes.func.isRequired,
-    }
+    };
     constructor(...args) {
         super(...args);
         this.state = {
@@ -45,13 +46,13 @@ export default class Login extends Component {
     render() {
         const { buttonText, jumpText } = this.props;
         return (
-            <SafeAreaView style={{ flex: 1 }}>
-                <Container style={styles.container}>
+            <PageContainer>
+                <View style={styles.container}>
                     <Form>
                         <Label style={styles.label}>用户名</Label>
                         <TextInput
                             style={[styles.input, isiOS ? styles.inputiOS : {}]}
-                            ref={i => this.username = i}
+                            ref={(i) => (this.username = i)}
                             clearButtonMode="while-editing"
                             onChangeText={this.handleTextChange.bind(this, 'username')}
                             autoCapitalize="none"
@@ -59,7 +60,7 @@ export default class Login extends Component {
                         <Label style={styles.label}>密码</Label>
                         <TextInput
                             style={[styles.input, isiOS ? styles.inputiOS : {}]}
-                            ref={i => this.password = i}
+                            ref={(i) => (this.password = i)}
                             secureTextEntry
                             clearButtonMode="while-editing"
                             onChangeText={this.handleTextChange.bind(this, 'password')}
@@ -72,9 +73,8 @@ export default class Login extends Component {
                     <Button transparent style={styles.signup} onPress={this.handleJump}>
                         <Text style={styles.signupText}>{jumpText}</Text>
                     </Button>
-                </Container>
-
-            </SafeAreaView>
+                </View>
+            </PageContainer>
         );
     }
 }
@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
     },
     inputiOS: {
         borderWidth: 1,
-        borderColor: '#ccc',
-        backgroundColor: 'white',
+        borderColor: '#777',
     },
 });
