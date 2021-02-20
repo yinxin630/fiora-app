@@ -1,8 +1,9 @@
 import fetch from '../utils/fetch';
-import convertRobot10Message from '../utils/convertRobot10Message';
+import convertMessage from '../utils/convertMessage';
 import getFriendId from '../utils/getFriendId';
 import store from './store';
 import { ConnectActionType, ConnectAction, Friend, SetUserActionType, SetUserAction, SetLinkmanMessagesAction, SetGuestActionType, SetGuestAction, LogoutActionType, UpdateUserPropertyActionType, UpdateUserPropertyAction, AddlinkmanMessageActionType, AddlinkmanMessageAction, AddLinkmanHistoryMessagesActionType, AddLinkmanHistoryMessagesAction, UpdateSelfMessageActionType, UpdateSelfMessageAction, SetFocusAction, UpdateGroupPropertyActionType, UpdateGroupPropertyAction, AddLinkmanAction, RemoveLinkmanActionType, RemoveLinkmanAction, SetFriendAction, UpdateUIPropertyActionType, UpdateUIPropertyAction, Group, Message, Linkman } from '../types/redux';
+
 
 const { dispatch } = store;
 
@@ -60,7 +61,7 @@ async function setUser(user: any) {
         { linkmans: linkmanIds },
     );
     for (const key in messages) {
-        messages[key].forEach((m) => convertRobot10Message(m));
+        messages[key].forEach((m) => convertMessage(m));
     }
     if (!err) {
         dispatch({
@@ -70,7 +71,7 @@ async function setUser(user: any) {
     }
 }
 async function setGuest(defaultGroup: Group) {
-    defaultGroup.messages.forEach((m) => convertRobot10Message(m));
+    defaultGroup.messages.forEach((m) => convertMessage(m));
     dispatch({
         type: SetGuestActionType,
         linkmans: [
@@ -88,7 +89,6 @@ function logout() {
     });
 }
 function setAvatar(avatar: string) {
-    // @ts-expect-error
     dispatch({
         type: UpdateUserPropertyActionType,
         key: 'avatar',

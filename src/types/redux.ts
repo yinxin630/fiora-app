@@ -127,6 +127,7 @@ export type Message = {
         username: string;
         avatar: string;
         tag: string;
+        originUsername?: string;
     }
 };
 

@@ -54,7 +54,7 @@ export default function Chat() {
         // Don't ask me why I use settimeout. Is that the only way it works.
         setTimeout(() => {
             if ($scrollView.current?.scrollToEnd) {
-                $scrollView.current!.scrollToEnd();
+                $scrollView.current!.scrollToEnd({ animated: false });
             }
         }, 200);
     }
@@ -128,22 +128,11 @@ export default function Chat() {
         return (
             <Message
                 key={message._id}
-                avatar={message.from.avatar}
-                nickname={message.from.username}
-                time={new Date(message.createTime)}
-                type={message.type}
-                content={message.content}
+                message={message}
                 isSelf={self === message.from._id}
-                tag={message.from.tag}
                 shouldScroll={shouldScroll}
                 scrollToEnd={scrollToEnd}
-                {...(message.type === 'image'
-                    ? {
-                        loading: message.loading,
-                        percent: message.percent,
-                        openImageViewer,
-                    }
-                    : {})}
+                openImageViewer={openImageViewer}
             />
         );
     }

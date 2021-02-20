@@ -7,7 +7,7 @@ import socket from './socket';
 import fetch from './utils/fetch';
 import action from './state/action';
 import store from './state/store';
-import convertRobot10Message from './utils/convertRobot10Message';
+import convertMessage from './utils/convertMessage';
 import getFriendId from './utils/getFriendId';
 import platform from './utils/platform';
 import { getStorageValue } from './utils/storage';
@@ -21,7 +21,6 @@ import Test from './pages/test';
 import Loading from './components/Loading';
 import Other from './pages/Other/Other';
 import { State, User } from './types/redux';
-import { useTheme } from './hooks/useStore';
 import { connect } from 'react-redux';
 import SelfInfo from './pages/ChatList/SelfInfo';
 
@@ -68,7 +67,7 @@ async function guest() {
     });
     socket.on('message', (message) => {
         // robot10
-        convertRobot10Message(message);
+        convertMessage(message);
 
         const state = store.getState() as State;
         const linkman = state.user!.linkmans.find((x) => x._id === message.to);
