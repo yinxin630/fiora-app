@@ -18,6 +18,11 @@ export function useIsLogin() {
     return !!useSelfId();
 }
 
+export function useIsAdmin() {
+    const user = useUser();
+    return (user && user.isAdmin) || false;
+}
+
 export function useTheme() {
     const { ui } = useStore();
     const { primaryColor, primaryTextColor } = ui;
