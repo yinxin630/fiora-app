@@ -43,7 +43,10 @@ export default function Message({
         if (Time.isYesterday(nowTime, createTime)) {
             return `昨天 ${Time.getHourMinute(createTime)}`;
         }
-        return `${Time.getMonthDate(createTime)} ${Time.getHourMinute(createTime)}`;
+        if (Time.isSameYear(nowTime, createTime)) {
+            return `${Time.getMonthDate(createTime)} ${Time.getHourMinute(createTime)}`;
+        }
+        return `${Time.getYearMonthDate(createTime)} ${Time.getHourMinute(createTime)}`;
     }
 
     function renderContent() {

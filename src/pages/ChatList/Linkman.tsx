@@ -27,7 +27,10 @@ export default class Linkman extends Component {
         if (Time.isYesterday(nowTime, messageTime)) {
             return '昨天';
         }
-        return Time.getMonthDate(messageTime);
+        if (Time.isSameYear(nowTime, messageTime)) {
+            return Time.getMonthDate(messageTime);
+        }
+        return Time.getYearMonthDate(messageTime);
     }
     @autobind
     handlePress() {
