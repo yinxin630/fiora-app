@@ -15,14 +15,11 @@ import {
     DeleteLinkmanMessageActionType,
     Friend,
     Group,
+    Message,
     RemoveLinkmanAction,
     RemoveLinkmanActionType,
     SetGuestAction,
     SetGuestActionType,
-    SetLinkmanMessagesAction,
-    SetLinkmanMessagesActionType,
-    SetUserAction,
-    SetUserActionType,
     State,
     Temporary,
     UpdateGroupPropertyAction,
@@ -122,7 +119,7 @@ socket.on('disconnect', () => {
         value: false,
     } as ConnectAction);
 });
-socket.on('message', (message) => {
+socket.on('message', (message: Message) => {
     // robot10
     convertMessage(message);
 

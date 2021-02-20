@@ -9,62 +9,58 @@ import action from '../../state/action';
 
 import Avatar from '../../components/Avatar';
 
-export default class Linkman extends Component {
-    static propTypes = {
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        avatar: PropTypes.string.isRequired,
-        preview: PropTypes.string,
-        time: PropTypes.object,
-        unread: PropTypes.number,
-    }
-    formatTime() {
-        const { time: messageTime } = this.props;
+type Props = {
+    id: string;
+    name: string;
+    avatar: string;
+    preview: string;
+    time: Date;
+    unread: number;
+};
+
+export default function Linkman({ id, name, avatar, preview, time, unread }: Props) {
+    function formatTime() {
         const nowTime = new Date();
-        if (Time.isToday(nowTime, messageTime)) {
-            return Time.getHourMinute(messageTime);
+        if (Time.isToday(nowTime, time)) {
+            return Time.getHourMinute(time);
         }
-        if (Time.isYesterday(nowTime, messageTime)) {
+        if (Time.isYesterday(nowTime, time)) {
             return '昨天';
         }
-        if (Time.isSameYear(nowTime, messageTime)) {
-            return Time.getMonthDate(messageTime);
+        if (Time.isSameYear(nowTime, time)) {
+            return Time.getMonthDate(time);
         }
-        return Time.getYearMonthDate(messageTime);
+        return Time.getYearMonthDate(time);
     }
-    @autobind
-    handlePress() {
-        const { name, id } = this.props;
+
+    function handlePress() {
         action.setFocus(id);
         Actions.chat({ title: name });
     }
-    render() {
-        const { name, avatar, preview, unread } = this.props;
-        return (
-            <TouchableOpacity onPress={this.handlePress}>
-                <View style={styles.container}>
-                    <Avatar src={avatar} size={50} />
-                    <View style={styles.content}>
-                        <View style={styles.nickTime}>
-                            <Text style={styles.nick}>{name}</Text>
-                            <Text style={styles.time}>{this.formatTime()}</Text>
-                        </View>
-                        <View style={styles.previewUnread}>
-                            <Text style={styles.preview} numberOfLines={1}>{preview}</Text>
-                            {
-                                unread > 0 ?
-                                    <View style={styles.unread}>
-                                        <Text style={styles.unreadText}>{unread}</Text>
-                                    </View>
-                                    :
-                                    null
-                            }
-                        </View>
+
+    return (
+        <TouchableOpacity onPress={handlePress}>
+            <View style={styles.container}>
+                <Avatar src={avatar} size={50} />
+                <View style={styles.content}>
+                    <View style={styles.nickTime}>
+                        <Text style={styles.nick}>{name}</Text>
+                        <Text style={styles.time}>{formatTime()}</Text>
+                    </View>
+                    <View style={styles.previewUnread}>
+                        <Text style={styles.preview} numberOfLines={1}>
+                            {preview}
+                        </Text>
+                        {unread > 0 ? (
+                            <View style={styles.unread}>
+                                <Text style={styles.unreadText}>{unread}</Text>
+                            </View>
+                        ) : null}
                     </View>
                 </View>
-            </TouchableOpacity>
-        );
-    }
+            </View>
+        </TouchableOpacity>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -115,4 +111,3 @@ const styles = StyleSheet.create({
         color: 'white',
     },
 });
-

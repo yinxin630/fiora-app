@@ -9,6 +9,7 @@
     "android": "expo android",
     "ios": "expo ios",
     "test": "jest",
+    "ts-check": "tsc --noEmit",
     "lint": "./node_modules/.bin/eslint ./ --ext js,jsx --ignore-pattern .eslintignore --cache --fix"
   },
   "jest": {
@@ -42,6 +43,7 @@
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
+    "@types/randomcolor": "^0.5.5",
     "@types/react": "^17.0.2",
     "@types/react-native": "^0.63.50",
     "@types/react-redux": "^7.1.16",

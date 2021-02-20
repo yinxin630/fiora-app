@@ -146,6 +146,7 @@ export type Message = {
         tag: string;
         originUsername?: string;
     };
+    to: string;
 };
 
 export type Group = {

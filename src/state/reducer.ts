@@ -58,7 +58,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case UpdateUserPropertyActionType: {
-            // @ts-expect-error
+            // @ts-ignore
             state!.user[action.key] = action.value;
             return state;
         }
@@ -87,7 +87,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
                 (linkman) => linkman.type === 'group' && linkman._id === action.groupId,
             ) as Group;
             if (group) {
-                // @ts-expect-error
+                // @ts-ignore
                 group[action.key] = action.value;
             }
             return state;
@@ -97,7 +97,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
                 (linkman) => linkman.type !== 'group' && linkman._id === action.userId,
             ) as Friend;
             if (friend) {
-                // @ts-expect-error
+                // @ts-ignore
                 friend[action.key] = action.value;
             }
             return state;

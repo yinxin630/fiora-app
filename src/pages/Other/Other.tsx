@@ -1,7 +1,6 @@
 import {
     Body,
     Button,
-    Container,
     Content,
     Icon,
     Left,
@@ -12,7 +11,7 @@ import {
     Toast,
 } from 'native-base';
 import React from 'react';
-import { Linking, SafeAreaView, StyleSheet } from 'react-native';
+import { Linking, StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import PageContainer from '../../components/PageContainer';
 
@@ -45,7 +44,7 @@ function Other() {
                         onPress={() => Linking.openURL('https://github.com/yinxin630/fiora')}
                     >
                         <Left>
-                            <Icon name="github" style={{ fontSize: 25 }} type="AntDesign" />
+                            <Icon name="logo-github" style={{ fontSize: 26 }} />
                         </Left>
                         <Body>
                             <Text>源码</Text>
