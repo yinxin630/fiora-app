@@ -8,4 +8,11 @@ export default {
             position: 'top',
         });
     },
+    danger(message: string) {
+        Toast.show({
+            text: message,
+            type: 'danger',
+            position: 'top',
+        });
+    },
 };

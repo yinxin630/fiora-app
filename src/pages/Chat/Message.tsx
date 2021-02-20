@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         marginRight: 8,
         maxWidth: ScreenWidth - 120,
+        alignItems: 'flex-start',
     },
     infoSelf: {
         alignItems: 'flex-end',
