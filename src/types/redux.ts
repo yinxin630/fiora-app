@@ -70,6 +70,14 @@ export type UpdateGroupPropertyAction = {
     value: any;
 };
 
+export const UpdateFriendPropertyActionType = 'UpdateFriendProperty';
+export type UpdateFriendPropertyAction = {
+    type: typeof UpdateFriendPropertyActionType;
+    userId: string;
+    key: keyof Group;
+    value: any;
+};
+
 export const AddLinkmanActionType = 'AddLinkman';
 export type AddLinkmanAction = {
     type: typeof AddLinkmanActionType;
@@ -113,6 +121,7 @@ export type ActionTypes =
     | UpdateSelfMessageAction
     | UpdateUserPropertyAction
     | UpdateUIPropertyAction
+    | UpdateFriendPropertyAction
     | LogoutAction;
 
 export type Message = {
@@ -128,7 +137,7 @@ export type Message = {
         avatar: string;
         tag: string;
         originUsername?: string;
-    }
+    };
 };
 
 export type Group = {
@@ -145,7 +154,7 @@ export type Group = {
 export type Friend = {
     _id: string;
     type: 'friend';
-    username: string;
+    name: string;
     avatar: string;
     from: string;
     to: {
@@ -156,6 +165,7 @@ export type Friend = {
     messages: Message[];
     unread: number;
     createTime: number;
+    isOnline?: boolean;
 };
 
 export type Linkman = Group | Friend;

@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { State, ActionTypes, ConnectActionType, LogoutActionType, SetUserActionType, SetGuestActionType, UpdateUserPropertyActionType, SetLinkmanMessagesActionType, UpdateGroupPropertyActionType, SetFocusActionType, SetFriendActionType, Friend, AddLinkmanActionType, RemoveLinkmanActionType, AddlinkmanMessageActionType, AddLinkmanHistoryMessagesActionType, UpdateSelfMessageActionType, UpdateUIPropertyActionType, Message, Group } from '../types/redux';
+import { State, ActionTypes, ConnectActionType, LogoutActionType, SetUserActionType, SetGuestActionType, UpdateUserPropertyActionType, SetLinkmanMessagesActionType, UpdateLinkmanPropertyActionType, SetFocusActionType, SetFriendActionType, Friend, AddLinkmanActionType, RemoveLinkmanActionType, AddlinkmanMessageActionType, AddLinkmanHistoryMessagesActionType, UpdateSelfMessageActionType, UpdateUIPropertyActionType, Message, Group, UpdateGroupPropertyActionType, UpdateFriendPropertyActionType } from '../types/redux';
 
 /**
  * 处理文本消息的html转义字符
@@ -77,6 +77,16 @@ const reducer = produce((state: State, action: ActionTypes) => {
             if (group) {
                 // @ts-expect-error
                 group[action.key] = action.value;
+            }
+            return state;
+        }
+        case UpdateFriendPropertyActionType: {
+            const friend = state.user!.linkmans.find(
+                (linkman) => linkman.type !== 'group' && linkman._id === action.userId,
+            ) as Friend;
+            if (friend) {
+                // @ts-expect-error
+                friend[action.key] = action.value;
             }
             return state;
         }

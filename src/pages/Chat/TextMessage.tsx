@@ -16,7 +16,7 @@ function TextMessage({ message, isSelf }: Props) {
 
     function push(str: string) {
         children.push(
-            <Text key={Math.random()} style={isSelf && styles.textSelf}>
+            <Text key={Math.random()} style={{color: isSelf ? 'white' : '#444'}}>
                 {str}
             </Text>,
         );

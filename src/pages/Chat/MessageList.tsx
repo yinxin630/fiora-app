@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Keyboard, RefreshControl, Modal } from 'react-native';
 import { Toast } from 'native-base';
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -10,7 +10,11 @@ import Message from './Message';
 import { useIsLogin, useSelfId, useStore } from '../../hooks/useStore';
 import { Message as MessageType } from '../../types/redux';
 
-export default function Chat() {
+type Props = {
+    $scrollView: React.MutableRefObject<ScrollView>;
+};
+
+function MessageList({ $scrollView }: Props) {
     const isLogin = useIsLogin();
     const self = useSelfId();
     const { focus } = useStore();
@@ -20,8 +24,6 @@ export default function Chat() {
     const [refreshing, setRefreshing] = useState(false);
     const [showImageViewerDialog, toggleShowImageViewerDialog] = useState(false);
     const [imageViewerIndex, setImageViewerIndex] = useState(0);
-
-    const $scrollView = useRef<ScrollView>();
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -53,7 +55,7 @@ export default function Chat() {
     function scrollToEnd() {
         // Don't ask me why I use settimeout. Is that the only way it works.
         setTimeout(() => {
-            if ($scrollView.current?.scrollToEnd) {
+            if ($scrollView.current) {
                 $scrollView.current!.scrollToEnd({ animated: false });
             }
         }, 200);
@@ -173,6 +175,8 @@ export default function Chat() {
         </ScrollView>
     );
 }
+
+export default MessageList;
 
 const styles = StyleSheet.create({
     container: {

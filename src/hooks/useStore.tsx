@@ -27,3 +27,12 @@ export function useTheme() {
         primaryTextColor10: `rgba(${primaryTextColor}, 1)`,
     };
 }
+
+export function useFocusLinkman() {
+    const data = useStore();
+    const { user, focus = '' } = data;
+    if (user && user.linkmans) {
+        return user!.linkmans.find((linkman) => linkman._id === focus);
+    }
+    return null;
+}
