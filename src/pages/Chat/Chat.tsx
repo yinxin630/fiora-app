@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { StyleSheet, KeyboardAvoidingView } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 
 import { isiOS } from '../../utils/platform';
@@ -7,9 +7,61 @@ import { isiOS } from '../../utils/platform';
 import MessageList from './MessageList';
 import Input from './Input';
 import PageContainer from '../../components/PageContainer';
+import { Friend, Group } from '../../types/redux';
+import { useFocusLinkman, useIsLogin, useSelfId, useStore } from '../../hooks/useStore';
+import {
+    getDefaultGroupOnlineMembers,
+    getGroupOnlineMembers,
+    getUserOnlineStatus,
+} from '../../service';
+import action from '../../state/action';
+import { Actions } from 'react-native-router-flux';
 
 export default function Chat() {
-    const $messageList = useRef();
+    const isLogin = useIsLogin();
+    const self = useSelfId();
+    const { focus } = useStore();
+    const linkman = useFocusLinkman();
+    const $messageList = useRef<ScrollView>();
+
+    async function fetchGroupOnlineMembers() {
+        let onlineMembers: Group['members'] = [];
+        if (isLogin) {
+            onlineMembers = await getGroupOnlineMembers(focus);
+        } else {
+            onlineMembers = await getDefaultGroupOnlineMembers();
+        }
+        if (onlineMembers) {
+            action.updateGroupProperty(focus, 'members', onlineMembers);
+        }
+    }
+    async function fetchUserOnlineStatus() {
+        const isOnline = await getUserOnlineStatus(focus.replace(self, ''));
+        action.updateFriendProperty(focus, 'isOnline', isOnline);
+    }
+    useEffect(() => {
+        if (!linkman) {
+            return () => {};
+        }
+        const request = linkman.type === 'group' ? fetchGroupOnlineMembers : fetchUserOnlineStatus;
+        request();
+        const timer = setInterval(() => request(), 1000 * 5);
+        return () => clearInterval(timer);
+    }, [focus]);
+
+    useEffect(() => {
+        if (linkman!.type === 'group' && linkman!.messages.length > 0) {
+            Actions.refresh({
+                title: `${(linkman as Group).name} (${(linkman as Group).messages.length})`,
+            });
+        } else if (linkman!.type !== 'group' && (linkman as Friend).isOnline !== undefined) {
+            Actions.refresh({
+                title: `${(linkman as Friend).name} (${
+                    (linkman as Friend).isOnline ? '在线' : '离线'
+                })`,
+            });
+        }
+    }, [(linkman as Group).members, (linkman as Friend).isOnline]);
 
     function handleInputHeightChange() {
         if ($messageList.current) {
@@ -24,7 +76,7 @@ export default function Chat() {
                 behavior={isiOS ? 'padding' : 'height'}
                 keyboardVerticalOffset={Constants.statusBarHeight + 44}
             >
-                <MessageList ref={$messageList} />
+                <MessageList $scrollView={$messageList} />
                 <Input onHeightChange={handleInputHeightChange} />
             </KeyboardAvoidingView>
         </PageContainer>

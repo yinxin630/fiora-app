@@ -2,8 +2,39 @@ import fetch from '../utils/fetch';
 import convertMessage from '../utils/convertMessage';
 import getFriendId from '../utils/getFriendId';
 import store from './store';
-import { ConnectActionType, ConnectAction, Friend, SetUserActionType, SetUserAction, SetLinkmanMessagesAction, SetGuestActionType, SetGuestAction, LogoutActionType, UpdateUserPropertyActionType, UpdateUserPropertyAction, AddlinkmanMessageActionType, AddlinkmanMessageAction, AddLinkmanHistoryMessagesActionType, AddLinkmanHistoryMessagesAction, UpdateSelfMessageActionType, UpdateSelfMessageAction, SetFocusAction, UpdateGroupPropertyActionType, UpdateGroupPropertyAction, AddLinkmanAction, RemoveLinkmanActionType, RemoveLinkmanAction, SetFriendAction, UpdateUIPropertyActionType, UpdateUIPropertyAction, Group, Message, Linkman } from '../types/redux';
-
+import {
+    ConnectActionType,
+    ConnectAction,
+    Friend,
+    SetUserActionType,
+    SetUserAction,
+    SetLinkmanMessagesAction,
+    SetGuestActionType,
+    SetGuestAction,
+    LogoutActionType,
+    UpdateUserPropertyActionType,
+    UpdateUserPropertyAction,
+    AddlinkmanMessageActionType,
+    AddlinkmanMessageAction,
+    AddLinkmanHistoryMessagesActionType,
+    AddLinkmanHistoryMessagesAction,
+    UpdateSelfMessageActionType,
+    UpdateSelfMessageAction,
+    SetFocusAction,
+    AddLinkmanAction,
+    RemoveLinkmanActionType,
+    RemoveLinkmanAction,
+    SetFriendAction,
+    UpdateUIPropertyActionType,
+    UpdateUIPropertyAction,
+    Group,
+    Message,
+    Linkman,
+    UpdateGroupPropertyActionType,
+    UpdateGroupPropertyAction,
+    UpdateFriendPropertyActionType,
+    UpdateFriendPropertyAction,
+} from '../types/redux';
 
 const { dispatch } = store;
 
@@ -139,7 +170,23 @@ function setGroupAvatar(groupId: string, avatar: string) {
         groupId,
         key: 'avatar',
         value: avatar,
-    });
+    } as UpdateGroupPropertyAction);
+}
+function updateGroupProperty(groupId: string, key: string, value: any) {
+    dispatch({
+        type: UpdateGroupPropertyActionType,
+        groupId,
+        key,
+        value,
+    } as UpdateGroupPropertyAction);
+}
+function updateFriendProperty(userId: string, key: string, value: any) {
+    dispatch({
+        type: UpdateFriendPropertyActionType,
+        userId,
+        key,
+        value,
+    } as UpdateFriendPropertyAction);
 }
 function addLinkman(linkman: Linkman, focus = false) {
     if (linkman.type === 'group') {
@@ -190,6 +237,8 @@ export default {
     addLinkman,
     removeLinkman,
     setFriend,
+    updateGroupProperty,
+    updateFriendProperty,
 
     addLinkmanMessage,
     addLinkmanHistoryMessages,
