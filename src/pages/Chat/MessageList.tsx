@@ -80,7 +80,7 @@ export default function Chat() {
         }
         if (!err) {
             if (result.length > 0) {
-                action.addLinkmanMessages(focus, result);
+                action.addLinkmanHistoryMessages(focus, result);
             } else {
                 Toast.show({
                     text: '没有更多消息了',
