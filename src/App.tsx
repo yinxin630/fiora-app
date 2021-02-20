@@ -175,8 +175,30 @@ function App({ title, primaryColor, isLogin }: Props) {
                             navBarButtonColor="#f9f9f9"
                             backTitle="返回"
                         />
-                        <Scene key="login" component={Login} title="登录" hideNavBar={false} />
-                        <Scene key="signup" component={Signup} title="注册" hideNavBar={false} />
+                        <Scene
+                            key="login"
+                            component={Login}
+                            title="登录"
+                            hideNavBar={false}
+                            navigationBarStyle={{
+                                backgroundColor: primaryColor10,
+                                borderBottomWidth: 0,
+                            }}
+                            navBarButtonColor="#f9f9f9"
+                            backTitle="返回"
+                        />
+                        <Scene
+                            key="signup"
+                            component={Signup}
+                            title="注册"
+                            hideNavBar={false}
+                            navigationBarStyle={{
+                                backgroundColor: primaryColor10,
+                                borderBottomWidth: 0,
+                            }}
+                            navBarButtonColor="#f9f9f9"
+                            backTitle="返回"
+                        />
                         <Scene key="test" component={Test} title="测试页面2" tabs={false} />
                     </Stack>
                 </Router>

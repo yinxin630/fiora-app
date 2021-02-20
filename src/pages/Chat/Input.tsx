@@ -237,7 +237,7 @@ export default function Input({ onHeightChange }: Props) {
                     </View>
                 ) : (
                     <Button block style={styles.button} onPress={Actions.login}>
-                        <Text style={styles.buttonText}>游客你好, 点击按钮登录后参与聊天</Text>
+                        <Text style={styles.buttonText}>登录 / 注册, 参与聊天</Text>
                     </Button>
                 )}
                 {isLogin && showFunctionList ? (
@@ -299,6 +299,7 @@ const styles = StyleSheet.create({
     },
     button: {
         height: 36,
+        marginTop: 4,
         marginLeft: 10,
         marginRight: 10,
         marginBottom: 8,
