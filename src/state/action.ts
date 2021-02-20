@@ -34,6 +34,8 @@ import {
     UpdateGroupPropertyAction,
     UpdateFriendPropertyActionType,
     UpdateFriendPropertyAction,
+    DeleteLinkmanMessageAction,
+    DeleteLinkmanMessageActionType,
 } from '../types/redux';
 
 const { dispatch } = store;
@@ -134,6 +136,15 @@ function addLinkmanMessage(linkmanId: string, message: Message) {
         message,
     } as AddlinkmanMessageAction);
 }
+
+function deleteLinkmanMessage(linkmanId: string, messageId: string) {
+    dispatch({
+        type: DeleteLinkmanMessageActionType,
+        linkmanId,
+        messageId,
+    } as DeleteLinkmanMessageAction);
+}
+
 function addLinkmanHistoryMessages(linkmanId: string, messages: Message[]) {
     dispatch({
         type: AddLinkmanHistoryMessagesActionType,
@@ -243,6 +254,7 @@ export default {
     addLinkmanMessage,
     addLinkmanHistoryMessages,
     updateSelfMessage,
+    deleteLinkmanMessage,
 
     loading,
 };

@@ -41,6 +41,13 @@ export type AddlinkmanMessageAction = {
     message: Message;
 };
 
+export const DeleteLinkmanMessageActionType = 'DeleteLinkmanMessage';
+export type DeleteLinkmanMessageAction = {
+    type: typeof DeleteLinkmanMessageActionType;
+    linkmanId: string;
+    messageId: string;
+};
+
 export const AddLinkmanHistoryMessagesActionType = 'AddLinkmanHistoryMessages';
 export type AddLinkmanHistoryMessagesAction = {
     type: typeof AddLinkmanHistoryMessagesActionType;
@@ -118,6 +125,7 @@ export type ActionTypes =
     | RemoveLinkmanAction
     | AddlinkmanMessageAction
     | AddLinkmanHistoryMessagesAction
+    | DeleteLinkmanMessageAction
     | UpdateSelfMessageAction
     | UpdateUserPropertyAction
     | UpdateUIPropertyAction
@@ -176,6 +184,7 @@ export type User = {
     avatar: string;
     tag: string;
     linkmans: Linkman[];
+    isAdmin: boolean;
 };
 
 export type Guest = {

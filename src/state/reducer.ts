@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { State, ActionTypes, ConnectActionType, LogoutActionType, SetUserActionType, SetGuestActionType, UpdateUserPropertyActionType, SetLinkmanMessagesActionType, UpdateLinkmanPropertyActionType, SetFocusActionType, SetFriendActionType, Friend, AddLinkmanActionType, RemoveLinkmanActionType, AddlinkmanMessageActionType, AddLinkmanHistoryMessagesActionType, UpdateSelfMessageActionType, UpdateUIPropertyActionType, Message, Group, UpdateGroupPropertyActionType, UpdateFriendPropertyActionType } from '../types/redux';
+import { State, ActionTypes, ConnectActionType, LogoutActionType, SetUserActionType, SetGuestActionType, UpdateUserPropertyActionType, SetLinkmanMessagesActionType, UpdateLinkmanPropertyActionType, SetFocusActionType, SetFriendActionType, Friend, AddLinkmanActionType, RemoveLinkmanActionType, AddlinkmanMessageActionType, AddLinkmanHistoryMessagesActionType, UpdateSelfMessageActionType, UpdateUIPropertyActionType, Message, Group, UpdateGroupPropertyActionType, UpdateFriendPropertyActionType, DeleteLinkmanMessageActionType } from '../types/redux';
 
 /**
  * 处理文本消息的html转义字符
@@ -167,6 +167,20 @@ const reducer = produce((state: State, action: ActionTypes) => {
                 );
                 if (targetMessage) {
                     Object.assign(targetMessage, convertMessageHtml(action.message));
+                }
+            }
+            return state;
+        }
+        case DeleteLinkmanMessageActionType: {
+            const targetLinkman = state.user!.linkmans.find(
+                (linkman) => linkman._id === action.linkmanId,
+            );
+            if (targetLinkman) {
+                const targetMessageIndex = targetLinkman.messages.findIndex(
+                    (message) => message._id === action.messageId,
+                );
+                if (targetMessageIndex !== -1) {
+                    targetLinkman.messages.splice(targetMessageIndex, 1);
                 }
             }
             return state;

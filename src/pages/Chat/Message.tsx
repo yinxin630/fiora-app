@@ -10,7 +10,8 @@ import ImageMessage from './ImageMessage';
 import TextMessage from './TextMessage';
 import { getPerRandomColor, getRandomColor } from '../../utils/getRandomColor';
 import InviteMessage from './InviteMessage';
-import { useTheme } from '../../hooks/useStore';
+import { useFocusLinkman, useIsAdmin, useSelfId, useTheme } from '../../hooks/useStore';
+import MessageMenu from './MessageMenu';
 
 const { width: ScreenWidth } = Dimensions.get('window');
 
@@ -31,6 +32,9 @@ export default function Message({
     openImageViewer,
 }: Props) {
     const { primaryColor8 } = useTheme();
+    const linkman = useFocusLinkman();
+    const isAdmin = useIsAdmin();
+    const self = useSelfId();
 
     useEffect(() => {
         if (shouldScroll) {
@@ -100,11 +104,27 @@ export default function Message({
                     </Text>
                     <Text style={[styles.time, isSelf && styles.timeSelf]}>{formatTime()}</Text>
                 </View>
-                <View
-                    style={[styles.content, { backgroundColor: isSelf ? primaryColor8 : 'white' }]}
-                >
-                    {renderContent()}
-                </View>
+                {isSelf || message.from._id === self ? (
+                    <MessageMenu linkmanId={linkman!._id} messageId={message._id}>
+                        <View
+                            style={[
+                                styles.content,
+                                { backgroundColor: isSelf ? primaryColor8 : 'white' },
+                            ]}
+                        >
+                            {renderContent()}
+                        </View>
+                    </MessageMenu>
+                ) : (
+                    <View
+                        style={[
+                            styles.content,
+                            { backgroundColor: isSelf ? primaryColor8 : 'white' },
+                        ]}
+                    >
+                        {renderContent()}
+                    </View>
+                )}
                 <View
                     style={[styles.triangle, isSelf ? styles.triangleSelf : styles.triangleOther]}
                 >
