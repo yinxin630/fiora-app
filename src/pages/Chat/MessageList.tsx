@@ -9,6 +9,7 @@ import Message from './Message';
 import { useIsLogin, useSelfId, useStore } from '../../hooks/useStore';
 import { Message as MessageType } from '../../types/redux';
 import Toast from '../../components/Toast';
+import { isAndroid, isiOS } from '../../utils/platform';
 
 type Props = {
     $scrollView: React.MutableRefObject<ScrollView>;
@@ -17,6 +18,7 @@ type Props = {
 let prevContentHeight = 0;
 let prevMessageCount = 0;
 let shouldScroll = true;
+let isFirstTimeFetchHistory = true;
 
 function MessageList({ $scrollView }: Props) {
     const isLogin = useIsLogin();
@@ -39,6 +41,7 @@ function MessageList({ $scrollView }: Props) {
             prevContentHeight = 0;
             prevMessageCount = 0;
             shouldScroll = true;
+            isFirstTimeFetchHistory = true;
             keyboardDidShowListener.remove();
         };
     }, []);
@@ -74,6 +77,11 @@ function MessageList({ $scrollView }: Props) {
 
     async function handleRefresh() {
         if (refreshing) {
+            return;
+        }
+
+        if (isFirstTimeFetchHistory && isAndroid) {
+            isFirstTimeFetchHistory = false;
             return;
         }
 
@@ -128,7 +136,8 @@ function MessageList({ $scrollView }: Props) {
         const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
         shouldScroll = contentOffset.y > contentSize.height - layoutMeasurement.height * 1.2;
 
-        if (contentOffset.y < 0) {
+        console.log('contentOffset.y =', contentOffset.y);
+        if (contentOffset.y < (isiOS ? 0 : 50)) {
             handleRefresh();
         }
     }

@@ -3,8 +3,8 @@ import { Image as BaseImage, ImageSourcePropType } from 'react-native';
 
 type Props = {
     src: string;
-    width?: string;
-    height?: string;
+    width?: string | number;
+    height?: string | number;
     style?: any;
 };
 

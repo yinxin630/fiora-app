@@ -3,7 +3,6 @@ import { StyleSheet, Text, TextInput } from 'react-native';
 import { Form, Label, Button, View } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 
-import { isiOS } from '../../utils/platform';
 import PageContainer from '../../components/PageContainer';
 
 type Props = {
@@ -40,7 +39,7 @@ export default function Base({ buttonText, jumpText, jumpPage, onSubmit }: Props
                 <Form>
                     <Label style={styles.label}>用户名</Label>
                     <TextInput
-                        style={[styles.input, isiOS ? styles.inputiOS : {}]}
+                        style={[styles.input]}
                         ref={$username}
                         clearButtonMode="while-editing"
                         onChangeText={setUsername}
@@ -48,7 +47,7 @@ export default function Base({ buttonText, jumpText, jumpPage, onSubmit }: Props
                     />
                     <Label style={styles.label}>密码</Label>
                     <TextInput
-                        style={[styles.input, isiOS ? styles.inputiOS : {}]}
+                        style={[styles.input]}
                         ref={$password}
                         secureTextEntry
                         clearButtonMode="while-editing"
@@ -96,8 +95,6 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         marginBottom: 12,
         paddingLeft: 6,
-    },
-    inputiOS: {
         borderWidth: 1,
         borderColor: '#777',
     },
