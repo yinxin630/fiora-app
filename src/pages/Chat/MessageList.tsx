@@ -36,6 +36,9 @@ function MessageList({ $scrollView }: Props) {
         );
 
         return () => {
+            prevContentHeight = 0;
+            prevMessageCount = 0;
+            shouldScroll = true;
             keyboardDidShowListener.remove();
         };
     }, []);
