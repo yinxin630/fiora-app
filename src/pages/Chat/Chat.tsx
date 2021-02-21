@@ -70,9 +70,7 @@ export default function Chat() {
     }
 
     function handleInputHeightChange() {
-        console.log('handleInputHeightChange');
         if ($messageList.current) {
-            console.log('current');
             scrollToEnd();
         }
     }
