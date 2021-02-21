@@ -1,4 +1,3 @@
-import convertMessage from '../utils/convertMessage';
 import getFriendId from '../utils/getFriendId';
 import store from './store';
 import {
@@ -77,24 +76,18 @@ function setUser(user: any) {
     dispatch({
         type: SetUserActionType,
         user: {
-            _id: user._id,
-            avatar: user.avatar,
-            username: user.username,
+            ...user,
             linkmans,
         },
     } as SetUserAction);
 }
 function setLinkmansLastMessages(messages: SetLinkmanMessagesAction['messages']) {
-    for (const key in messages) {
-        messages[key].forEach((m) => convertMessage(m));
-    }
     dispatch({
         type: 'SetLinkmanMessages',
         messages,
     } as SetLinkmanMessagesAction);
 }
 function setGuest(defaultGroup: Group) {
-    defaultGroup.messages.forEach((m) => convertMessage(m));
     dispatch({
         type: SetGuestActionType,
         linkmans: [

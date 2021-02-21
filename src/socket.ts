@@ -28,7 +28,6 @@ import {
     UpdateUserPropertyActionType,
     User,
 } from './types/redux';
-import convertMessage from './utils/convertMessage';
 import getFriendId from './utils/getFriendId';
 import platform from './utils/platform';
 import { getStorageValue } from './utils/storage';
@@ -120,9 +119,6 @@ socket.on('disconnect', () => {
     } as ConnectAction);
 });
 socket.on('message', (message: Message) => {
-    // robot10
-    convertMessage(message);
-
     const state = store.getState() as State;
     const linkman = state.user!.linkmans.find((x) => x._id === message.to);
     if (linkman) {

@@ -8,7 +8,7 @@ import { Message as MessageType } from '../../types/redux';
 import SystemMessage from './SystemMessage';
 import ImageMessage from './ImageMessage';
 import TextMessage from './TextMessage';
-import { getPerRandomColor, getRandomColor } from '../../utils/getRandomColor';
+import { getRandomColor } from '../../utils/getRandomColor';
 import InviteMessage from './InviteMessage';
 import { useFocusLinkman, useIsAdmin, useSelfId, useTheme } from '../../hooks/useStore';
 import MessageMenu from './MessageMenu';
@@ -24,13 +24,7 @@ type Props = {
     openImageViewer: (imageUrl: string) => void;
 };
 
-export default function Message({
-    message,
-    isSelf,
-    shouldScroll,
-    scrollToEnd,
-    openImageViewer,
-}: Props) {
+function Message({ message, isSelf, shouldScroll, scrollToEnd, openImageViewer }: Props) {
     const { primaryColor8 } = useTheme();
     const linkman = useFocusLinkman();
     const isAdmin = useIsAdmin();
@@ -74,13 +68,13 @@ export default function Message({
             case 'file':
             case 'code': {
                 return (
-                    <Text style={styles.notSupport}>
+                    <Text style={{ color: isSelf ? 'white' : '#666' }}>
                         暂未支持的消息类型[{message.type}], 请在Web端查看
                     </Text>
                 );
             }
             default:
-                return <Text style={styles.notSupport}>不支持的消息类型</Text>;
+                return <Text style={{ color: isSelf ? 'white' : '#666' }}>不支持的消息类型</Text>;
         }
     }
 
@@ -104,7 +98,7 @@ export default function Message({
                     </Text>
                     <Text style={[styles.time, isSelf && styles.timeSelf]}>{formatTime()}</Text>
                 </View>
-                {isSelf || message.from._id === self ? (
+                {isAdmin || message.from._id === self ? (
                     <MessageMenu linkmanId={linkman!._id} messageId={message._id}>
                         <View
                             style={[
@@ -141,10 +135,12 @@ export default function Message({
     );
 }
 
+export default React.memo(Message);
+
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        marginBottom: 8,
+        marginBottom: 6,
         paddingLeft: 8,
         paddingRight: 8,
     },
@@ -186,7 +182,7 @@ const styles = StyleSheet.create({
         marginRight: 4,
     },
     content: {
-        marginTop: 2,
+        marginTop: 3,
         borderRadius: 6,
         padding: 5,
         paddingLeft: 8,
@@ -194,9 +190,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         minHeight: 26,
         minWidth: 20,
-    },
-    notSupport: {
-        color: '#73b668',
+        marginBottom: 6
     },
     triangle: {
         position: 'absolute',

@@ -8,6 +8,7 @@ import action from '../../state/action';
 
 import Base from './Base';
 import { setStorageValue } from '../../utils/storage';
+import { Friend, Group } from '../../types/redux';
 
 export default function Signup() {
     async function handleSubmit(username: string, password: string) {
@@ -26,7 +27,21 @@ export default function Signup() {
                 text: '创建成功',
                 type: 'success',
             });
-            action.setUser(res);
+
+            const user = res;
+            action.setUser(user);
+
+            const linkmanIds = [
+                ...user.groups.map((g: Group) => g._id),
+                ...user.friends.map((f: Friend) => f._id),
+            ];
+            const [err2, messages] = await fetch('getLinkmansLastMessages', {
+                linkmans: linkmanIds,
+            });
+            if (!err2) {
+                action.setLinkmansLastMessages(messages);
+            }
+
             Actions.chatlist();
             await setStorageValue('token', res.token);
         }

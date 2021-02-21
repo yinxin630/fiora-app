@@ -8,6 +8,13 @@ export default {
             position: 'top',
         });
     },
+    warning(message: string) {
+        Toast.show({
+            text: message,
+            type: 'warning',
+            position: 'top',
+        });
+    },
     danger(message: string) {
         Toast.show({
             text: message,
