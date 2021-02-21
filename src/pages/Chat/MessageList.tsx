@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Keyboard, RefreshControl, Modal } from 'react-native';
-import { Toast } from 'native-base';
+import { ScrollView, StyleSheet, Keyboard, Modal } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 import action from '../../state/action';
@@ -9,10 +8,15 @@ import fetch from '../../utils/fetch';
 import Message from './Message';
 import { useIsLogin, useSelfId, useStore } from '../../hooks/useStore';
 import { Message as MessageType } from '../../types/redux';
+import Toast from '../../components/Toast';
 
 type Props = {
     $scrollView: React.MutableRefObject<ScrollView>;
 };
+
+let prevContentHeight = 0;
+let prevMessageCount = 0;
+let shouldScroll = true;
 
 function MessageList({ $scrollView }: Props) {
     const isLogin = useIsLogin();
@@ -36,10 +40,6 @@ function MessageList({ $scrollView }: Props) {
         };
     }, []);
 
-    let prevContentHeight = 0;
-    let prevMessageCount = 0;
-    let shouldScroll = true;
-
     function getImages() {
         const imageMessages = messages.filter((message) => message.type === 'image');
         const images = imageMessages.map((message) => {
@@ -52,13 +52,17 @@ function MessageList({ $scrollView }: Props) {
         return images;
     }
 
-    function scrollToEnd() {
-        // Don't ask me why I use settimeout. Is that the only way it works.
+    function scrollToEnd(time = 0) {
+        if (time > 200) {
+            return;
+        }
+        if ($scrollView.current) {
+            $scrollView.current!.scrollToEnd({ animated: false });
+        }
+
         setTimeout(() => {
-            if ($scrollView.current) {
-                $scrollView.current!.scrollToEnd({ animated: false });
-            }
-        }, 200);
+            scrollToEnd(time + 50);
+        }, 50);
     }
 
     function handleKeyboardShow() {
@@ -66,6 +70,10 @@ function MessageList({ $scrollView }: Props) {
     }
 
     async function handleRefresh() {
+        if (refreshing) {
+            return;
+        }
+
         setRefreshing(true);
 
         let err = null;
@@ -84,14 +92,13 @@ function MessageList({ $scrollView }: Props) {
             if (result.length > 0) {
                 action.addLinkmanHistoryMessages(focus, result);
             } else {
-                Toast.show({
-                    text: '没有更多消息了',
-                    type: 'warning',
-                });
+                Toast.warning('没有更多消息了');
             }
         }
 
-        setRefreshing(false);
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 1000);
     }
     /**
      * 加载历史消息后, 自动滚动到合适位置
@@ -101,12 +108,12 @@ function MessageList({ $scrollView }: Props) {
             $scrollView.current!.scrollTo({
                 x: 0,
                 y: 0,
-                animated: true,
+                animated: false,
             });
         } else if (contentHeight !== prevContentHeight && messages.length - prevMessageCount > 1) {
             $scrollView.current!.scrollTo({
                 x: 0,
-                y: contentHeight - prevContentHeight - 100,
+                y: contentHeight - prevContentHeight - 60,
                 animated: false,
             });
         }
@@ -117,6 +124,10 @@ function MessageList({ $scrollView }: Props) {
     function handleScroll(event: any) {
         const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
         shouldScroll = contentOffset.y > contentSize.height - layoutMeasurement.height * 2;
+
+        if (contentOffset.y < 0) {
+            handleRefresh();
+        }
     }
 
     function openImageViewer(url: string) {
@@ -147,16 +158,8 @@ function MessageList({ $scrollView }: Props) {
         <ScrollView
             style={styles.container}
             ref={$scrollView}
-            refreshControl={
-                <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={handleRefresh}
-                    title="获取历史消息"
-                    titleColor="#444"
-                />
-            }
             onContentSizeChange={handleContentSizeChange}
-            scrollEventThrottle={200}
+            scrollEventThrottle={50}
             onScroll={handleScroll}
         >
             {messages.map((message, index) => renderMessage(message))}

@@ -52,6 +52,9 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case SetGuestActionType: {
+            action.linkmans.forEach((linkman) => {
+                linkman.messages.forEach(convertMessage);
+            });
             state.user = {
                 linkmans: action.linkmans,
             };
@@ -161,12 +164,10 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case AddLinkmanHistoryMessagesActionType: {
-            console.log('AddLinkmanHistoryMessagesActionType');
             const targetLinkman = state.user!.linkmans.find(
                 (linkman) => linkman._id === action.linkmanId,
             );
             if (targetLinkman) {
-                console.log('11111111');
                 targetLinkman.messages.unshift(...action.messages.map(convertMessage));
             }
             return state;

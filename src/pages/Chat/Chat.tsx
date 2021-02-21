@@ -63,9 +63,24 @@ export default function Chat() {
         }
     }, [(linkman as Group).members, (linkman as Friend).isOnline]);
 
-    function handleInputHeightChange() {
+    function scrollToEnd(time = 0) {
+        if (time > 200) {
+            return;
+        }
         if ($messageList.current) {
             $messageList.current!.scrollToEnd({ animated: false });
+        }
+
+        setTimeout(() => {
+            scrollToEnd(time + 50);
+        }, 50);
+    }
+
+    function handleInputHeightChange() {
+        console.log('handleInputHeightChange');
+        if ($messageList.current) {
+            console.log('current');
+            scrollToEnd();
         }
     }
 
