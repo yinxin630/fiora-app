@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
-import PropTypes from 'prop-types';
-import autobind from 'autobind-decorator';
 import { Actions } from 'react-native-router-flux';
 
 import Time from '../../utils/time';
 import action from '../../state/action';
 
 import Avatar from '../../components/Avatar';
+import { Linkman as LinkmanType } from '../../types/redux';
+import { formatLinkmanName } from '../../utils/linkman';
 
 type Props = {
     id: string;
@@ -16,9 +16,10 @@ type Props = {
     preview: string;
     time: Date;
     unread: number;
+    linkman: LinkmanType;
 };
 
-export default function Linkman({ id, name, avatar, preview, time, unread }: Props) {
+export default function Linkman({ id, name, avatar, preview, time, unread, linkman }: Props) {
     function formatTime() {
         const nowTime = new Date();
         if (Time.isToday(nowTime, time)) {
@@ -35,7 +36,7 @@ export default function Linkman({ id, name, avatar, preview, time, unread }: Pro
 
     function handlePress() {
         action.setFocus(id);
-        Actions.chat({ title: name });
+        Actions.chat({ title: formatLinkmanName(linkman) });
     }
 
     return (

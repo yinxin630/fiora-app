@@ -28,13 +28,12 @@ export default function ChatList() {
             <Linkman
                 key={linkmanId}
                 id={linkmanId}
-                name={
-                    ((linkman as unknown) as User).username || ((linkman as unknown) as Group).name
-                }
+                name={linkman.name}
                 avatar={linkman.avatar}
                 preview={preview}
                 time={time}
                 unread={unread}
+                linkman={linkman}
             />
         );
     }
