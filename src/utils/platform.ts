@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 // eslint-disable-next-line import/extensions
-import packageInfo from '../../package.json';
+import packageInfo from '../../app.json';
 
 const os = Platform.OS === 'ios' ? 'iOS' : 'Android';
 
