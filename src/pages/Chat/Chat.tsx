@@ -8,7 +8,7 @@ import { isiOS } from '../../utils/platform';
 import MessageList from './MessageList';
 import Input from './Input';
 import PageContainer from '../../components/PageContainer';
-import { Friend, Group } from '../../types/redux';
+import { Friend, Group, Linkman } from '../../types/redux';
 import { useFocusLinkman, useIsLogin, useSelfId, useStore } from '../../hooks/useStore';
 import {
     getDefaultGroupOnlineMembers,
@@ -16,6 +16,7 @@ import {
     getUserOnlineStatus,
 } from '../../service';
 import action from '../../state/action';
+import { formatLinkmanName } from '../../utils/linkman';
 
 export default function Chat() {
     const isLogin = useIsLogin();
@@ -50,17 +51,9 @@ export default function Chat() {
     }, [focus]);
 
     useEffect(() => {
-        if (linkman!.type === 'group' && (linkman as Group).members.length > 0) {
-            Actions.refresh({
-                title: `${(linkman as Group).name} (${(linkman as Group).members.length})`,
-            });
-        } else if (linkman!.type !== 'group' && (linkman as Friend).isOnline !== undefined) {
-            Actions.refresh({
-                title: `${(linkman as Friend).name} (${
-                    (linkman as Friend).isOnline ? '在线' : '离线'
-                })`,
-            });
-        }
+        Actions.refresh({
+            title: formatLinkmanName(linkman as Linkman),
+        });
     }, [(linkman as Group).members, (linkman as Friend).isOnline]);
 
     function scrollToEnd(time = 0) {
