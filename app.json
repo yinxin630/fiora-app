@@ -2,15 +2,17 @@
   "expo": {
     "privacy": "public",
     "name": "fiora",
-    "icon": "./favicon-512.png",
-    "version": "0.5.1",
-    "description": "App for fiora. A online chatroom",
+    "icon": "./icon.png",
+    "version": "1.0.1",
+    "description": "App for fiora. An online chatroom",
     "slug": "fiora",
     "ios": {
-      "bundleIdentifier": "com.suisuijiang.fiora"
+      "bundleIdentifier": "com.suisuijiang.fiora",
+      "buildNumber": "1.0.1"
     },
     "android": {
-      "package": "com.suisuijiang.fiora"
+      "package": "com.suisuijiang.fiora",
+      "versionCode": 1
     },
     "updates": {
       "fallbackToCacheTimeout": 0
