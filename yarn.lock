@@ -13157,6 +13157,13 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-native-dialog@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-dialog/-/react-native-dialog-6.2.0.tgz#d84123d6b5a3485891ffd6db9f571502f76f84cb"
+  integrity sha512-J16bhTGTDTQYFtWbfKIMD5GM4QFIupNm3hFjm7/X/VZ1ZeOsiTKTRt/JGeX6QPTAOhRiN1A+IPIfXPzgUmhUVw==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-drawer@2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/react-native-drawer/-/react-native-drawer-2.5.1.tgz#08b9314184f48c724f1b467f8859797369798654"

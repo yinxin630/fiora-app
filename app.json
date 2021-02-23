@@ -6,9 +6,13 @@
     "version": "1.0.1",
     "description": "App for fiora. An online chatroom",
     "slug": "fiora",
+    "scheme": "fiora",
     "ios": {
       "bundleIdentifier": "com.suisuijiang.fiora",
-      "buildNumber": "1.0.1"
+      "buildNumber": "1.0.1",
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": ["wxp"]
+      }
     },
     "android": {
       "package": "com.suisuijiang.fiora",
