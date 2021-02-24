@@ -66,7 +66,6 @@ function Other() {
                     title: '选择支付方式',
                 },
                 async (buttonIndex) => {
-                    console.log('buttonIndex =', buttonIndex);
                     switch (buttonIndex) {
                         case 0: {
                             const alipayUrl = 'HTTPS://QR.ALIPAY.COM/FKX08821LJVDHRXFYYYU3A';

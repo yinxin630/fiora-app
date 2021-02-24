@@ -136,7 +136,6 @@ function MessageList({ $scrollView }: Props) {
         const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
         shouldScroll = contentOffset.y > contentSize.height - layoutMeasurement.height * 1.2;
 
-        console.log('contentOffset.y =', contentOffset.y);
         if (contentOffset.y < (isiOS ? 0 : 50)) {
             handleRefresh();
         }
