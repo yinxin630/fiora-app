@@ -70,13 +70,11 @@ async function guest() {
     }
 }
 
-let hasShowAlert = false;
 socket.on('connect', async () => {
     dispatch({
         type: ConnectActionType,
         value: true,
     } as ConnectAction);
-    hasShowAlert = false;
 
     const token = await getStorageValue('token');
 
@@ -152,12 +150,6 @@ socket.on('message', (message: Message) => {
                 } as AddLinkmanHistoryMessagesAction);
             }
         });
-    }
-});
-socket.on('connect_error', () => {
-    if (!hasShowAlert) {
-        alert('连接服务端失败, 无网络或者服务端地址错误');
-        hasShowAlert = true;
     }
 });
 
