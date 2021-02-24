@@ -1,4 +1,5 @@
 import produce from 'immer';
+import deepmerge from 'deepmerge';
 import {
     State,
     ActionTypes,
@@ -21,8 +22,44 @@ import {
     UpdateGroupPropertyActionType,
     UpdateFriendPropertyActionType,
     DeleteLinkmanMessageActionType,
+    User,
+    Linkman,
 } from '../types/redux';
 import convertMessage from '../utils/convertMessage';
+
+function mergeLinkmans(linkmans1: Linkman[], linkmans2: Linkman[]) {
+    const commonListingsIdSet = new Set([
+        ...linkmans1.map((linkman) => linkman._id),
+        ...linkmans2.map((linkman) => linkman._id),
+    ]);
+    const linkmansMap1 = linkmans1.reduce((map: { [key: string]: Linkman }, linkman) => {
+        map[linkman._id] = linkman;
+        return map;
+    }, {});
+    const linkmansMap2 = linkmans1.reduce((map: { [key: string]: Linkman }, linkman) => {
+        map[linkman._id] = linkman;
+        return map;
+    }, {});
+
+    const linkmans = [
+        ...linkmans1.filter((linkman) => commonListingsIdSet.has(linkman._id)),
+        ...linkmans2.filter((linkman) => !commonListingsIdSet.has(linkman._id)),
+    ];
+    return linkmans.map((linkman) => {
+        if (commonListingsIdSet.has(linkman._id)) {
+            return deepmerge(linkman as any, linkmansMap2[linkman._id] as any, {
+                customMerge: (key) => {
+                    if (key === 'messages') {
+                        // The new linkman data at this time does not have messages
+                        // So keep the old messages
+                        return () => linkman.messages;
+                    }
+                },
+            });
+        }
+        return linkman;
+    });
+}
 
 const initialState = {
     user: null,
@@ -45,7 +82,22 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return initialState;
         }
         case SetUserActionType: {
-            state.user = action.user;
+            const currentUserId = (state.user as User)?._id;
+            if (!currentUserId || currentUserId !== action.user._id) {
+                // No user or guest user or different user
+                state.user = action.user;
+            } else {
+                // Same user. Deep merge to reserve history messages;
+                // But these history messages must be overwritten in SetLinkmanMessagesAction
+                // Otherwise, there may be errors when fetch history messages later
+                state.user = deepmerge(state.user as User, action.user, {
+                    customMerge: (key) => {
+                        if (key === 'linkmans') {
+                            return mergeLinkmans;
+                        }
+                    },
+                });
+            }
             return state;
         }
         case SetGuestActionType: {
