@@ -46,9 +46,6 @@ const reducer = produce((state: State, action: ActionTypes) => {
         }
         case SetUserActionType: {
             state.user = action.user;
-            if (action.user.linkmans.length > 0) {
-                state.focus = action.user.linkmans[0]._id;
-            }
             return state;
         }
         case SetGuestActionType: {
@@ -80,8 +77,11 @@ const reducer = produce((state: State, action: ActionTypes) => {
                         : linkman2.createTime;
                 return new Date(lastMessageTime1) < new Date(lastMessageTime2) ? 1 : -1;
             });
-            if (!state.focus && state.user!.linkmans.length > 0) {
-                state.focus = state.user!.linkmans[0]._id;
+            if (
+                !state.focus ||
+                !state.user!.linkmans.find((linkman) => linkman._id === state.focus)
+            ) {
+                state.focus = state.user!.linkmans.length > 0 ? state.user!.linkmans[0]._id : '';
             }
             return state;
         }
