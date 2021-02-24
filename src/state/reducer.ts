@@ -27,26 +27,21 @@ import {
 } from '../types/redux';
 import convertMessage from '../utils/convertMessage';
 
-function mergeLinkmans(linkmans1: Linkman[], linkmans2: Linkman[]) {
-    const commonListingsIdSet = new Set([
-        ...linkmans1.map((linkman) => linkman._id),
-        ...linkmans2.map((linkman) => linkman._id),
-    ]);
-    const linkmansMap1 = linkmans1.reduce((map: { [key: string]: Linkman }, linkman) => {
+export function mergeLinkmans(linkmans1: Linkman[], linkmans2: Linkman[]) {
+    const linkmansMap2 = linkmans2.reduce((map: { [key: string]: Linkman }, linkman) => {
         map[linkman._id] = linkman;
         return map;
     }, {});
-    const linkmansMap2 = linkmans1.reduce((map: { [key: string]: Linkman }, linkman) => {
-        map[linkman._id] = linkman;
-        return map;
-    }, {});
+    const unionListingsIdSet = new Set(
+        linkmans1.map((linkman) => linkman._id).filter((linkmanId) => !!linkmansMap2[linkmanId]),
+    );
 
     const linkmans = [
-        ...linkmans1.filter((linkman) => commonListingsIdSet.has(linkman._id)),
-        ...linkmans2.filter((linkman) => !commonListingsIdSet.has(linkman._id)),
+        ...linkmans1.filter((linkman) => unionListingsIdSet.has(linkman._id)),
+        ...linkmans2.filter((linkman) => !unionListingsIdSet.has(linkman._id)),
     ];
     return linkmans.map((linkman) => {
-        if (commonListingsIdSet.has(linkman._id)) {
+        if (unionListingsIdSet.has(linkman._id)) {
             return deepmerge(linkman as any, linkmansMap2[linkman._id] as any, {
                 customMerge: (key) => {
                     if (key === 'messages') {

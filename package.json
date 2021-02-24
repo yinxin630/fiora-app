@@ -12,9 +12,6 @@
     "ts-check": "tsc --noEmit",
     "lint": "./node_modules/.bin/eslint ./ --ext js,jsx --ignore-pattern .eslintignore --cache --fix"
   },
-  "jest": {
-    "preset": "jest-expo"
-  },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.13.4",
     "@react-native-community/masked-view": "0.1.10",
@@ -45,6 +42,7 @@
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.20",
     "@types/randomcolor": "^0.5.5",
     "@types/react": "^17.0.2",
     "@types/react-native": "^0.63.50",
@@ -62,7 +60,8 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.8.2",
     "expo-cli": "^2.19.4",
-    "jest-expo": "^38.0.0",
-    "react-test-renderer": "16.3.1"
+    "jest-expo": "^40.0.2",
+    "react-test-renderer": "16.3.1",
+    "ts-jest": "^26.5.2"
   }
 }
