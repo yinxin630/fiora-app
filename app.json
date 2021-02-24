@@ -19,7 +19,7 @@
       "versionCode": 2
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "enabled": false
     }
   }
 }
