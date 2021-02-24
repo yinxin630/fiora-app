@@ -20,6 +20,7 @@
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-toolkit/triangle": "^0.0.1",
     "autobind-decorator": "^2.1.0",
+    "deepmerge": "^4.2.2",
     "expo": "~40.0.0",
     "expo-constants": "~9.1.1",
     "expo-image-picker": "~8.3.0",
