@@ -12,6 +12,7 @@ import Test from './pages/test';
 
 import Loading from './components/Loading';
 import Other from './pages/Other/Other';
+import Notification from './components/Nofitication';
 import { State, User } from './types/redux';
 import SelfInfo from './pages/ChatList/SelfInfo';
 
@@ -117,6 +118,7 @@ function App({ title, primaryColor, isLogin }: Props) {
             </Root>
 
             <Loading />
+            <Notification />
         </View>
     );
 }
