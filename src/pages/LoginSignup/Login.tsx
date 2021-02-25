@@ -14,13 +14,11 @@ export default function Login() {
     async function handleSubmit(username: string, password: string) {
         const [err, res] = await fetch(
             'login',
-            Object.assign(
-                {
-                    username,
-                    password,
-                },
-                platform,
-            ),
+            {
+                username,
+                password,
+                ...platform,
+            },
         );
         if (!err) {
             const user = res;

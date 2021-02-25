@@ -173,7 +173,7 @@ function MessageList({ $scrollView }: Props) {
             scrollEventThrottle={50}
             onScroll={handleScroll}
         >
-            {messages.map((message, index) => renderMessage(message))}
+            {messages.map((message) => renderMessage(message))}
             <Modal
                 visible={showImageViewerDialog}
                 transparent

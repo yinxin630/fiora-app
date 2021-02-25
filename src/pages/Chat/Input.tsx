@@ -117,10 +117,6 @@ export default function Input({ onHeightChange }: Props) {
         onHeightChange();
     }
 
-    function closeExpression() {
-        toggleShowExpression(false);
-    }
-
     async function handleClickImage() {
         const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
         if (status !== 'granted') {

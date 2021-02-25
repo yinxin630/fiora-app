@@ -15,7 +15,8 @@ function SystemMessage({ message }: Props) {
             <Text
                 style={[styles.text, { color: getPerRandomColor(from.originUsername as string) }]}
             >
-                {from.originUsername}&nbsp;
+                {from.originUsername}
+&nbsp;
             </Text>
             <Text style={styles.text}>{content}</Text>
         </View>

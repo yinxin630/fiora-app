@@ -81,12 +81,10 @@ socket.on('connect', async () => {
     if (token) {
         const [err, res] = await fetch(
             'loginByToken',
-            Object.assign(
-                {
-                    token,
-                },
-                platform,
-            ),
+            {
+                token,
+                ...platform,
+            },
             { toast: false },
         );
         if (err) {

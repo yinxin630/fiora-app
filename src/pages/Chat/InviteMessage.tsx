@@ -34,7 +34,11 @@ function InviteMessage({ message, isSelf }: Props) {
             <View style={styles.container}>
                 <View style={[styles.info, { borderBottomColor: isSelf ? 'white' : '#aaa' }]}>
                     <Text style={styles.text}>
-                        &quot;{invite.inviterName}&quot; 邀请你加入群组「{invite.groupName}」
+                        &quot;
+                        {invite.inviterName}
+                        &quot; 邀请你加入群组「
+                        {invite.groupName}
+                        」
                     </Text>
                 </View>
                 <View style={styles.join}>

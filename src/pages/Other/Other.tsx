@@ -108,7 +108,10 @@ function Other() {
                         }
                         size={100}
                     />
-                    <Text style={styles.name}>fiora v{appInfo.expo.version}</Text>
+                    <Text style={styles.name}>
+                        fiora v
+                        {appInfo.expo.version}
+                    </Text>
                 </View>
                 <List style={styles.list}>
                     <ListItem
@@ -151,7 +154,10 @@ function Other() {
             )}
             <View style={styles.copyrightContainer}>
                 <Text style={styles.copyright}>
-                    Copyright© 2015-{new Date().getFullYear()} 碎碎酱
+                    Copyright© 2015-
+                    {new Date().getFullYear()}
+                    {' '}
+                    碎碎酱
                 </Text>
             </View>
             <Sponsor

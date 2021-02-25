@@ -7,9 +7,10 @@
     },
     "env": {
         "browser": true,
-        "node": true
+        "node": true,
+        "jest/globals": true
     },
-    "plugins": ["react", "jsx-a11y", "import"],
+    "plugins": ["@typescript-eslint", "react", "jsx-a11y", "import", "jest"],
     "globals": {},
     "rules": {
         "indent": [
@@ -37,12 +38,14 @@
             2,
             {
                 "js": "never",
-                "jsx": "never"
+                "jsx": "never",
+                "ts": "never",
+                "tsx": "never",
+                "json": "always"
             }
         ],
         "import/no-dynamic-require": 0,
 
-        "no-console": 0,
         "no-plusplus": 0,
         "no-param-reassign": 0,
         "no-restricted-syntax": [2, "WithStatement"],
@@ -69,6 +72,8 @@
         "jsx-a11y/no-noninteractive-element-interactions": 0,
         "jsx-a11y/alt-text": 0,
         "jsx-a11y/click-events-have-key-events": 0,
-        "import/prefer-default-export": 0
+        "import/prefer-default-export": 0,
+
+        "@typescript-eslint/no-unused-vars": 2
     }
 }

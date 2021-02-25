@@ -14,13 +14,11 @@ export default function Signup() {
     async function handleSubmit(username: string, password: string) {
         const [err, res] = await fetch(
             'register',
-            Object.assign(
-                {
-                    username,
-                    password,
-                },
-                platform,
-            ),
+            {
+                username,
+                password,
+                ...platform,
+            },
         );
         if (!err) {
             Toast.show({
