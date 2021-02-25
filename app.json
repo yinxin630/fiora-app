@@ -16,7 +16,8 @@
     },
     "android": {
       "package": "com.suisuijiang.fiora",
-      "versionCode": 3
+      "versionCode": 3,
+      "useNextNotificationsApi": true
     },
     "updates": {
       "enabled": false

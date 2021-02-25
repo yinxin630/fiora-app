@@ -197,6 +197,7 @@ export type User = {
     tag: string;
     linkmans: Linkman[];
     isAdmin: boolean;
+    notificationTokens: string[];
 };
 
 export type Guest = {
