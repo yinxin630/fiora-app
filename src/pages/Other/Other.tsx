@@ -59,10 +59,11 @@ function Other() {
         toggleSponsorDialog(false);
         // When you close the Sponsor Dialog, the ActionSheet will also be closed. So timeout is required
         setTimeout(() => {
+            const options = ['支付宝', '取消'];
             ActionSheet.show(
                 {
-                    options: ['支付宝', '微信', '取消'],
-                    cancelButtonIndex: 2,
+                    options,
+                    cancelButtonIndex: options.findIndex((str) => str === '取消'),
                     title: '选择支付方式',
                 },
                 async (buttonIndex) => {
@@ -74,16 +75,6 @@ function Other() {
                                 Linking.openURL(alipayUrl);
                             } else {
                                 Alert.alert('错误', '无法打开支付宝');
-                            }
-                            break;
-                        }
-                        case 1: {
-                            const wxpayUrl = 'wxp://f2f020Q7mrVZKAJXVRPY0-OyRq6jdTBt3Rny';
-                            const canOpenURL = await Linking.canOpenURL(wxpayUrl);
-                            if (canOpenURL) {
-                                Linking.openURL(wxpayUrl);
-                            } else {
-                                Alert.alert('错误', '无法打开微信支付');
                             }
                             break;
                         }
