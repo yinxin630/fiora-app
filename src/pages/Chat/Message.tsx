@@ -69,7 +69,9 @@ function Message({ message, isSelf, shouldScroll, scrollToEnd, openImageViewer }
             case 'code': {
                 return (
                     <Text style={{ color: isSelf ? 'white' : '#666' }}>
-                        暂未支持的消息类型[{message.type}], 请在Web端查看
+                        暂未支持的消息类型[
+                        {message.type}
+                        ], 请在Web端查看
                     </Text>
                 );
             }

@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 
 import Linkman from './Linkman';
 import { useUser } from '../../hooks/useStore';
-import { Group, Linkman as LinkmanType, User } from '../../types/redux';
+import { Linkman as LinkmanType } from '../../types/redux';
 import PageContainer from '../../components/PageContainer';
 
 export default function ChatList() {

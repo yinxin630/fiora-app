@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { StyleSheet, Text, TextInput } from 'react-native';
+import { Alert, StyleSheet, Text, TextInput } from 'react-native';
 import { Form, Label, Button, View } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 
@@ -30,7 +30,7 @@ export default function Base({ buttonText, jumpText, jumpPage, onSubmit }: Props
         if (Actions[jumpPage]) {
             Actions.replace(jumpPage);
         } else {
-            console.error(`页面${jumpPage}不存在`);
+            Alert.alert(`跳转 ${jumpPage} 失败`);
         }
     }
     return (

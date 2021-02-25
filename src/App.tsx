@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Scene, Router, Stack, Tabs, Lightbox } from 'react-native-router-flux';
 import { Icon, Root } from 'native-base';
 
+import { connect } from 'react-redux';
 import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
 import Login from './pages/LoginSignup/Login';
@@ -12,7 +13,6 @@ import Test from './pages/test';
 import Loading from './components/Loading';
 import Other from './pages/Other/Other';
 import { State, User } from './types/redux';
-import { connect } from 'react-redux';
 import SelfInfo from './pages/ChatList/SelfInfo';
 
 type Props = {
