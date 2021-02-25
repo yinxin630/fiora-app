@@ -366,6 +366,6 @@ export async function getUserOnlineStatus(userId: string) {
 }
 
 export async function setNotificationToken(token: string) {
-    const [, res] = await fetch('setNotificationToken', { token });
+    const [, res] = await fetch('setNotificationToken', { token }, { toast: false });
     return res && res.isOK;
 }
