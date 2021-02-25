@@ -17,6 +17,7 @@ import Other from './pages/Other/Other';
 import { State, User } from './types/redux';
 import SelfInfo from './pages/ChatList/SelfInfo';
 import { setNotificationToken } from './service';
+import { isiOS } from './utils/platform';
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -38,7 +39,9 @@ function App({ title, primaryColor, notificationTokens, isLogin, isConnect }: Pr
     const [notificationToken, updateNotificationToken] = useState('');
 
     async function registerForPushNotificationsAsync() {
-        if (Constants.isDevice) {
+        // Push notification to Android device need google service
+        // Not supported in China
+        if (Constants.isDevice && isiOS) {
             const { status: existingStatus } = await Notifications.getPermissionsAsync();
             let finalStatus = existingStatus;
             if (existingStatus !== 'granted') {
