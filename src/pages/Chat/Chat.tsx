@@ -41,8 +41,8 @@ export default function Chat() {
         action.updateFriendProperty(focus, 'isOnline', isOnline);
     }
     useEffect(() => {
-        if (!linkman) {
-            return () => {};
+        if (!linkman || !isLogin) {
+            return;
         }
         const request = linkman.type === 'group' ? fetchGroupOnlineMembers : fetchUserOnlineStatus;
         request();
