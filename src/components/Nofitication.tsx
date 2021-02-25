@@ -5,9 +5,10 @@ import { Platform, AppState } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { setNotificationToken } from '../service';
 import action from '../state/action';
-import { User } from '../types/redux';
+import { State, User } from '../types/redux';
 import { isiOS } from '../utils/platform';
 import { useIsLogin, useStore } from '../hooks/useStore';
+import store from '../state/store';
 
 function enableNotification() {
     Notifications.setNotificationHandler({
@@ -32,7 +33,6 @@ function Nofitication() {
     const isLogin = useIsLogin();
     const state = useStore();
     const notificationTokens = (state.user as User)?.notificationTokens || [];
-    const linkmans = (state.user as User)?.linkmans || [];
     const { connect } = state;
 
     const [notificationToken, updateNotificationToken] = useState('');
@@ -66,6 +66,8 @@ function Nofitication() {
     function handleClickNotification(response: any) {
         const { focus } = response.notification.request.content.data;
         setTimeout(() => {
+            const currentState = store.getState() as State;
+            const linkmans = currentState.user?.linkmans || [];
             if (linkmans.find((linkman) => linkman._id === focus)) {
                 action.setFocus(focus);
                 if (Actions.currentScene !== 'chat') {
