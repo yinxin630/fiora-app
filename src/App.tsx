@@ -15,6 +15,7 @@ import Other from './pages/Other/Other';
 import Notification from './components/Nofitication';
 import { State, User } from './types/redux';
 import SelfInfo from './pages/ChatList/SelfInfo';
+import ChatBackButton from './pages/Chat/ChatBackButton';
 
 type Props = {
     title: string;
@@ -86,7 +87,7 @@ function App({ title, primaryColor, isLogin }: Props) {
                                 borderBottomWidth: 0,
                             }}
                             navBarButtonColor="#f9f9f9"
-                            backTitle="返回"
+                            renderBackButton={() => <ChatBackButton />}
                         />
                         <Scene
                             key="login"
