@@ -41,3 +41,8 @@ export function useFocusLinkman() {
     }
     return null;
 }
+
+export function useFocus() {
+    const data = useStore();
+    return data.focus || '';
+}

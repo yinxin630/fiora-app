@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { View } from 'native-base';
 import React from 'react';
 import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
@@ -8,11 +9,12 @@ const { width: ScreenWidth } = Dimensions.get('window');
 
 type Props = {
     message: Message;
-    // eslint-disable-next-line no-unused-vars
     openImageViewer: (imageUrl: string) => void;
+    couldDelete: boolean;
+    onLongPress: () => void;
 };
 
-function ImageMessage({ message, openImageViewer }: Props) {
+function ImageMessage({ message, openImageViewer, couldDelete, onLongPress }: Props) {
     const maxWidth = ScreenWidth - 130 - 16;
     const maxHeight = 200;
     let scale = 1;
@@ -37,7 +39,7 @@ function ImageMessage({ message, openImageViewer }: Props) {
 
     return (
         <View style={[styles.container, { width: width * scale, height: height * scale }]}>
-            <TouchableOpacity onPress={handleImageClick}>
+            <TouchableOpacity onPress={handleImageClick} {...(couldDelete ? { onLongPress } : {})}>
                 <Image
                     src={message.content}
                     style={{ width: width * scale, height: height * scale }}

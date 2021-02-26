@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import Triangle from '@react-native-toolkit/triangle';
 
+import { ActionSheet } from 'native-base';
 import Time from '../../utils/time';
 import Avatar from '../../components/Avatar';
 import { Message as MessageType } from '../../types/redux';
@@ -10,8 +11,9 @@ import ImageMessage from './ImageMessage';
 import TextMessage from './TextMessage';
 import { getRandomColor } from '../../utils/getRandomColor';
 import InviteMessage from './InviteMessage';
-import { useFocusLinkman, useIsAdmin, useSelfId, useTheme } from '../../hooks/useStore';
-import MessageMenu from './MessageMenu';
+import { useFocus, useIsAdmin, useSelfId, useTheme } from '../../hooks/useStore';
+import { deleteMessage } from '../../service';
+import action from '../../state/action';
 
 const { width: ScreenWidth } = Dimensions.get('window');
 
@@ -26,15 +28,43 @@ type Props = {
 
 function Message({ message, isSelf, shouldScroll, scrollToEnd, openImageViewer }: Props) {
     const { primaryColor8 } = useTheme();
-    const linkman = useFocusLinkman();
     const isAdmin = useIsAdmin();
     const self = useSelfId();
+    const focus = useFocus();
+
+    const couldDelete = isAdmin || message.from._id === self;
 
     useEffect(() => {
         if (shouldScroll) {
             scrollToEnd();
         }
     }, []);
+
+    async function handleDeleteMessage() {
+
+        const options = ['撤回', '取消'];
+        ActionSheet.show(
+            {
+                options: ['确定', '取消'],
+                cancelButtonIndex: options.findIndex(option => option === '取消'),
+                title: '是否撤回消息?',
+            },
+            async (buttonIndex) => {
+                switch (buttonIndex) {
+                    case 0: {
+                        const isSuccess = await deleteMessage(message._id);
+                        if (isSuccess) {
+                            action.deleteLinkmanMessage(focus, message._id);
+                        }
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+            },
+        );
+    }
 
     function formatTime() {
         const createTime = new Date(message.createTime);
@@ -57,7 +87,14 @@ function Message({ message, isSelf, shouldScroll, scrollToEnd, openImageViewer }
                 return <TextMessage message={message} isSelf={isSelf} />;
             }
             case 'image': {
-                return <ImageMessage message={message} openImageViewer={openImageViewer} />;
+                return (
+                    <ImageMessage
+                        message={message}
+                        openImageViewer={openImageViewer}
+                        couldDelete={couldDelete}
+                        onLongPress={handleDeleteMessage}
+                    />
+                );
             }
             case 'system': {
                 return <SystemMessage message={message} />;
@@ -100,8 +137,8 @@ function Message({ message, isSelf, shouldScroll, scrollToEnd, openImageViewer }
                     </Text>
                     <Text style={[styles.time, isSelf && styles.timeSelf]}>{formatTime()}</Text>
                 </View>
-                {isAdmin || message.from._id === self ? (
-                    <MessageMenu linkmanId={linkman!._id} messageId={message._id}>
+                {couldDelete ? (
+                    <TouchableOpacity onLongPress={handleDeleteMessage}>
                         <View
                             style={[
                                 styles.content,
@@ -110,7 +147,7 @@ function Message({ message, isSelf, shouldScroll, scrollToEnd, openImageViewer }
                         >
                             {renderContent()}
                         </View>
-                    </MessageMenu>
+                    </TouchableOpacity>
                 ) : (
                     <View
                         style={[
@@ -192,7 +229,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         minHeight: 26,
         minWidth: 20,
-        marginBottom: 6
+        marginBottom: 6,
     },
     triangle: {
         position: 'absolute',
