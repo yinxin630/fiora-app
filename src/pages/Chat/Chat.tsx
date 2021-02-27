@@ -48,7 +48,7 @@ export default function Chat() {
         request();
         const timer = setInterval(() => request(), 1000 * 60);
         return () => clearInterval(timer);
-    }, [focus]);
+    }, [focus, isLogin]);
 
     useEffect(() => {
         Actions.refresh({
