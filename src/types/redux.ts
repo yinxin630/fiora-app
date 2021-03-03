@@ -156,7 +156,17 @@ export type Group = {
     avatar: string;
     messages: Message[];
     unread: number;
-    members: {}[];
+    members: {
+        _id: string;
+        user: {
+            _id: string;
+            username: string;
+            avatar: string;
+        };
+        os: string;
+        browser: string;
+        environment: string;
+    }[];
     createTime: number;
 };
 
@@ -186,7 +196,7 @@ export type Temporary = {
     unread: number;
     createTime: number;
     isOnline?: boolean;
-}
+};
 
 export type Linkman = Group | Friend | Temporary;
 

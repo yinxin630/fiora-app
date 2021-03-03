@@ -51,6 +51,9 @@ export default function Chat() {
     }, [focus, isLogin]);
 
     useEffect(() => {
+        if (Actions.currentScene !== 'chat') {
+            return;
+        }
         Actions.refresh({
             title: formatLinkmanName(linkman as Linkman),
         });
