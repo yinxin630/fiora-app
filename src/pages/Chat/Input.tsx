@@ -1,5 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { StyleSheet, View, TextInput, Text, Dimensions, TouchableOpacity, SafeAreaView } from 'react-native';
+import {
+    StyleSheet,
+    View,
+    TextInput,
+    Text,
+    Dimensions,
+    TouchableOpacity,
+    SafeAreaView,
+} from 'react-native';
 import { Button } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { Ionicons } from '@expo/vector-icons';
@@ -58,11 +66,12 @@ export default function Input({ onHeightChange }: Props) {
                 avatar: user.avatar,
                 tag: user.tag,
             },
+            to: '',
             loading: true,
         };
 
         if (type === 'image') {
-            message.percent = 0;
+            newMessage.percent = 0;
         }
         action.addLinkmanMessage(focus, newMessage);
 
@@ -100,7 +109,7 @@ export default function Input({ onHeightChange }: Props) {
         setCursorPosition({
             start,
             end,
-        })
+        });
     }
 
     function handleFocus() {
@@ -113,7 +122,7 @@ export default function Input({ onHeightChange }: Props) {
 
         toggleShowFunctionList(false);
         toggleShowExpression(true);
-        
+
         onHeightChange();
     }
 
@@ -127,7 +136,7 @@ export default function Input({ onHeightChange }: Props) {
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: 'Images',
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             quality: isiOS ? 0.1 : 0.8,
         });
 
@@ -198,15 +207,15 @@ export default function Input({ onHeightChange }: Props) {
 
     function insertExpression(e: string) {
         const expression = `#(${e})`;
-        const newValue = `${message.substring(0, cursorPosition.start)}${expression}${message.substring(
-            cursorPosition.end,
-            message.length,
-        )}`;
+        const newValue = `${message.substring(
+            0,
+            cursorPosition.start,
+        )}${expression}${message.substring(cursorPosition.end, message.length)}`;
         setMessage(newValue);
         setCursorPosition({
             start: cursorPosition.start + expression.length,
             end: cursorPosition.start + expression.length,
-        })
+        });
         setInputText(newValue);
     }
 
@@ -216,6 +225,7 @@ export default function Input({ onHeightChange }: Props) {
                 {isLogin ? (
                     <View style={styles.inputContainer}>
                         <TextInput
+                            // @ts-ignore
                             ref={$input}
                             style={styles.input}
                             placeholder="随便聊点啥吧, 不要无意义刷屏~~"
@@ -309,6 +319,7 @@ const styles = StyleSheet.create({
     icon: {
         transform: [
             {
+                // @ts-ignore
                 translate: [0, -3],
             },
         ],

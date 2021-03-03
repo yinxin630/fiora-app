@@ -82,6 +82,8 @@ export default function Chat() {
                 behavior={isiOS ? 'padding' : 'height'}
                 keyboardVerticalOffset={Constants.statusBarHeight + 44}
             >
+                {/* 
+                // @ts-ignore */}
                 <MessageList $scrollView={$messageList} />
                 <Input onHeightChange={handleInputHeightChange} />
             </KeyboardAvoidingView>
