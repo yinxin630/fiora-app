@@ -8,7 +8,6 @@ import ChatList from './pages/ChatList/ChatList';
 import Chat from './pages/Chat/Chat';
 import Login from './pages/LoginSignup/Login';
 import Signup from './pages/LoginSignup/Signup';
-import Test from './pages/test';
 
 import Loading from './components/Loading';
 import Other from './pages/Other/Other';
@@ -16,6 +15,8 @@ import Notification from './components/Nofitication';
 import { State, User } from './types/redux';
 import SelfInfo from './pages/ChatList/SelfInfo';
 import ChatBackButton from './pages/Chat/ChatBackButton';
+import GroupProfile from './pages/GroupProfile/GroupProfile';
+import ChatRightButton from './pages/Chat/ChatRightButton';
 
 type Props = {
     title: string;
@@ -88,6 +89,7 @@ function App({ title, primaryColor, isLogin }: Props) {
                             }}
                             navBarButtonColor="#f9f9f9"
                             renderBackButton={() => <ChatBackButton />}
+                            renderRightButton={() => <ChatRightButton />}
                         />
                         <Scene
                             key="login"
@@ -113,7 +115,18 @@ function App({ title, primaryColor, isLogin }: Props) {
                             navBarButtonColor="#f9f9f9"
                             backTitle="返回"
                         />
-                        <Scene key="test" component={Test} title="测试页面2" tabs={false} />
+                        <Scene
+                            key="groupProfile"
+                            component={GroupProfile}
+                            title="群组信息"
+                            hideNavBar={false}
+                            navigationBarStyle={{
+                                backgroundColor: primaryColor10,
+                                borderBottomWidth: 0,
+                            }}
+                            navBarButtonColor="#f9f9f9"
+                            backTitle="返回"
+                        />
                     </Stack>
                 </Router>
             </Root>
