@@ -40,6 +40,7 @@ export default function Base({ buttonText, jumpText, jumpPage, onSubmit }: Props
                     <Label style={styles.label}>用户名</Label>
                     <TextInput
                         style={[styles.input]}
+                        // @ts-ignore
                         ref={$username}
                         clearButtonMode="while-editing"
                         onChangeText={setUsername}
@@ -48,6 +49,7 @@ export default function Base({ buttonText, jumpText, jumpPage, onSubmit }: Props
                     <Label style={styles.label}>密码</Label>
                     <TextInput
                         style={[styles.input]}
+                        // @ts-ignore
                         ref={$password}
                         secureTextEntry
                         clearButtonMode="while-editing"

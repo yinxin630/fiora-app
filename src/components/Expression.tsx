@@ -8,7 +8,7 @@ const uri = 'https://cdn.suisuijiang.com/fiora/img/baidu.bd067c14.png';
 type Props = {
     size: number;
     index: number;
-    style: any;
+    style?: any;
 };
 
 export default function Expression({ size, index, style }: Props) {
