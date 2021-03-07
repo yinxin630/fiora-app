@@ -167,6 +167,7 @@ export type Group = {
         browser: string;
         environment: string;
     }[];
+    creator: string;
     createTime: number;
 };
 
