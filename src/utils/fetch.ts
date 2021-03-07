@@ -1,4 +1,4 @@
-import { Toast } from 'native-base';
+import Toast from '../components/Toast';
 import socket from '../socket';
 
 export default function fetch<T = any>(
@@ -10,10 +10,7 @@ export default function fetch<T = any>(
         socket.emit(event, data, (res: any) => {
             if (typeof res === 'string') {
                 if (toast) {
-                    Toast.show({
-                        text: res,
-                        type: 'danger',
-                    });
+                    Toast.danger(res);
                 }
                 resolve([res, null]);
             } else {

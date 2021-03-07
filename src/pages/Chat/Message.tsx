@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-nati
 import Triangle from '@react-native-toolkit/triangle';
 
 import { ActionSheet } from 'native-base';
+import { Actions } from 'react-native-router-flux';
 import Time from '../../utils/time';
 import Avatar from '../../components/Avatar';
 import { Message as MessageType } from '../../types/redux';
@@ -41,12 +42,11 @@ function Message({ message, isSelf, shouldScroll, scrollToEnd, openImageViewer }
     }, []);
 
     async function handleDeleteMessage() {
-
         const options = ['撤回', '取消'];
         ActionSheet.show(
             {
                 options: ['确定', '取消'],
-                cancelButtonIndex: options.findIndex(option => option === '取消'),
+                cancelButtonIndex: options.findIndex((option) => option === '取消'),
                 title: '是否撤回消息?',
             },
             async (buttonIndex) => {
@@ -79,6 +79,10 @@ function Message({ message, isSelf, shouldScroll, scrollToEnd, openImageViewer }
             return `${Time.getMonthDate(createTime)} ${Time.getHourMinute(createTime)}`;
         }
         return `${Time.getYearMonthDate(createTime)} ${Time.getHourMinute(createTime)}`;
+    }
+
+    function handleClickAvatar() {
+        Actions.push('userInfo', { user: message.from });
     }
 
     function renderContent() {
@@ -119,7 +123,13 @@ function Message({ message, isSelf, shouldScroll, scrollToEnd, openImageViewer }
 
     return (
         <View style={[styles.container, isSelf && styles.containerSelf]}>
-            <Avatar src={message.from.avatar} size={44} />
+            {isSelf ? (
+                <Avatar src={message.from.avatar} size={44} />
+            ) : (
+                <TouchableOpacity onPress={handleClickAvatar}>
+                    <Avatar src={message.from.avatar} size={44} />
+                </TouchableOpacity>
+            )}
             <View style={[styles.info, isSelf && styles.infoSelf]}>
                 <View style={[styles.nickTime, isSelf && styles.nickTimeSelf]}>
                     {!!message.from.tag && (

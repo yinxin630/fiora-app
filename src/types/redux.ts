@@ -208,6 +208,7 @@ export type User = {
     linkmans: Linkman[];
     isAdmin: boolean;
     notificationTokens: string[];
+    createTime: number;
 };
 
 export type Guest = {
