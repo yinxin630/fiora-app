@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
+import { Header, Item, Icon, Input } from 'native-base';
+import { Actions } from 'react-native-router-flux';
 import Linkman from './Linkman';
 import { useUser } from '../../hooks/useStore';
 import { Linkman as LinkmanType } from '../../types/redux';
 import PageContainer from '../../components/PageContainer';
+import { search } from '../../service';
 
 export default function ChatList() {
+    const [searchKeywords, updateSearchKeywords] = useState('');
     const user = useUser();
     const linkmans = user?.linkmans || [];
+
+    async function handleSearch() {
+        const result = await search(searchKeywords);
+        updateSearchKeywords('');
+        Actions.push('searchResult', result);
+    }
 
     function renderLinkman(linkman: LinkmanType) {
         const { _id: linkmanId, unread, messages, createTime } = linkman;
@@ -40,6 +50,21 @@ export default function ChatList() {
 
     return (
         <PageContainer>
+            <Header searchBar rounded style={styles.searchContainer}>
+                <Item style={styles.searchItem}>
+                    <Icon name="ios-search" style={styles.searchIcon} />
+                    <Input
+                        style={styles.searchText}
+                        placeholder="搜索群组/用户"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        returnKeyType="search"
+                        value={searchKeywords}
+                        onChangeText={updateSearchKeywords}
+                        onSubmitEditing={handleSearch}
+                    />
+                </Item>
+            </Header>
             <ScrollView style={styles.messageList}>
                 {linkmans && linkmans.map((linkman) => renderLinkman(linkman))}
             </ScrollView>
@@ -49,4 +74,18 @@ export default function ChatList() {
 
 const styles = StyleSheet.create({
     messageList: {},
+    searchContainer: {
+        backgroundColor: 'transparent',
+        height: 42,
+        borderBottomWidth: 0,
+    },
+    searchItem: {
+        backgroundColor: 'rgba(255,255,255,0.4)',
+    },
+    searchIcon: {
+        color: '#555',
+    },
+    searchText: {
+        fontSize: 14,
+    },
 });
