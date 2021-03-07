@@ -4,13 +4,15 @@ import { Alert, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Avatar from '../../components/Avatar';
 import PageContainer from '../../components/PageContainer';
-import { useFocusLinkman } from '../../hooks/useStore';
-import { leaveGroup } from '../../service';
+import { useFocusLinkman, useSelfId } from '../../hooks/useStore';
+import { deleteGroup, leaveGroup } from '../../service';
 import action from '../../state/action';
 import { Group } from '../../types/redux';
 
 function GroupProfile() {
     const linkman = useFocusLinkman() as Group;
+    const self = useSelfId();
+    const isGroupCreator = linkman.creator === self;
 
     function getOS(os: string) {
         return os === 'Windows Server 2008 R2 / 7' ? 'Windows 7' : os;
@@ -21,10 +23,18 @@ function GroupProfile() {
     }
 
     async function handleLeaveGroup() {
-        const isSuccess = await leaveGroup(linkman._id);
-        if (isSuccess) {
-            action.removeLinkman(linkman._id);
-            Actions.popTo('_chatlist', { title: '' });
+        if (isGroupCreator) {
+            const isSuccess = await deleteGroup(linkman._id);
+            if (isSuccess) {
+                action.removeLinkman(linkman._id);
+                Actions.popTo('_chatlist', { title: '' });
+            }
+        } else {
+            const isSuccess = await leaveGroup(linkman._id);
+            if (isSuccess) {
+                action.removeLinkman(linkman._id);
+                Actions.popTo('_chatlist', { title: '' });
+            }
         }
     }
 
@@ -34,7 +44,7 @@ function GroupProfile() {
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>功能</Text>
                     <Button danger onPress={handleLeaveGroup}>
-                        <Text>退出群组</Text>
+                        <Text>{isGroupCreator ? '解散群组' : '退出群组'}</Text>
                     </Button>
                 </View>
                 <View style={styles.section}>

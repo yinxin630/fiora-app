@@ -18,6 +18,7 @@ import ChatBackButton from './pages/Chat/ChatBackButton';
 import GroupProfile from './pages/GroupProfile/GroupProfile';
 import ChatRightButton from './pages/Chat/ChatRightButton';
 import UserInfo from './pages/UserInfo/UserInfo';
+import ChatListRightButton from './pages/ChatList/ChatListRightButton';
 
 type Props = {
     title: string;
@@ -56,6 +57,7 @@ function App({ title, primaryColor, isLogin }: Props) {
                                         />
                                     )}
                                     renderLeftButton={() => <SelfInfo />}
+                                    renderRightButton={() => <ChatListRightButton />}
                                     navigationBarStyle={{
                                         backgroundColor: primaryColor10,
                                         borderBottomWidth: 0,
