@@ -139,15 +139,17 @@ socket.on('message', (message: Message) => {
             focus: false,
         } as AddLinkmanAction);
 
-        fetch('getLinkmanHistoryMessages', { linkmanId: newLinkman._id }).then(([err, res]) => {
-            if (!err) {
-                dispatch({
-                    type: AddLinkmanHistoryMessagesActionType,
-                    linkmanId: newLinkman._id,
-                    messages: res,
-                } as AddLinkmanHistoryMessagesAction);
-            }
-        });
+        fetch('getLinkmanHistoryMessages', { linkmanId: newLinkman._id, existCount: 0 }).then(
+            ([err, res]) => {
+                if (!err) {
+                    dispatch({
+                        type: AddLinkmanHistoryMessagesActionType,
+                        linkmanId: newLinkman._id,
+                        messages: res,
+                    } as AddLinkmanHistoryMessagesAction);
+                }
+            },
+        );
     }
 });
 
