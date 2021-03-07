@@ -45,6 +45,7 @@ export default function Base({ buttonText, jumpText, jumpPage, onSubmit }: Props
                         clearButtonMode="while-editing"
                         onChangeText={setUsername}
                         autoCapitalize="none"
+                        autoCompleteType="username"
                     />
                     <Label style={styles.label}>密码</Label>
                     <TextInput
@@ -55,6 +56,7 @@ export default function Base({ buttonText, jumpText, jumpPage, onSubmit }: Props
                         clearButtonMode="while-editing"
                         onChangeText={setPassword}
                         autoCapitalize="none"
+                        autoCompleteType="password"
                     />
                 </Form>
                 <Button primary block style={styles.button} onPress={handlePress}>
