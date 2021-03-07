@@ -17,6 +17,7 @@ import SelfInfo from './pages/ChatList/SelfInfo';
 import ChatBackButton from './pages/Chat/ChatBackButton';
 import GroupProfile from './pages/GroupProfile/GroupProfile';
 import ChatRightButton from './pages/Chat/ChatRightButton';
+import UserInfo from './pages/UserInfo/UserInfo';
 
 type Props = {
     title: string;
@@ -119,6 +120,18 @@ function App({ title, primaryColor, isLogin }: Props) {
                             key="groupProfile"
                             component={GroupProfile}
                             title="群组信息"
+                            hideNavBar={false}
+                            navigationBarStyle={{
+                                backgroundColor: primaryColor10,
+                                borderBottomWidth: 0,
+                            }}
+                            navBarButtonColor="#f9f9f9"
+                            backTitle="返回"
+                        />
+                        <Scene
+                            key="userInfo"
+                            component={UserInfo}
+                            title="个人信息"
                             hideNavBar={false}
                             navigationBarStyle={{
                                 backgroundColor: primaryColor10,
