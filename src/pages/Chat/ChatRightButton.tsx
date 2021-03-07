@@ -7,12 +7,12 @@ import { useFocusLinkman } from '../../hooks/useStore';
 function ChatRightButton() {
     const linkman = useFocusLinkman();
 
-    if (linkman?.type !== 'group') {
-        return null;
-    }
-
     function handleClick() {
-        Actions.push('groupProfile');
+        if (linkman?.type === 'group') {
+            Actions.push('groupProfile');
+        } else {
+            Actions.push('userInfo', { user: linkman });
+        }
     }
 
     return (
