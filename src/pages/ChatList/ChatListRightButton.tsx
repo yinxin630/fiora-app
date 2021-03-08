@@ -45,6 +45,7 @@ function ChatListRightButton() {
                     onChangeText={updateGroupName}
                     autoCapitalize="none"
                     autoFocus
+                    autoCorrect={false}
                 />
                 <Dialog.Button label="取消" onPress={handleCloseDialog} />
                 <Dialog.Button label="创建" onPress={handleCreateGroup} />

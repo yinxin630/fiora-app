@@ -1,7 +1,6 @@
 import { View } from 'native-base';
 import React from 'react';
 import { ImageBackground, SafeAreaView, StyleSheet } from 'react-native';
-import { isAndroid } from '../utils/platform';
 
 type Props = {
     children: any;
@@ -39,6 +38,5 @@ const styles = StyleSheet.create({
     children: {
         flex: 1,
         backgroundColor: 'rgba(241, 241, 241, 0.6)',
-        paddingTop: isAndroid ? 20 : 0,
     },
 });
