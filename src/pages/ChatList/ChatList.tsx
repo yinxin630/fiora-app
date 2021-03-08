@@ -8,6 +8,7 @@ import { useUser } from '../../hooks/useStore';
 import { Linkman as LinkmanType } from '../../types/redux';
 import PageContainer from '../../components/PageContainer';
 import { search } from '../../service';
+import { isiOS } from '../../utils/platform';
 
 export default function ChatList() {
     const [searchKeywords, updateSearchKeywords] = useState('');
@@ -50,7 +51,7 @@ export default function ChatList() {
 
     return (
         <PageContainer>
-            <Header searchBar rounded style={styles.searchContainer}>
+            <Header searchBar rounded noShadow style={styles.searchContainer}>
                 <Item style={styles.searchItem}>
                     <Icon name="ios-search" style={styles.searchIcon} />
                     <Input
@@ -75,12 +76,13 @@ export default function ChatList() {
 const styles = StyleSheet.create({
     messageList: {},
     searchContainer: {
+        marginTop: isiOS ? 0 : 5,
         backgroundColor: 'transparent',
         height: 42,
         borderBottomWidth: 0,
     },
     searchItem: {
-        backgroundColor: 'rgba(255,255,255,0.4)',
+        backgroundColor: 'rgba(255,255,255,0.5)',
     },
     searchIcon: {
         color: '#555',
