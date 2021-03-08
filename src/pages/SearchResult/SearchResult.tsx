@@ -1,6 +1,7 @@
 import React from 'react';
-import { Container, Tab, Tabs, Text, View } from 'native-base';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Tab, Tabs, Text, View } from 'native-base';
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import PageContainer from '../../components/PageContainer';
 import Avatar from '../../components/Avatar';
 
@@ -19,12 +20,17 @@ type Props = {
 };
 
 function SearchResult({ groups, users }: Props) {
+    function handleClickGroup(group: any) {
+        Actions.push('groupInfo', { group });
+    }
+
+    function handleClickUser(user: any) {
+        Actions.push('userInfo', { user });
+    }
+
     return (
         <PageContainer disableSafeAreaView>
-            <Tabs
-                style={styles.container}
-                tabContainerStyle={{ backgroundColor: 'transparent' }}
-            >
+            <Tabs style={styles.container} tabContainerStyle={{ backgroundColor: 'transparent' }}>
                 <Tab
                     heading={`群组(${groups.length})`}
                     tabStyle={{ backgroundColor: 'transparent' }}
@@ -32,17 +38,19 @@ function SearchResult({ groups, users }: Props) {
                 >
                     <PageContainer>
                         <ScrollView>
-                            {groups.map(({ _id, name, avatar, members }) => (
-                                <View key={_id} style={styles.item}>
-                                    <Avatar src={avatar} size={40} />
-                                    <View style={styles.groupInfo}>
-                                        <Text style={styles.groupName}>{name}</Text>
-                                        <Text style={styles.groupMembers}>
-                                            {members}
-                                            人
-                                        </Text>
+                            {groups.map((group) => (
+                                <TouchableOpacity key={group._id} onPress={() => handleClickGroup(group)}>
+                                    <View style={styles.item}>
+                                        <Avatar src={group.avatar} size={40} />
+                                        <View style={styles.groupInfo}>
+                                            <Text style={styles.groupName}>{group.name}</Text>
+                                            <Text style={styles.groupMembers}>
+                                                {group.members}
+                                                人
+                                            </Text>
+                                        </View>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             ))}
                         </ScrollView>
                     </PageContainer>
@@ -54,11 +62,13 @@ function SearchResult({ groups, users }: Props) {
                 >
                     <PageContainer>
                         <ScrollView>
-                            {users.map(({ _id, username, avatar }) => (
-                                <View key={_id} style={styles.item}>
-                                    <Avatar src={avatar} size={40} />
-                                    <Text style={styles.username}>{username}</Text>
-                                </View>
+                            {users.map((user) => (
+                                <TouchableOpacity key={user._id} onPress={() => handleClickUser(user)}>
+                                    <View style={styles.item}>
+                                        <Avatar src={user.avatar} size={40} />
+                                        <Text style={styles.username}>{user.username}</Text>
+                                    </View>
+                                </TouchableOpacity>
                             ))}
                         </ScrollView>
                     </PageContainer>
