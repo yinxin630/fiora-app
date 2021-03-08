@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView, ScrollView, Dimensions } from 'react-native';
 import Constants from 'expo-constants';
 import { Actions } from 'react-native-router-flux';
 
@@ -17,6 +17,36 @@ import {
 } from '../../service';
 import action from '../../state/action';
 import { formatLinkmanName } from '../../utils/linkman';
+
+const keyboardOffset = (() => {
+    const { width, height } = Dimensions.get('window');
+    const screenRatio = height / width;
+    if (screenRatio === 667 / 375) {
+        // iPhone 6 / 7 / 8
+        return 64;
+    }
+    if (screenRatio === 736 / 414) {
+        // iPhone 6 / 7 / 8 PLUS
+        return 64;
+    }
+    if (screenRatio === 812 / 375) {
+        // iPhone X / 12mini
+        return 86;
+    }
+    if (screenRatio === 896 / 414) {
+        // iPhone Xr / 11 / 11 Pro Max
+        return 86;
+    }
+    if (screenRatio === 844 / 390) {
+        // iPhone 12 / 12 Prop
+        return 64;
+    }
+    if (screenRatio === 926 / 428) {
+        // iPhone 12 Pro Max
+        return 64;
+    }
+    return Constants.statusBarHeight + 44;
+})();
 
 export default function Chat() {
     const isLogin = useIsLogin();
@@ -83,7 +113,7 @@ export default function Chat() {
             <KeyboardAvoidingView
                 style={styles.container}
                 behavior={isiOS ? 'padding' : 'height'}
-                keyboardVerticalOffset={Constants.statusBarHeight + 44}
+                keyboardVerticalOffset={keyboardOffset}
             >
                 {/* 
                 // @ts-ignore */}
