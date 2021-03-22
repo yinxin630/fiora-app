@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { Header, Item, Icon, Input } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import Linkman from './Linkman';
-import { useUser } from '../../hooks/useStore';
+import { useLinkmans } from '../../hooks/useStore';
 import { Linkman as LinkmanType } from '../../types/redux';
 import PageContainer from '../../components/PageContainer';
 import { search } from '../../service';
@@ -12,8 +12,7 @@ import { isiOS } from '../../utils/platform';
 
 export default function ChatList() {
     const [searchKeywords, updateSearchKeywords] = useState('');
-    const user = useUser();
-    const linkmans = user?.linkmans || [];
+    const linkmans = useLinkmans();
 
     async function handleSearch() {
         const result = await search(searchKeywords);

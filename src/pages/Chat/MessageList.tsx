@@ -6,7 +6,7 @@ import action from '../../state/action';
 import fetch from '../../utils/fetch';
 
 import Message from './Message';
-import { useIsLogin, useSelfId, useStore } from '../../hooks/useStore';
+import { useFocusLinkman, useIsLogin, useSelfId, useStore } from '../../hooks/useStore';
 import { Message as MessageType } from '../../types/redux';
 import Toast from '../../components/Toast';
 import { isAndroid, isiOS } from '../../utils/platform';
@@ -23,9 +23,9 @@ let isFirstTimeFetchHistory = true;
 function MessageList({ $scrollView }: Props) {
     const isLogin = useIsLogin();
     const self = useSelfId();
+    const focusLinkman = useFocusLinkman();
     const { focus } = useStore();
-    const messages =
-        useStore().user!.linkmans.find((linkman) => linkman._id === focus)?.messages || [];
+    const messages = focusLinkman?.messages || [];
 
     const [refreshing, setRefreshing] = useState(false);
     const [showImageViewerDialog, toggleShowImageViewerDialog] = useState(false);

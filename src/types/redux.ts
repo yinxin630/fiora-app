@@ -8,6 +8,7 @@ export const SetUserActionType = 'SetUser';
 export type SetUserAction = {
     type: typeof SetUserActionType;
     user: User;
+    linkmans: Linkman[];
 };
 
 export const SetLinkmanMessagesActionType = 'SetLinkmanMessages';
@@ -206,18 +207,14 @@ export type User = {
     username: string;
     avatar: string;
     tag: string;
-    linkmans: Linkman[];
     isAdmin: boolean;
     notificationTokens: string[];
     createTime: number;
 };
 
-export type Guest = {
-    linkmans: Linkman[];
-};
-
 export type State = {
-    user?: User | Guest;
+    user?: User;
+    linkmans: Linkman[];
     focus: string;
     connect: boolean;
     ui: {

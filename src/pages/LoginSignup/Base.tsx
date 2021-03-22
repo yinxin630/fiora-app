@@ -9,7 +9,6 @@ type Props = {
     buttonText: string;
     jumpText: string;
     jumpPage: string;
-    // eslint-disable-next-line no-unused-vars
     onSubmit: (username: string, password: string) => void;
 };
 

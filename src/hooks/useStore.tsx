@@ -33,11 +33,16 @@ export function useTheme() {
     };
 }
 
+export function useLinkmans() {
+    const data = useStore();
+    return data.linkmans || [];
+}
+
 export function useFocusLinkman() {
     const data = useStore();
-    const { user, focus = '' } = data;
-    if (user && user.linkmans) {
-        return user!.linkmans.find((linkman) => linkman._id === focus);
+    const { linkmans, focus = '' } = data;
+    if (linkmans) {
+        return linkmans.find((linkman) => linkman._id === focus);
     }
     return null;
 }

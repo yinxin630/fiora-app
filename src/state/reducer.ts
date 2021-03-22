@@ -27,7 +27,7 @@ import {
 } from '../types/redux';
 import convertMessage from '../utils/convertMessage';
 
-export function mergeLinkmans(linkmans1: Linkman[], linkmans2: Linkman[]) {
+export function mergeLinkmans(linkmans1: Linkman[], linkmans2: Linkman[]): Linkman[] {
     const linkmansMap2 = linkmans2.reduce((map: { [key: string]: Linkman }, linkman) => {
         map[linkman._id] = linkman;
         return map;
@@ -57,7 +57,7 @@ export function mergeLinkmans(linkmans1: Linkman[], linkmans2: Linkman[]) {
 }
 
 const initialState = {
-    user: null,
+    linkmans: [],
     focus: '',
     connect: true,
     ui: {
@@ -67,7 +67,7 @@ const initialState = {
     },
 };
 
-const reducer = produce((state: State, action: ActionTypes) => {
+const reducer = produce((state: State = initialState, action: ActionTypes) => {
     switch (action.type) {
         case ConnectActionType: {
             state.connect = action.value;
@@ -81,17 +81,13 @@ const reducer = produce((state: State, action: ActionTypes) => {
             if (!currentUserId || currentUserId !== action.user._id) {
                 // No user or guest user or different user
                 state.user = action.user;
+                state.linkmans = action.linkmans;
             } else {
                 // Same user. Deep merge to reserve history messages;
                 // But these history messages must be overwritten in SetLinkmanMessagesAction
                 // Otherwise, there may be errors when fetch history messages later
-                state.user = deepmerge(state.user as User, action.user, {
-                    customMerge: (key) => {
-                        if (key === 'linkmans') {
-                            return mergeLinkmans;
-                        }
-                    },
-                });
+                state.user = action.user;
+                state.linkmans = mergeLinkmans(state.linkmans, action.linkmans);
             }
             return state;
         }
@@ -99,9 +95,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
             action.linkmans.forEach((linkman) => {
                 linkman.messages.forEach(convertMessage);
             });
-            state.user = {
-                linkmans: action.linkmans,
-            };
+            state.linkmans = action.linkmans;
             return state;
         }
         case UpdateUserPropertyActionType: {
@@ -110,10 +104,10 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case SetLinkmanMessagesActionType: {
-            state.user!.linkmans.forEach((linkman) => {
+            state.linkmans.forEach((linkman) => {
                 linkman.messages = action.messages[linkman._id].map(convertMessage);
             });
-            state.user!.linkmans.sort((linkman1, linkman2) => {
+            state.linkmans.sort((linkman1, linkman2) => {
                 const lastMessageTime1 =
                     linkman1.messages.length > 0
                         ? linkman1.messages[linkman1.messages.length - 1].createTime
@@ -124,16 +118,13 @@ const reducer = produce((state: State, action: ActionTypes) => {
                         : linkman2.createTime;
                 return new Date(lastMessageTime1) < new Date(lastMessageTime2) ? 1 : -1;
             });
-            if (
-                !state.focus ||
-                !state.user!.linkmans.find((linkman) => linkman._id === state.focus)
-            ) {
-                state.focus = state.user!.linkmans.length > 0 ? state.user!.linkmans[0]._id : '';
+            if (!state.focus || !state.linkmans.find((linkman) => linkman._id === state.focus)) {
+                state.focus = state.linkmans.length > 0 ? state.linkmans[0]._id : '';
             }
             return state;
         }
         case UpdateGroupPropertyActionType: {
-            const group = state.user!.linkmans.find(
+            const group = state.linkmans.find(
                 (linkman) => linkman.type === 'group' && linkman._id === action.groupId,
             ) as Group;
             if (group) {
@@ -143,7 +134,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case UpdateFriendPropertyActionType: {
-            const friend = state.user!.linkmans.find(
+            const friend = state.linkmans.find(
                 (linkman) => linkman.type !== 'group' && linkman._id === action.userId,
             ) as Friend;
             if (friend) {
@@ -153,7 +144,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case SetFocusActionType: {
-            const targetLinkman = state.user!.linkmans.find(
+            const targetLinkman = state.linkmans.find(
                 (linkman) => linkman._id === action.linkmanId,
             );
             if (targetLinkman) {
@@ -163,7 +154,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case SetFriendActionType: {
-            const friend = state.user!.linkmans.find(
+            const friend = state.linkmans.find(
                 (linkman) => linkman._id === action.linkmanId,
             ) as Friend;
             if (friend) {
@@ -176,27 +167,24 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case AddLinkmanActionType: {
-            state.user!.linkmans.unshift(action.linkman);
+            state.linkmans.unshift(action.linkman);
             if (action.focus) {
                 state.focus = action.linkman._id;
             }
             return state;
         }
         case RemoveLinkmanActionType: {
-            const index = state.user!.linkmans.findIndex(
-                (linkman) => linkman._id === action.linkmanId,
-            );
+            const index = state.linkmans.findIndex((linkman) => linkman._id === action.linkmanId);
             if (index !== -1) {
-                state.user!.linkmans.splice(index, 1);
+                state.linkmans.splice(index, 1);
                 if (state.focus === action.linkmanId) {
-                    state.focus =
-                        state.user!.linkmans.length > 0 ? state.user!.linkmans[0]._id : '';
+                    state.focus = state.linkmans.length > 0 ? state.linkmans[0]._id : '';
                 }
             }
             return state;
         }
         case AddlinkmanMessageActionType: {
-            const targetLinkman = state.user!.linkmans.find(
+            const targetLinkman = state.linkmans.find(
                 (linkman) => linkman._id === action.linkmanId,
             );
             if (targetLinkman) {
@@ -211,7 +199,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case AddLinkmanHistoryMessagesActionType: {
-            const targetLinkman = state.user!.linkmans.find(
+            const targetLinkman = state.linkmans.find(
                 (linkman) => linkman._id === action.linkmanId,
             );
             if (targetLinkman) {
@@ -220,7 +208,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case UpdateSelfMessageActionType: {
-            const targetLinkman = state.user!.linkmans.find(
+            const targetLinkman = state.linkmans.find(
                 (linkman) => linkman._id === action.linkmanId,
             );
             if (targetLinkman) {
@@ -234,7 +222,7 @@ const reducer = produce((state: State, action: ActionTypes) => {
             return state;
         }
         case DeleteLinkmanMessageActionType: {
-            const targetLinkman = state.user!.linkmans.find(
+            const targetLinkman = state.linkmans.find(
                 (linkman) => linkman._id === action.linkmanId,
             );
             if (targetLinkman) {

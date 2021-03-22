@@ -23,7 +23,6 @@ type Props = {
     isSelf: boolean;
     shouldScroll: boolean;
     scrollToEnd: () => void;
-    // eslint-disable-next-line no-unused-vars
     openImageViewer: (imageUrl: string) => void;
 };
 

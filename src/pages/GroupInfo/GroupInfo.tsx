@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import PageContainer from '../../components/PageContainer';
 import Avatar from '../../components/Avatar';
-import { useFocusLinkman, useStore } from '../../hooks/useStore';
+import { useFocusLinkman, useLinkmans } from '../../hooks/useStore';
 import { Linkman } from '../../types/redux';
 import action from '../../state/action';
 import { getLinkmanHistoryMessages, joinGroup } from '../../service';
@@ -20,7 +20,7 @@ type Props = {
 
 function GroupInfo({ group }: Props) {
     const { _id, avatar, name, members } = group;
-    const { linkmans } = useStore().user!;
+    const linkmans = useLinkmans();
     const linkman = linkmans.find((x) => x._id === _id && x.type === 'group') as Linkman;
     const isJoined = !!linkman;
     const currentLinkman = useFocusLinkman() as Linkman;
