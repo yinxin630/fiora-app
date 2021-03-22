@@ -67,7 +67,7 @@ function Nofitication() {
         const { focus } = response.notification.request.content.data;
         setTimeout(() => {
             const currentState = store.getState() as State;
-            const linkmans = currentState.user?.linkmans || [];
+            const linkmans = currentState.linkmans || [];
             if (linkmans.find((linkman) => linkman._id === focus)) {
                 action.setFocus(focus);
                 if (Actions.currentScene !== 'chat') {

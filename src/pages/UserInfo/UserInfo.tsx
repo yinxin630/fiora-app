@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import PageContainer from '../../components/PageContainer';
 import Avatar from '../../components/Avatar';
-import { useFocusLinkman, useIsAdmin, useSelfId, useStore } from '../../hooks/useStore';
+import { useFocusLinkman, useIsAdmin, useLinkmans, useSelfId } from '../../hooks/useStore';
 import { Linkman } from '../../types/redux';
 import action from '../../state/action';
 import {
@@ -28,7 +28,7 @@ type Props = {
 
 function UserInfo({ user }: Props) {
     const { _id, avatar, username } = user;
-    const { linkmans } = useStore().user!;
+    const linkmans = useLinkmans();
     const friend = linkmans.find((linkman) => linkman._id.includes(_id)) as Linkman;
     const isFriend = friend && friend.type === 'friend';
     const isAdmin = useIsAdmin();

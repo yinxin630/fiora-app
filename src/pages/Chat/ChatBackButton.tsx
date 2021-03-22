@@ -6,7 +6,7 @@ import { useStore } from '../../hooks/useStore';
 
 function ChatBackButton() {
     const store = useStore();
-    const unread = store.user?.linkmans.reduce((result, linkman) => {
+    const unread = store.linkmans.reduce((result, linkman) => {
         result += linkman.unread;
         return result;
     }, 0);

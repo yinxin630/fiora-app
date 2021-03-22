@@ -77,8 +77,10 @@ function setUser(user: any) {
         type: SetUserActionType,
         user: {
             ...user,
-            linkmans,
+            groups: null,
+            friends: null,
         },
+        linkmans,
     } as SetUserAction);
 }
 function setLinkmansLastMessages(messages: SetLinkmanMessagesAction['messages']) {

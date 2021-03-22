@@ -116,7 +116,7 @@ socket.on('disconnect', () => {
 });
 socket.on('message', (message: Message) => {
     const state = store.getState() as State;
-    const linkman = state.user!.linkmans.find((x) => x._id === message.to);
+    const linkman = state.linkmans.find((x) => x._id === message.to);
     if (linkman) {
         dispatch({
             type: AddlinkmanMessageActionType,
