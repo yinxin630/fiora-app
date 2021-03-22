@@ -12,7 +12,7 @@ import {
     View,
 } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { Alert, Linking, StyleSheet } from 'react-native';
+import { Linking, StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import PageContainer from '../../components/PageContainer';
 
@@ -69,13 +69,8 @@ function Other() {
                 async (buttonIndex) => {
                     switch (buttonIndex) {
                         case 0: {
-                            const alipayUrl = 'HTTPS://QR.ALIPAY.COM/FKX08821LJVDHRXFYYYU3A';
-                            const canOpenURL = await Linking.canOpenURL(alipayUrl);
-                            if (canOpenURL) {
-                                Linking.openURL(alipayUrl);
-                            } else {
-                                Alert.alert('错误', '无法打开支付宝');
-                            }
+                            const alipayUrl = 'https://qr.alipay.com/FKX08821LJVDHRXFYYYU3A';
+                            Linking.openURL(alipayUrl);
                             break;
                         }
                         default: {
