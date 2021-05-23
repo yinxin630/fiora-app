@@ -2,8 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 
 import Image from './Image';
-
-const uri = 'https://cdn.suisuijiang.com/fiora/img/baidu.bd067c14.png';
+import uri from '../assets/images/baidu.png';
 
 type Props = {
     size: number;
