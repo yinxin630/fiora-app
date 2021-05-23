@@ -23,6 +23,7 @@ import expressions from '../../utils/expressions';
 import Expression from '../../components/Expression';
 import { useIsLogin, useStore, useUser } from '../../hooks/useStore';
 import { Message } from '../../types/redux';
+import uploadFile from '../../utils/uploadFile';
 
 const { width: ScreenWidth } = Dimensions.get('window');
 const ExpressionSize = (ScreenWidth - 16) / 10;
@@ -137,7 +138,9 @@ export default function Input({ onHeightChange }: Props) {
 
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: isiOS ? 0.1 : 0.8,
+            allowsEditing: true,
+            quality: 0.9,
+            base64: true,
         });
 
         if (!result.cancelled) {
@@ -145,18 +148,9 @@ export default function Input({ onHeightChange }: Props) {
                 'image',
                 `${result.uri}?width=${result.width}&height=${result.height}`,
             );
-            const [err, tokenResult] = await fetch('uploadToken');
-            if (!err) {
-                const key = `ImageMessage/${user._id}_${Date.now()}`;
-                await Rpc.uploadFile(result.uri, tokenResult.token, {
-                    key,
-                });
-                sendMessage(
-                    id,
-                    'image',
-                    `${tokenResult.urlPrefix}${key}?width=${result.width}&height=${result.height}`,
-                );
-            }
+            const key = `ImageMessage/${user._id}_${Date.now()}`;
+            const imageUrl = await uploadFile(result.base64 as string, key, true);
+            sendMessage(id, 'image', `${imageUrl}?width=${result.width}&height=${result.height}`);
         }
     }
 
