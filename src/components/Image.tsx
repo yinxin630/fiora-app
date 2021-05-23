@@ -13,12 +13,10 @@ export default function Image({ src, width = '100%', height = '100%', style }: P
     let source: ImageSourcePropType = src;
     if (typeof src === 'string') {
         let prefix = '';
-        if (src[0] === '/') {
-            if (src[1] === '/') {
-                prefix = 'https:';
-            } else {
-                prefix = 'http://192.168.1.105:8080';
-            }
+        if (src.startsWith('//')) {
+            prefix = 'https:';
+        } else if (src.startsWith('/')) {
+            prefix = 'https://fiora.suisuijiang.com';
         }
         source = {
             uri: prefix + src,
