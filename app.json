@@ -3,20 +3,20 @@
     "privacy": "public",
     "name": "fiora",
     "icon": "./icon.png",
-    "version": "1.0.5",
+    "version": "1.1.0",
     "description": "App for fiora. An online chatroom",
     "slug": "fiora",
     "scheme": "fiora",
     "ios": {
       "bundleIdentifier": "com.suisuijiang.fiora",
-      "buildNumber": "1.0.5",
+      "buildNumber": "1.1.0",
       "infoPlist": {
         "LSApplicationQueriesSchemes": ["wxp"]
       }
     },
     "android": {
       "package": "com.suisuijiang.fiora",
-      "versionCode": 5,
+      "versionCode": 6,
       "useNextNotificationsApi": true
     },
     "updates": {
