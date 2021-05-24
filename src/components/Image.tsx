@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image as BaseImage, ImageSourcePropType } from 'react-native';
+import { getOSSFileUrl } from '../utils/uploadFile';
 
 type Props = {
     src: string;
@@ -12,14 +13,17 @@ export default function Image({ src, width = '100%', height = '100%', style }: P
     // @ts-ignore
     let source: ImageSourcePropType = src;
     if (typeof src === 'string') {
-        let prefix = '';
-        if (src.startsWith('//')) {
-            prefix = 'https:';
-        } else if (src.startsWith('/')) {
-            prefix = 'https://fiora.suisuijiang.com';
+        let uri = getOSSFileUrl(src, `image/quality,q_80`);
+        if (width !== '100%' && height !== '100%') {
+            uri = getOSSFileUrl(
+                src,
+                `image/resize,w_${Math.ceil(width as number)},h_${Math.ceil(
+                    height as number,
+                )}/quality,q_80`,
+            );
         }
         source = {
-            uri: prefix + src,
+            uri: uri as string,
             cache: 'force-cache',
         };
     }
