@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image as BaseImage, ImageSourcePropType } from 'react-native';
 import { getOSSFileUrl } from '../utils/uploadFile';
+import { referer } from '../utils/constant';
 
 type Props = {
     src: string;
@@ -25,6 +26,9 @@ export default function Image({ src, width = '100%', height = '100%', style }: P
         source = {
             uri: uri as string,
             cache: 'force-cache',
+            headers: {
+                Referer: referer,
+            },
         };
     }
     return <BaseImage source={source} style={[style, { width, height }]} />;
