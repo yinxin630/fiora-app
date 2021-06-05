@@ -19,10 +19,13 @@ import PageContainer from '../../components/PageContainer';
 import { useIsLogin } from '../../hooks/useStore';
 import socket from '../../socket';
 import action from '../../state/action';
-import { removeStorageValue } from '../../utils/storage';
+import { getStorageValue, removeStorageValue } from '../../utils/storage';
 import appInfo from '../../../app.json';
 import Avatar from '../../components/Avatar';
 import Sponsor from './Sponsor';
+import PrivacyPolicy, { PrivacyPolicyStorageKey } from './PrivacyPolicy';
+
+removeStorageValue(PrivacyPolicyStorageKey)
 
 function getIsNight() {
     const hour = new Date().getHours();
@@ -33,11 +36,20 @@ function Other() {
     const isLogin = useIsLogin();
     const [isNight, setIsNight] = useState(getIsNight());
     const [showSponsorDialog, toggleSponsorDialog] = useState(false);
+    const [showPrivacyPolicy, togglePrivacyPolicy] = useState(false);
+
+    async function getPrivacyPolicyStatus() {
+        const privacyPoliceStorageValue = await getStorageValue(PrivacyPolicyStorageKey);
+        togglePrivacyPolicy(privacyPoliceStorageValue !== 'true');
+    }
 
     useEffect(() => {
         const timer = setInterval(() => {
             setIsNight(getIsNight());
         }, 1000);
+
+        getPrivacyPolicyStatus();
+
         return () => {
             clearInterval(timer);
         };
@@ -51,7 +63,13 @@ function Other() {
         socket.connect();
     }
 
-    function login() {
+    async function login() {
+        const privacyPoliceStorageValue = await getStorageValue(PrivacyPolicyStorageKey);
+        if (privacyPoliceStorageValue !== 'true') {
+            togglePrivacyPolicy(true);
+            return;
+        }
+
         Actions.push('login');
     }
 
@@ -151,6 +169,7 @@ function Other() {
                 onClose={() => toggleSponsorDialog(false)}
                 onOK={handleSponsorOK}
             />
+            <PrivacyPolicy visible={showPrivacyPolicy} onClose={() => togglePrivacyPolicy(false)} />
         </PageContainer>
     );
 }
