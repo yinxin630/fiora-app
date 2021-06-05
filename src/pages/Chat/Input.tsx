@@ -13,7 +13,6 @@ import { Actions } from 'react-native-router-flux';
 import { Ionicons } from '@expo/vector-icons';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import { Rpc } from 'react-native-qiniu';
 
 import action from '../../state/action';
 import fetch from '../../utils/fetch';
