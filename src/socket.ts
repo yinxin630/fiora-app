@@ -97,11 +97,11 @@ socket.on('connect', async () => {
                 ...user.groups.map((g: Group) => g._id),
                 ...user.friends.map((f: Friend) => f._id),
             ];
-            const [err2, messages] = await fetch('getLinkmansLastMessages', {
+            const [err2, linkmans] = await fetch('getLinkmansLastMessagesV2', {
                 linkmans: linkmanIds,
             });
             if (!err2) {
-                action.setLinkmansLastMessages(messages);
+                action.setLinkmansLastMessages(linkmans);
             }
         }
     } else {

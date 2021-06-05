@@ -16,13 +16,13 @@ function PrivacyPolicy({ visible, onClose }: Props) {
         Linking.openURL('https://fiora.suisuijiang.com/PrivacyPolicy.html');
     }
 
-    function handleAgree() {
-        setStorageValue(PrivacyPolicyStorageKey, 'true');
+    async function handleAgree() {
+        await setStorageValue(PrivacyPolicyStorageKey, 'true');
         onClose();
     }
 
-    function handleDisagree() {
-        removeStorageValue(PrivacyPolicyStorageKey);
+    async function handleDisagree() {
+        await removeStorageValue(PrivacyPolicyStorageKey);
         onClose();
     }
 

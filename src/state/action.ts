@@ -83,10 +83,10 @@ function setUser(user: any) {
         linkmans,
     } as SetUserAction);
 }
-function setLinkmansLastMessages(messages: SetLinkmanMessagesAction['messages']) {
+function setLinkmansLastMessages(linkmans: SetLinkmanMessagesAction['linkmans']) {
     dispatch({
         type: 'SetLinkmanMessages',
-        messages,
+        linkmans,
     } as SetLinkmanMessagesAction);
 }
 function setGuest(defaultGroup: Group) {

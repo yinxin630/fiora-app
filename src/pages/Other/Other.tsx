@@ -25,8 +25,6 @@ import Avatar from '../../components/Avatar';
 import Sponsor from './Sponsor';
 import PrivacyPolicy, { PrivacyPolicyStorageKey } from './PrivacyPolicy';
 
-removeStorageValue(PrivacyPolicyStorageKey)
-
 function getIsNight() {
     const hour = new Date().getHours();
     return hour >= 18 || hour < 6;

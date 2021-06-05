@@ -61,6 +61,7 @@ const initialState = {
     focus: '',
     connect: true,
     ui: {
+        ready: false,
         loading: '', // 全局loading文本内容, 为空则不展示
         primaryColor: '5,159,149',
         primaryTextColor: '255, 255, 255',
@@ -104,9 +105,17 @@ const reducer = produce((state: State = initialState, action: ActionTypes) => {
             return state;
         }
         case SetLinkmanMessagesActionType: {
-            state.linkmans.forEach((linkman) => {
-                linkman.messages = action.messages[linkman._id].map(convertMessage);
-            });
+            state.linkmans = state.linkmans.map((linkman) => {
+                return {
+                    ...linkman,
+                    ...(action.linkmans[linkman._id]
+                        ? {
+                            messages: action.linkmans[linkman._id].messages,
+                            unread: action.linkmans[linkman._id].unread,
+                        }
+                        : {}),
+                };
+            }) as Linkman[];
             state.linkmans.sort((linkman1, linkman2) => {
                 const lastMessageTime1 =
                     linkman1.messages.length > 0

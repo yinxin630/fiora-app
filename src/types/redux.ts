@@ -14,7 +14,13 @@ export type SetUserAction = {
 export const SetLinkmanMessagesActionType = 'SetLinkmanMessages';
 export type SetLinkmanMessagesAction = {
     type: typeof SetLinkmanMessagesActionType;
-    messages: { [linkmanId: string]: Message[] };
+    linkmans: Record<
+        string,
+        {
+            messages: { [linkmanId: string]: Message[] };
+            unread: number;
+        }
+    >;
 };
 
 export const SetGuestActionType = 'SetGuest';
