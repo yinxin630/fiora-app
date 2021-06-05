@@ -44,6 +44,7 @@ export default function ChatList() {
                 time={time}
                 unread={unread}
                 linkman={linkman}
+                lastMessageId={lastMessage ? lastMessage._id : ''}
             />
         );
     }

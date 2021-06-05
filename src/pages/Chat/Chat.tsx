@@ -17,6 +17,9 @@ import {
 } from '../../service';
 import action from '../../state/action';
 import { formatLinkmanName } from '../../utils/linkman';
+import fetch from '../../utils/fetch';
+
+let lastMessageIdCache = '';
 
 const keyboardOffset = (() => {
     const { width, height } = Dimensions.get('window');
@@ -88,6 +91,22 @@ export default function Chat() {
             title: formatLinkmanName(linkman as Linkman),
         });
     }, [(linkman as Group).members, (linkman as Friend).isOnline]);
+
+    async function intervalUpdateHistory() {
+        if (isLogin && linkman) {
+            if (linkman.messages.length > 0) {
+                const lastMessageId = linkman.messages[linkman.messages.length - 1]._id;
+                if (lastMessageId !== lastMessageIdCache) {
+                    lastMessageIdCache = lastMessageId;
+                    await fetch('updateHistory', { linkmanId: focus, messageId: lastMessageId });
+                }
+            }
+        }
+    }
+    useEffect(() => {
+        const timer = setInterval(intervalUpdateHistory, 1000 * 5);
+        return () => clearInterval(timer);
+    }, [focus]);
 
     function scrollToEnd(time = 0) {
         if (time > 200) {
