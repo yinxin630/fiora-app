@@ -33,7 +33,6 @@
     "react-native-dialog": "^6.2.0",
     "react-native-gesture-handler": "~1.6.0",
     "react-native-image-zoom-viewer": "^2.2.5",
-    "react-native-qiniu": "^0.3.0",
     "react-native-reanimated": "~1.9.0",
     "react-native-router-flux": "^4.2.0",
     "react-native-safe-area-context": "~3.0.7",
