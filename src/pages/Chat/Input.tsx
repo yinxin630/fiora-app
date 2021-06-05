@@ -138,8 +138,6 @@ export default function Input({ onHeightChange }: Props) {
 
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            quality: 0.9,
             base64: true,
         });
 
@@ -172,7 +170,8 @@ export default function Input({ onHeightChange }: Props) {
         }
 
         const result = await ImagePicker.launchCameraAsync({
-            quality: isiOS ? 0.1 : 0.8,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            base64: true,
         });
 
         if (!result.cancelled) {
@@ -180,18 +179,9 @@ export default function Input({ onHeightChange }: Props) {
                 'image',
                 `${result.uri}?width=${result.width}&height=${result.height}`,
             );
-            const [err, tokenResult] = await fetch('uploadToken');
-            if (!err) {
-                const key = `ImageMessage/${user._id}_${Date.now()}`;
-                await Rpc.uploadFile(result.uri, tokenResult.token, {
-                    key,
-                });
-                sendMessage(
-                    id,
-                    'image',
-                    `${tokenResult.urlPrefix}${key}?width=${result.width}&height=${result.height}`,
-                );
-            }
+            const key = `ImageMessage/${user._id}_${Date.now()}`;
+            const imageUrl = await uploadFile(result.base64 as string, key, true);
+            sendMessage(id, 'image', `${imageUrl}?width=${result.width}&height=${result.height}`);
         }
     }
 
