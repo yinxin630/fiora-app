@@ -8,6 +8,7 @@ import action from '../../state/action';
 import Avatar from '../../components/Avatar';
 import { Linkman as LinkmanType } from '../../types/redux';
 import { formatLinkmanName } from '../../utils/linkman';
+import fetch from '../../utils/fetch';
 
 type Props = {
     id: string;
@@ -16,10 +17,20 @@ type Props = {
     preview: string;
     time: Date;
     unread: number;
+    lastMessageId: string;
     linkman: LinkmanType;
 };
 
-export default function Linkman({ id, name, avatar, preview, time, unread, linkman }: Props) {
+export default function Linkman({
+    id,
+    name,
+    avatar,
+    preview,
+    time,
+    unread,
+    lastMessageId,
+    linkman,
+}: Props) {
     function formatTime() {
         const nowTime = new Date();
         if (Time.isToday(nowTime, time)) {
@@ -37,6 +48,10 @@ export default function Linkman({ id, name, avatar, preview, time, unread, linkm
     function handlePress() {
         action.setFocus(id);
         Actions.chat({ title: formatLinkmanName(linkman) });
+
+        if (id && lastMessageId) {
+            fetch('updateHistory', { linkmanId: id, messageId: lastMessageId });
+        }
     }
 
     return (
@@ -54,7 +69,7 @@ export default function Linkman({ id, name, avatar, preview, time, unread, linkm
                         </Text>
                         {unread > 0 ? (
                             <View style={styles.unread}>
-                                <Text style={styles.unreadText}>{unread}</Text>
+                                <Text style={styles.unreadText}>{unread > 99 ? '99' : unread}</Text>
                             </View>
                         ) : null}
                     </View>
