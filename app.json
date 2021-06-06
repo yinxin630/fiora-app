@@ -11,7 +11,9 @@
       "bundleIdentifier": "com.suisuijiang.fiora",
       "buildNumber": "1.1.0",
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["wxp"]
+        "LSApplicationQueriesSchemes": ["wxp"],
+        "CFBundleLocalizations" : ["zh_CN"],
+        "CFBundleDevelopmentRegion": "zh_CN"
       }
     },
     "android": {
