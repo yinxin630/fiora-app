@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Keyboard, Modal } from 'react-native';
+import { ScrollView, StyleSheet, Keyboard, Modal, Image } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 import action from '../../state/action';
@@ -10,6 +10,7 @@ import { useFocusLinkman, useIsLogin, useSelfId, useStore } from '../../hooks/us
 import { Message as MessageType } from '../../types/redux';
 import Toast from '../../components/Toast';
 import { isAndroid, isiOS } from '../../utils/platform';
+import { referer } from '../../utils/constant';
 
 type Props = {
     $scrollView: React.MutableRefObject<ScrollView>;
@@ -49,11 +50,17 @@ function MessageList({ $scrollView }: Props) {
     function getImages() {
         const imageMessages = messages.filter((message) => message.type === 'image');
         const images = imageMessages.map((message) => {
-            let url = message.content;
-            if (url.startsWith('//')) {
-                url = `https:${url}`;
-            }
-            return { url };
+            const url = message.content;
+            const parseResult = /width=(\d+)&height=(\d+)/.exec(url);
+            return {
+                url: `${url.startsWith('//') ? 'https:' : ''}${url}`,
+                ...(parseResult
+                    ? {
+                        width: +parseResult[1],
+                        height: +parseResult[2],
+                    }
+                    : {}),
+            };
         });
         return images;
     }
@@ -184,6 +191,20 @@ function MessageList({ $scrollView }: Props) {
                     index={imageViewerIndex}
                     onClick={closeImageViewerDialog}
                     onSwipeDown={closeImageViewerDialog}
+                    renderImage={(image) => {
+                        return (
+                            <Image
+                                source={{
+                                    uri: image.source.uri,
+                                    cache: 'force-cache',
+                                    headers: {
+                                        Referer: referer,
+                                    },
+                                }}
+                                style={image.style}
+                            />
+                        );
+                    }}
                 />
             </Modal>
         </ScrollView>
