@@ -10,6 +10,8 @@ import { useFocusLinkman, useIsLogin, useSelfId, useStore } from '../../hooks/us
 import { Message as MessageType } from '../../types/redux';
 import Toast from '../../components/Toast';
 import { isAndroid, isiOS } from '../../utils/platform';
+import { referer } from '../../utils/constant';
+import { getOSSFileUrl } from '../../utils/uploadFile';
 
 type Props = {
     $scrollView: React.MutableRefObject<ScrollView>;
@@ -50,10 +52,15 @@ function MessageList({ $scrollView }: Props) {
         const imageMessages = messages.filter((message) => message.type === 'image');
         const images = imageMessages.map((message) => {
             let url = message.content;
-            if (url.startsWith('//')) {
-                url = `https:${url}`;
-            }
-            return { url };
+            return {
+                url: getOSSFileUrl(url, 'image/quality,q_95') as string,
+                props: {
+                    cache: 'force-cache',
+                    headers: {
+                        Referer: referer,
+                    },
+                },
+            };
         });
         return images;
     }
