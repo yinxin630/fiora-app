@@ -32,7 +32,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.0.tar.gz",
     "react-native-dialog": "^6.2.0",
     "react-native-gesture-handler": "~1.6.0",
-    "react-native-image-zoom-viewer": "^2.2.5",
+    "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-reanimated": "~1.9.0",
     "react-native-router-flux": "^4.2.0",
     "react-native-safe-area-context": "~3.0.7",
