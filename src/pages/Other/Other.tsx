@@ -94,6 +94,14 @@ function Other() {
                             <Icon active name="arrow-forward" style={styles.listItemArrow} />
                         </Right>
                     </ListItem>
+                    <ListItem icon onPress={() => Linking.openURL('https://fiora.suisuijiang.com')}>
+                        <Body>
+                            <Text style={styles.listItemTitle}>fiora 网页版</Text>
+                        </Body>
+                        <Right>
+                            <Icon active name="arrow-forward" style={styles.listItemArrow} />
+                        </Right>
+                    </ListItem>
                 </List>
             </Content>
             {isLogin ? (
