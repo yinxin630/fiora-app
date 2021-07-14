@@ -191,6 +191,7 @@ function MessageList({ $scrollView }: Props) {
                     index={imageViewerIndex}
                     onClick={closeImageViewerDialog}
                     onSwipeDown={closeImageViewerDialog}
+                    saveToLocalByLongPress={false}
                     renderImage={(image) => {
                         return (
                             <Image
