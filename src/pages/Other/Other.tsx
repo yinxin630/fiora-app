@@ -1,16 +1,4 @@
-import {
-    ActionSheet,
-    Body,
-    Button,
-    Content,
-    Icon,
-    List,
-    ListItem,
-    Right,
-    Text,
-    Toast,
-    View,
-} from 'native-base';
+import { Body, Button, Content, Icon, List, ListItem, Right, Text, Toast, View } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { Linking, StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
@@ -22,7 +10,6 @@ import action from '../../state/action';
 import { getStorageValue, removeStorageValue } from '../../utils/storage';
 import appInfo from '../../../app.json';
 import Avatar from '../../components/Avatar';
-import Sponsor from './Sponsor';
 import PrivacyPolicy, { PrivacyPolicyStorageKey } from './PrivacyPolicy';
 
 function getIsNight() {
@@ -33,7 +20,6 @@ function getIsNight() {
 function Other() {
     const isLogin = useIsLogin();
     const [isNight, setIsNight] = useState(getIsNight());
-    const [showSponsorDialog, toggleSponsorDialog] = useState(false);
     const [showPrivacyPolicy, togglePrivacyPolicy] = useState(false);
 
     async function getPrivacyPolicyStatus() {
@@ -69,33 +55,6 @@ function Other() {
         }
 
         Actions.push('login');
-    }
-
-    function handleSponsorOK() {
-        toggleSponsorDialog(false);
-        // When you close the Sponsor Dialog, the ActionSheet will also be closed. So timeout is required
-        setTimeout(() => {
-            const options = ['支付宝', '取消'];
-            ActionSheet.show(
-                {
-                    options,
-                    cancelButtonIndex: options.findIndex((str) => str === '取消'),
-                    title: '选择支付方式',
-                },
-                async (buttonIndex) => {
-                    switch (buttonIndex) {
-                        case 0: {
-                            const alipayUrl = 'https://qr.alipay.com/FKX08821LJVDHRXFYYYU3A';
-                            Linking.openURL(alipayUrl);
-                            break;
-                        }
-                        default: {
-                            break;
-                        }
-                    }
-                },
-            );
-        }, 500);
     }
 
     return (
@@ -135,14 +94,6 @@ function Other() {
                             <Icon active name="arrow-forward" style={styles.listItemArrow} />
                         </Right>
                     </ListItem>
-                    <ListItem icon onPress={() => toggleSponsorDialog(true)}>
-                        <Body>
-                            <Text style={styles.listItemTitle}>赞助</Text>
-                        </Body>
-                        <Right>
-                            <Icon active name="arrow-forward" style={styles.listItemArrow} />
-                        </Right>
-                    </ListItem>
                 </List>
             </Content>
             {isLogin ? (
@@ -162,11 +113,6 @@ function Other() {
                     碎碎酱
                 </Text>
             </View>
-            <Sponsor
-                visible={showSponsorDialog}
-                onClose={() => toggleSponsorDialog(false)}
-                onOK={handleSponsorOK}
-            />
             <PrivacyPolicy visible={showPrivacyPolicy} onClose={() => togglePrivacyPolicy(false)} />
         </PageContainer>
     );
