@@ -11,7 +11,6 @@ import {
 import { Button } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { Ionicons } from '@expo/vector-icons';
-import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 
 import action from '../../state/action';
@@ -127,10 +126,14 @@ export default function Input({ onHeightChange }: Props) {
     }
 
     async function handleClickImage() {
-        const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
-        if (status !== 'granted') {
-            const { status: returnStatus } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-            if (returnStatus !== 'granted') {
+        const currentPermission = await ImagePicker.getMediaLibraryPermissionsAsync();
+        if (currentPermission.accessPrivileges === 'none') {
+            if (currentPermission.canAskAgain) {
+                const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (permission.accessPrivileges === 'none') {
+                    return;
+                }
+            } else {
                 return;
             }
         }
@@ -152,18 +155,14 @@ export default function Input({ onHeightChange }: Props) {
     }
 
     async function handleClickCamera() {
-        const { status: cameraStatus } = await Permissions.getAsync(Permissions.CAMERA);
-        if (cameraStatus !== 'granted') {
-            const { status: returnStatus } = await Permissions.askAsync(Permissions.CAMERA);
-            if (returnStatus !== 'granted') {
-                return;
-            }
-        }
-
-        const { status: cameraRollStatus } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
-        if (cameraRollStatus !== 'granted') {
-            const { status: returnStatus } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-            if (returnStatus !== 'granted') {
+        const currentPermission = await ImagePicker.getCameraPermissionsAsync();
+        if (currentPermission.status === 'undetermined') {
+            if (currentPermission.canAskAgain) {
+                const permission = await ImagePicker.requestCameraPermissionsAsync();
+                if (permission.status === 'undetermined') {
+                    return;
+                }
+            } else {
                 return;
             }
         }

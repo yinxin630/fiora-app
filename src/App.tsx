@@ -21,6 +21,7 @@ import UserInfo from './pages/UserInfo/UserInfo';
 import ChatListRightButton from './pages/ChatList/ChatListRightButton';
 import SearchResult from './pages/SearchResult/SearchResult';
 import GroupInfo from './pages/GroupInfo/GroupInfo';
+import BackButton from './components/BackButton';
 
 type Props = {
     title: string;
@@ -31,6 +32,16 @@ type Props = {
 function App({ title, primaryColor, isLogin }: Props) {
     const primaryColor10 = `rgba(${primaryColor}, 1)`;
     const primaryColor8 = `rgba(${primaryColor}, 0.8)`;
+
+    const sceneCommonProps = {
+        hideNavBar: false,
+        navigationBarStyle: {
+            backgroundColor: primaryColor10,
+            borderBottomWidth: 0,
+        },
+        navBarButtonColor: "#f9f9f9",
+        renderLeftButton: () => <BackButton />
+    }
 
     return (
         <View style={styles.container}>
@@ -46,6 +57,7 @@ function App({ title, primaryColor, isLogin }: Props) {
                             >
                                 <Scene
                                     key="chatlist"
+                                    navBarButtonColor="transparent"
                                     component={ChatList}
                                     initial
                                     hideNavBar={!isLogin}
@@ -93,80 +105,44 @@ function App({ title, primaryColor, isLogin }: Props) {
                                 borderBottomWidth: 0,
                             }}
                             navBarButtonColor="#f9f9f9"
-                            renderBackButton={() => <ChatBackButton />}
+                            renderLeftButton={() => <ChatBackButton />}
                             renderRightButton={() => <ChatRightButton />}
                         />
                         <Scene
                             key="login"
                             component={Login}
                             title="登录"
-                            hideNavBar={false}
-                            navigationBarStyle={{
-                                backgroundColor: primaryColor10,
-                                borderBottomWidth: 0,
-                            }}
-                            navBarButtonColor="#f9f9f9"
-                            backTitle="返回"
+                            {...sceneCommonProps}
                         />
                         <Scene
                             key="signup"
                             component={Signup}
                             title="注册"
-                            hideNavBar={false}
-                            navigationBarStyle={{
-                                backgroundColor: primaryColor10,
-                                borderBottomWidth: 0,
-                            }}
-                            navBarButtonColor="#f9f9f9"
-                            backTitle="返回"
+                            {...sceneCommonProps}
                         />
                         <Scene
                             key="groupProfile"
                             component={GroupProfile}
                             title="群组资料"
-                            hideNavBar={false}
-                            navigationBarStyle={{
-                                backgroundColor: primaryColor10,
-                                borderBottomWidth: 0,
-                            }}
-                            navBarButtonColor="#f9f9f9"
-                            backTitle="返回"
+                            {...sceneCommonProps}
                         />
                         <Scene
                             key="userInfo"
                             component={UserInfo}
                             title="个人信息"
-                            hideNavBar={false}
-                            navigationBarStyle={{
-                                backgroundColor: primaryColor10,
-                                borderBottomWidth: 0,
-                            }}
-                            navBarButtonColor="#f9f9f9"
-                            backTitle="返回"
+                            {...sceneCommonProps}
                         />
                         <Scene
                             key="groupInfo"
                             component={GroupInfo}
                             title="群组信息"
-                            hideNavBar={false}
-                            navigationBarStyle={{
-                                backgroundColor: primaryColor10,
-                                borderBottomWidth: 0,
-                            }}
-                            navBarButtonColor="#f9f9f9"
-                            backTitle="返回"
+                            {...sceneCommonProps}
                         />
                         <Scene
                             key="searchResult"
                             component={SearchResult}
                             title="搜索结果"
-                            hideNavBar={false}
-                            navigationBarStyle={{
-                                backgroundColor: primaryColor10,
-                                borderBottomWidth: 0,
-                            }}
-                            navBarButtonColor="#f9f9f9"
-                            backTitle="返回"
+                            {...sceneCommonProps}
                         />
                     </Stack>
                 </Router>
